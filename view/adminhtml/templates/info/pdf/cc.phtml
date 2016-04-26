@@ -1,0 +1,18 @@
+<?php
+// @codingStandardsIgnoreFile
+/**
+ * @var $block \PayEx\Payments\Block\Info\Cc
+ */
+?>
+<?php echo $block->escapeHtml($block->getMethod()->getTitle()) ?>
+{{pdf_row_separator}}
+<?php $trans_id = $block->getInfo()->getLastTransId(); ?>
+<?php if (!empty($trans_id)): ?>
+    <?php $_specificInfo = $block->getSpecificInformation(); ?>
+    <?php if (count($_specificInfo) > 0): ?>
+        <?php foreach($_specificInfo as $_label => $_value): ?>
+            <?php echo $block->escapeHtml($_label) . ': ' . $block->escapeHtml($_value); ?>
+            {{pdf_row_separator}}
+        <?php endforeach; ?>
+    <?php endif; ?>
+<?php endif; ?>
