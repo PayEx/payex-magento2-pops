@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<payment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../../../Magento/Payment/etc/payment.xsd">
+    <groups>
+        <group id="payex">
+            <label>PayEx Payment Methods</label>
+        </group>
+    </groups>
+    <methods>
+        <method name="payex_cc">
+            <allow_multiple_address>1</allow_multiple_address>
+        </method>
+    </methods>
+</payment>

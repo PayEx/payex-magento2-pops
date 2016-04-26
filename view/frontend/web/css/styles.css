@@ -1,0 +1,6 @@
+.checkout-payment-method .payment-method-title label div.payex-logo {
+    display: inline-block;
+    background: url(../images/payex-small.gif) no-repeat;
+    width: 82px;
+    height: 39px;
+}
