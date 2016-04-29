@@ -146,7 +146,6 @@ class Redirect extends \Magento\Framework\App\Action\Action
         }
 
         $order_ref = $result['orderRef'];
-        $redirectUrl = $result['redirectUrl'];
 
         // Add Order Info
         if ($method->getConfigData('checkoutinfo')) {
@@ -216,7 +215,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
 
         // Redirect to PayEx
         $resultRedirect = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_REDIRECT);
-        $resultRedirect->setUrl($redirectUrl);
+        $resultRedirect->setUrl($result['redirectUrl']);
         return $resultRedirect;
     }
 
