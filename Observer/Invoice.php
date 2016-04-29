@@ -49,11 +49,7 @@ class Invoice implements ObserverInterface
             }
 
             // Get Order Status
-            if ($method->getCode() === 'payex_bankdebit') {
-                // Bankdebit
-                $new_status = $method->getConfigData('order_status');
-                $message = __('Payment has been captured');
-            } elseif (in_array((int)$details['transactionStatus'], [0, 6])) {
+            if (in_array((int)$details['transactionStatus'], [0, 6])) {
                 // For Capture
                 $new_status = $method->getConfigData('order_status_capture');
                 $message = __('Payment has been captured');

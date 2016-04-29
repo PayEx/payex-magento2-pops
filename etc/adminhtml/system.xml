@@ -9,6 +9,7 @@
                 <fieldset_css>complex</fieldset_css>
                 <frontend_model>Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Group</frontend_model>
                 <include path="PayEx_Payments::system/payex_cc.xml"/>
+                <include path="PayEx_Payments::system/payex_bankdebit.xml"/>
             </group>
         </section>
     </system>

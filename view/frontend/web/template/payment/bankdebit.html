@@ -17,7 +17,10 @@
         </div>
         <fieldset class="fieldset" data-bind='attr: {id: "payment_form_" + getCode()}'>
             <div class="payment-method-note">
-                <!-- ko text: $t('You will be redirected to PayEx website when you place an order.') --><!-- /ko -->
+                <p>
+                    <!-- ko text: $t('Select your bank:') --><!-- /ko -->
+                </p>
+                <select data-bind="attr: {'name': 'bank_id'}, options: availableBanks(), optionsText: 'label', optionsValue: 'value'"></select>
             </div>
         </fieldset>
         <div class="checkout-agreements-block">
@@ -35,7 +38,7 @@
                         enable: (getCode() == isChecked())
                         "
                         disabled>
-                    <span data-bind="text: $t('Continue to PayEx')"></span>
+                    <span data-bind="text: $t('Continue to Bank')"></span>
                 </button>
             </div>
         </div>

@@ -16,7 +16,21 @@ define(
         return Component.extend({
             defaults: {
                 self: this,
-                template: 'PayEx_Payments/payment/cc'
+                template: 'PayEx_Payments/payment/bankdebit'
+            },
+            /**
+             * @override
+             */
+            getData: function () {
+                return {
+                    'method': this.getCode(),
+                    'additional_data': {
+                        'bank_id': $('select[name="bank_id"]').val()
+                    }
+                };
+            },
+            availableBanks: function() {
+                return ko.observableArray(window.checkoutConfig.payment.payex_bankdebit.banks);
             },
             /** Redirect to PayEx */
             continueToPayEx: function () {

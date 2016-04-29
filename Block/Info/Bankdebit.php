@@ -4,12 +4,12 @@ namespace PayEx\Payments\Block\Info;
 
 use Magento\Framework\View\Element\Template;
 
-class Cc extends \Magento\Payment\Block\Info
+class Bankdebit extends \Magento\Payment\Block\Info
 {
     /**
      * @var string
      */
-    protected $_template = 'PayEx_Payments::info/cc.phtml';
+    protected $_template = 'PayEx_Payments::info/bankdebit.phtml';
 
     /**
      * @var \PayEx\Payments\Helper\Data
@@ -53,7 +53,7 @@ class Cc extends \Magento\Payment\Block\Info
         // Transaction Fields
         $fields = array(
             'PayEx Payment Method' => array('paymentMethod', 'cardProduct'),
-            'Masked Number' => array('maskedNumber', 'maskedCard'),
+            //'Masked Number' => array('maskedNumber', 'maskedCard'),
             //'Bank Hash' => array('BankHash', 'csId', 'panId'),
             'Bank Reference' => array('bankReference'),
             'Authenticated Status' => array('AuthenticatedStatus', 'authenticatedStatus'),
@@ -111,8 +111,7 @@ class Cc extends \Magento\Payment\Block\Info
      */
     public function toPdf()
     {
-        $this->setTemplate('PayEx_Payments::info/pdf/cc.phtml');
+        $this->setTemplate('PayEx_Payments::info/pdf/bankdebit.phtml');
         return $this->toHtml();
     }
 }
-

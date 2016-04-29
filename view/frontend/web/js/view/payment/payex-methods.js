@@ -12,6 +12,10 @@ define(
             {
                 type: 'payex_cc',
                 component: 'PayEx_Payments/js/view/payment/method-renderer/payex-cc-method'
+            },
+            {
+                type: 'payex_bankdebit',
+                component: 'PayEx_Payments/js/view/payment/method-renderer/payex-bankdebit-method'
             }
         );
         /** Add view logic here if needed */

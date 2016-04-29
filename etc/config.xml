@@ -19,6 +19,21 @@
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_cc>
+            <payex_bankdebit>
+                <active>1</active>
+                <model>PayEx\Payments\Model\Method\Bankdebit</model>
+                <title>PayEx Bank Debit</title>
+                <debug>1</debug>
+                <accountnumber>payex account number</accountnumber>
+                <encryptionkey>payex encryption key</encryptionkey>
+                <order_status_capture>processing</order_status_capture>
+                <banks>NB,FSPA,SEB,SHB</banks>
+                <responsive>1</responsive>
+                <checkoutinfo>1</checkoutinfo>
+                <language>en-US</language>
+                <allowspecific>0</allowspecific>
+                <group>payex</group>
+            </payex_bankdebit>
         </payment>
     </default>
 </config>

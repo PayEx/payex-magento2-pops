@@ -14,4 +14,7 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Checkout\Model\PaymentInformationManagement">
+        <plugin name="payex_payments_checkout_model_paymentinformationmanagement" type="PayEx\Payments\Model\Checkout\PaymentInformationManagement\Plugin" sortOrder="1" />
+    </type>
 </config>

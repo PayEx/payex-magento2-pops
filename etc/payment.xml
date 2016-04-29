@@ -11,4 +11,9 @@
             <allow_multiple_address>1</allow_multiple_address>
         </method>
     </methods>
+    <methods>
+        <method name="payex_bankdebit">
+            <allow_multiple_address>1</allow_multiple_address>
+        </method>
+    </methods>
 </payment>
