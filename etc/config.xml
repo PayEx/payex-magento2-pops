@@ -34,6 +34,20 @@
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_bankdebit>
+            <payex_swish>
+                <active>1</active>
+                <model>PayEx\Payments\Model\Method\Swish</model>
+                <title>Swish Payments (via PayEx)</title>
+                <debug>1</debug>
+                <accountnumber>payex account number</accountnumber>
+                <encryptionkey>payex encryption key</encryptionkey>
+                <order_status_capture>processing</order_status_capture>
+                <responsive>1</responsive>
+                <checkoutinfo>1</checkoutinfo>
+                <language>en-US</language>
+                <allowspecific>0</allowspecific>
+                <group>payex</group>
+            </payex_swish>
         </payment>
     </default>
 </config>

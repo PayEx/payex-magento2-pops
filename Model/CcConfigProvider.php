@@ -93,6 +93,12 @@ class CcConfigProvider implements ConfigProviderInterface
             $config['payment'] [\PayEx\Payments\Model\Method\Bankdebit::METHOD_CODE]['banks'] = $banks;
         }
 
+        /** @var \PayEx\Payments\Model\Method\Swish $method */
+        $method = $this->_paymentHelper->getMethodInstance(\PayEx\Payments\Model\Method\Swish::METHOD_CODE);
+        if ($method->isAvailable()) {
+            $config['payment'] [\PayEx\Payments\Model\Method\Swish::METHOD_CODE]['redirectUrl'] = $method->getCheckoutRedirectUrl();
+        }
+
         return $config;
     }
 }

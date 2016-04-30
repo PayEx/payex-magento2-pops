@@ -16,6 +16,10 @@ define(
             {
                 type: 'payex_bankdebit',
                 component: 'PayEx_Payments/js/view/payment/method-renderer/payex-bankdebit-method'
+            },
+            {
+                type: 'payex_swish',
+                component: 'PayEx_Payments/js/view/payment/method-renderer/payex-swish-method'
             }
         );
         /** Add view logic here if needed */
