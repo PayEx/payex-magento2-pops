@@ -12,3 +12,10 @@
     width: 40px;
     height: 40px;
 }
+
+.checkout-payment-method .payment-method-title label div.payex-logo.payex_financing {
+    display: inline-block;
+    background: url(../images/financing-logo.gif) no-repeat;
+    width: 82px;
+    height: 54px;
+}

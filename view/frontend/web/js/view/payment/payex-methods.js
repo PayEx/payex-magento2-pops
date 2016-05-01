@@ -20,6 +20,10 @@ define(
             {
                 type: 'payex_swish',
                 component: 'PayEx_Payments/js/view/payment/method-renderer/payex-swish-method'
+            },
+            {
+                type: 'payex_financing',
+                component: 'PayEx_Payments/js/view/payment/method-renderer/payex-financing-method'
             }
         );
         /** Add view logic here if needed */

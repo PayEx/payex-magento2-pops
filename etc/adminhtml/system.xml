@@ -11,6 +11,7 @@
                 <include path="PayEx_Payments::system/payex_cc.xml"/>
                 <include path="PayEx_Payments::system/payex_bankdebit.xml"/>
                 <include path="PayEx_Payments::system/payex_swish.xml"/>
+                <include path="PayEx_Payments::system/payex_financing.xml"/>
             </group>
         </section>
     </system>

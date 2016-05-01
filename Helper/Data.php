@@ -577,4 +577,53 @@ class Data extends AbstractHelper
         // Use en-US as default language
         return 'en-US';
     }
+
+    /**
+     * Generate Invoice Print XML for Financing Invoice/PartPayment
+     * @param \Magento\Sales\Model\Order $order
+     * @return array
+     */
+    public function getInvoiceExtraPrintBlocksXML(\Magento\Sales\Model\Order $order) {
+        $lines = $this->getOrderItems($order);
+
+        // Replace illegal characters of product names
+        $replace_illegal = $order->getPayment()->getMethodInstance()->getConfigData('replace_illegal', $order->getStoreId());
+        if ($replace_illegal) {
+            $replacement_char = $order->getPayment()->getMethodInstance()->getConfigData('replacement_char', $order->getStoreId());
+            if (empty($replacement_char)) {
+                $replacement_char = '-';
+            }
+
+            $lines = array_map(function($value) use($replacement_char) {
+                if (isset($value['name'])) {
+                    mb_regex_encoding('utf-8');
+                    $value['name'] = mb_ereg_replace('[^a-zA-Z0-9_:!#=?\[\]@{}´ %-\/À-ÖØ-öø-ú]', $replacement_char, $value['name']);
+                }
+                return $value;
+            }, $lines);
+        }
+
+        $dom = new \DOMDocument('1.0', 'utf-8');
+        $OnlineInvoice = $dom->createElement('OnlineInvoice');
+        $dom->appendChild($OnlineInvoice);
+        $OnlineInvoice->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+        $OnlineInvoice->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsd', 'http://www.w3.org/2001/XMLSchema');
+
+        $OrderLines = $dom->createElement('OrderLines');
+        $OnlineInvoice->appendChild($OrderLines);
+
+        // Add Order Lines
+        foreach ($lines as $line) {
+            $OrderLine = $dom->createElement('OrderLine');
+            $OrderLine->appendChild($dom->createElement('Product', $line['name']));
+            $OrderLine->appendChild($dom->createElement('Qty', $line['qty']));
+            $OrderLine->appendChild($dom->createElement('UnitPrice', sprintf("%.2f", $line['price_without_tax'] / $line['qty'])));
+            $OrderLine->appendChild($dom->createElement('VatRate', sprintf("%.2f", $line['tax_percent'])));
+            $OrderLine->appendChild($dom->createElement('VatAmount', sprintf("%.2f", $line['tax_price'])));
+            $OrderLine->appendChild($dom->createElement('Amount', sprintf("%.2f", $line['price_with_tax'])));
+            $OrderLines->appendChild($OrderLine);
+        }
+
+        return str_replace("\n", '', $dom->saveXML());
+    }
 }
