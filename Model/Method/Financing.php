@@ -336,6 +336,15 @@ class Financing extends \Magento\Payment\Model\Method\AbstractMethod implements 
             throw new LocalizedException(__($message));
         }
 
+        // Check Transaction fields
+        if (empty($result['transactionNumber'])) {
+            throw new LocalizedException(__('Error: Transaction failed'));
+        }
+
+        if ($result['transactionStatus']) {
+            throw new LocalizedException(__('Error: No transactionsStatus in response'));
+        }
+
         // Save Order
         $order->save();
 

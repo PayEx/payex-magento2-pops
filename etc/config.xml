@@ -65,6 +65,22 @@
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_financing>
+            <payex_partpayment>
+                <active>1</active>
+                <model>PayEx\Payments\Model\Method\PartPayment</model>
+                <payment_action>authorize_capture</payment_action>
+                <title>PayEx Financing Credit Account</title>
+                <debug>1</debug>
+                <accountnumber>payex account number</accountnumber>
+                <encryptionkey>payex encryption key</encryptionkey>
+                <order_status_authorize>processing</order_status_authorize>
+                <order_status_capture>processing</order_status_capture>
+                <language>en-US</language>
+                <replace_illegal>1</replace_illegal>
+                <replacement_char>-</replacement_char>
+                <allowspecific>0</allowspecific>
+                <group>payex</group>
+            </payex_partpayment>
         </payment>
     </default>
 </config>

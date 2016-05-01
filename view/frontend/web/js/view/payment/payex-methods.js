@@ -24,6 +24,10 @@ define(
             {
                 type: 'payex_financing',
                 component: 'PayEx_Payments/js/view/payment/method-renderer/payex-financing-method'
+            },
+            {
+                type: 'payex_partpayment',
+                component: 'PayEx_Payments/js/view/payment/method-renderer/payex-partpayment-method'
             }
         );
         /** Add view logic here if needed */

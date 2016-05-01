@@ -496,7 +496,7 @@ class Data extends AbstractHelper
         $transaction = null;
 
         /* Transaction statuses: 0=Sale, 1=Initialize, 2=Credit, 3=Authorize, 4=Cancel, 5=Failure, 6=Capture */
-        $transaction_status = isset($details['transactionStatus']) ? (int)$details['transactionStatus'] : null;
+        $transaction_status = !empty($details['transactionStatus']) ? (int)$details['transactionStatus'] : 'undefined';
         switch ($transaction_status) {
             case 1:
                 // From PayEx PIM:

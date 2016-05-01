@@ -25,3 +25,10 @@
     background-size: 82px 54px;
     line-height: 54px;
 }
+
+.payex-method-payex-partpayment > .entry-edit-head > .config-heading .heading strong {
+    padding-left: 90px;
+    background: url(images/partpayment-logo.gif) no-repeat 0 0;
+    background-size: 84px 55px;
+    line-height: 54px;
+}

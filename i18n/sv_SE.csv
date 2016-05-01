@@ -94,3 +94,6 @@
 "Please select country.","Välj land."
 "Please enter postcode.","Fyll i postnummer."
 "Product name ""%1"" contains invalid characters.","Product name ""%1"" contains invalid characters."
+"PayEx Financing Credit Account","PayEx Delbetala"
+"Error: Transaction failed","Error: Transaction failed"
+"Error: No transactionsStatus in response","Error: No transactionsStatus in response"

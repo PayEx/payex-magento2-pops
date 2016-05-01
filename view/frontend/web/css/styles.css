@@ -19,3 +19,10 @@
     width: 82px;
     height: 54px;
 }
+
+.checkout-payment-method .payment-method-title label div.payex-logo.payex_partpayment {
+    display: inline-block;
+    background: url(../images/partpayment-logo.gif) no-repeat;
+    width: 84px;
+    height: 55px;
+}
