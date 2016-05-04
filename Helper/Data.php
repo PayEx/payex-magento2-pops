@@ -626,4 +626,44 @@ class Data extends AbstractHelper
 
         return str_replace("\n", '', $dom->saveXML());
     }
+
+    /**
+     * Get Shopping Cart XML for MasterPass
+     * @param \Magento\Sales\Model\Order $order
+     * @return string
+     */
+    public function getOrderShoppingCartXML(\Magento\Sales\Model\Order $order) {
+        /** @var \Magento\Framework\ObjectManagerInterface $om */
+        $om = \Magento\Framework\App\ObjectManager::getInstance();
+
+        /** @var \Magento\Catalog\Helper\Image $imageHelper */
+        $imageHelper = $om->get('Magento\Catalog\Helper\Image');
+
+        $dom = new \DOMDocument('1.0', 'utf-8');
+        $ShoppingCart = $dom->createElement('ShoppingCart');
+        $dom->appendChild($ShoppingCart);
+
+        $currency = $order->getOrderCurrencyCode();
+
+        $ShoppingCart->appendChild($dom->createElement('CurrencyCode', $currency));
+        $ShoppingCart->appendChild($dom->createElement('Subtotal', (int)(100 * $order->getGrandTotal())));
+
+        // Add Order Lines
+        $items = $order->getAllVisibleItems();
+        /** @var \Magento\Sales\Model\Order\Item $item */
+        foreach ($items as $item) {
+            $product = $item->getProduct();
+            $qty = $item->getQtyOrdered();
+            $image = $imageHelper->init($product, 'category_page_list')->getUrl();
+
+            $ShoppingCartItem = $dom->createElement('ShoppingCartItem');
+            $ShoppingCartItem->appendChild($dom->createElement('Description', $item->getName()));
+            $ShoppingCartItem->appendChild($dom->createElement('Quantity', (float)$qty));
+            $ShoppingCartItem->appendChild($dom->createElement('Value', (int)bcmul($product->getFinalPrice(), 100)));
+            $ShoppingCartItem->appendChild($dom->createElement('ImageURL', $image));
+            $ShoppingCart->appendChild($ShoppingCartItem);
+        }
+
+        return str_replace("\n", '', $dom->saveXML());
+    }
 }

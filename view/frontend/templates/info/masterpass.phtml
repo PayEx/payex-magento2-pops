@@ -1,0 +1,13 @@
+<?php
+// @codingStandardsIgnoreFile
+/**
+ * @var $block \PayEx\Payments\Block\Info\MasterPass
+ */
+?>
+<?php
+$_info = $block->getInfo();
+?>
+
+<dl class="payment-method payex_masterpass">
+        <?php echo $block->escapeHtml($block->getMethod()->getTitle()) ?><br/>
+</dl>

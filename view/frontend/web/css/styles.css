@@ -26,3 +26,10 @@
     width: 84px;
     height: 55px;
 }
+
+.checkout-payment-method .payment-method-title label div.payex-logo.payex_masterpass {
+    display: inline-block;
+    background: url(../images/masterpass-logo.png) no-repeat;
+    width: 88px;
+    height: 55px;
+}

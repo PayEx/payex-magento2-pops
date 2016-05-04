@@ -19,5 +19,11 @@
         <method name="payex_financing">
             <allow_multiple_address>1</allow_multiple_address>
         </method>
+        <method name="payex_partpayment">
+            <allow_multiple_address>1</allow_multiple_address>
+        </method>
+        <method name="payex_masterpass">
+            <allow_multiple_address>1</allow_multiple_address>
+        </method>
     </methods>
 </payment>

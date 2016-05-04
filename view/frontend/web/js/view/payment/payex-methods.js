@@ -28,6 +28,10 @@ define(
             {
                 type: 'payex_partpayment',
                 component: 'PayEx_Payments/js/view/payment/method-renderer/payex-partpayment-method'
+            },
+            {
+                type: 'payex_masterpass',
+                component: 'PayEx_Payments/js/view/payment/method-renderer/payex-masterpass-method'
             }
         );
         /** Add view logic here if needed */

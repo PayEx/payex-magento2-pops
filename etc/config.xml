@@ -81,6 +81,20 @@
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_partpayment>
+            <payex_masterpass>
+                <active>1</active>
+                <model>PayEx\Payments\Model\Method\MasterPass</model>
+                <title>PayEx MasterPass</title>
+                <debug>1</debug>
+                <accountnumber>payex account number</accountnumber>
+                <encryptionkey>payex encryption key</encryptionkey>
+                <transactiontype>SALE</transactiontype>
+                <order_status_authorize>processing</order_status_authorize>
+                <order_status_capture>processing</order_status_capture>
+                <language>en-US</language>
+                <allowspecific>0</allowspecific>
+                <group>payex</group>
+            </payex_masterpass>
         </payment>
     </default>
 </config>
