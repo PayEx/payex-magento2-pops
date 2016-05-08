@@ -105,17 +105,17 @@ class Success extends \Magento\Framework\App\Action\Action
 
         // Call PxOrder.FinalizeTransaction
         $params = [
-            'accountNumber'   => '',
-            'orderRef'        => $_GET['orderRef'],
-            'amount'          => round( $amount * 100 ),
-            'vatAmount'       => 0,
+            'accountNumber' => '',
+            'orderRef' => $_GET['orderRef'],
+            'amount' => round($amount * 100),
+            'vatAmount' => 0,
             'clientIPAddress' => $this->payexHelper->getRemoteAddr()
         ];
         $details = $this->payexHelper->getPx()->FinalizeTransaction($params);
         $this->payexLogger->info('PxOrder.FinalizeTransaction', $details);
         if ($details['code'] !== 'OK' || $details['errorCode'] !== 'OK' && $details['description'] !== 'OK') {
             // Check order has already been purchased
-            if ( $details['code'] !== 'Order_AlreadyPerformed' ) {
+            if ($details['code'] !== 'Order_AlreadyPerformed') {
                 $message = $this->payexHelper->getVerboseErrorMessage($details);
 
                 // Cancel order

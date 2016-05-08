@@ -1,8 +1,12 @@
 <?php
 
-namespace PayEx\Payments\Controller\Cc;
+namespace PayEx\Payments\Controller\Masterpass;
 
-class Redirect extends \Magento\Framework\App\Action\Action
+use Magento\Sales\Model\Order\Payment\Transaction;
+use Symfony\Component\Config\Definition\Exception\Exception;
+use Magento\Framework\Exception\LocalizedException;
+
+class Checkout extends \Magento\Framework\App\Action\Action
 {
     /**
      * @var \Magento\Framework\UrlInterface
@@ -23,29 +27,44 @@ class Redirect extends \Magento\Framework\App\Action\Action
      * @var \PayEx\Payments\Logger\Logger
      */
     protected $payexLogger;
-    
+
     /**
-     * Redirect constructor.
+     * @var \Magento\Sales\Api\TransactionRepositoryInterface
+     */
+    protected $transactionRepository;
+
+    /**
+     * @var \Magento\Sales\Model\Order\Email\Sender\OrderSender
+     */
+    protected $orderSender;
+
+    /**
+     * Success constructor.
      * @param \Magento\Framework\App\Action\Context $context
      * @param \Magento\Framework\UrlInterface $urlBuilder
      * @param \Magento\Checkout\Model\Session $session
      * @param \PayEx\Payments\Helper\Data $payexHelper
      * @param \PayEx\Payments\Logger\Logger $payexLogger
+     * @param \Magento\Sales\Api\TransactionRepositoryInterface $transactionRepository
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\UrlInterface $urlBuilder,
         \Magento\Checkout\Model\Session $session,
         \PayEx\Payments\Helper\Data $payexHelper,
-        \PayEx\Payments\Logger\Logger $payexLogger
-    ) {
+        \PayEx\Payments\Logger\Logger $payexLogger,
+        \Magento\Sales\Api\TransactionRepositoryInterface $transactionRepository,
+        \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender
+    )
+    {
         parent::__construct($context);
 
         $this->urlBuilder = $urlBuilder;
         $this->session = $session;
         $this->payexHelper = $payexHelper;
         $this->payexLogger = $payexLogger;
-
+        $this->transactionRepository = $transactionRepository;
+        $this->orderSender = $orderSender;
     }
 
     /**
@@ -56,48 +75,43 @@ class Redirect extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        // Load Order
-        $order = $this->getOrder();
-        if (!$order->getId()) {
-            $this->session->restoreQuote();
-            $this->messageManager->addError(__('No order for processing found'));
+        /** @var \Magento\Quote\Model\Quote $quote */
+        $quote = $this->session->getQuote();
+        try {
+            if (!$quote->hasItems()) {
+                throw new LocalizedException(__('You don\'t have any items in your cart'));
+            }
+            if (!$quote->getGrandTotal()) {
+                throw new LocalizedException(__('Order total is too small'));
+            }
+
+            // Set Payment Method
+            //$quote->setCheckoutMethod('payex_masterpass');
+
+            // Update totals
+            $quote->collectTotals();
+
+            // Create an Order ID for the customer's quote
+            $quote->reserveOrderId()->save();
+        } catch (\Exception $e) {
+            $this->messageManager->addError($e->getMessage());
             $this->_redirect('checkout/cart');
             return;
         }
 
-        $order_id = $order->getIncrementId();
+        $order_id = $quote->getReservedOrderId();
 
         /** @var \Magento\Payment\Model\Method\AbstractMethod $method */
-        $method = $order->getPayment()->getMethodInstance();
+        $method = $this->_objectManager->get('PayEx\Payments\Model\Method\MasterPass');
 
         // Get Currency code
-        $currency_code = $order->getOrderCurrency()->getCurrencyCode();
+        $currency_code = $quote->getQuoteCurrencyCode();
 
         // Get Operation Type (AUTHORIZATION / SALE)
         $operation = $method->getConfigData('transactiontype');
 
-        // Get Payment Type (PX, CREDITCARD etc)
-        $payment_type = $method->getConfigData('payment_type');
-
         // Get Additional Values
-        $additional = ($payment_type === 'PX' ? 'PAYMENTMENU=TRUE' : '');
-
-        // Direct Debit uses 'SALE' only
-        if ($payment_type === 'DIRECTDEBIT') {
-            $operation = 'SALE';
-        }
-
-        // Responsive Skinning
-        if ($method->getConfigData('responsive') === '1') {
-            $separator = (!empty($additional) && mb_substr($additional, -1) !== '&') ? '&' : '';
-
-            // PayEx Payment Page 2.0  works only for View 'Credit Card' and 'Direct Debit' at the moment
-            if (in_array($payment_type, ['CREDITCARD', 'DIRECTDEBIT'])) {
-                $additional .= $separator . 'RESPONSIVE=1';
-            } else {
-                $additional .= $separator . 'USECSS=RESPONSIVEDESIGN';
-            }
-        }
+        $additional = 'USEMASTERPASS=1&RESPONSIVE=1&SHOPPINGCARTXML=' . urlencode($this->payexHelper->getQuteShoppingCartXML($quote));
 
         // Language
         $language = $method->getConfigData('language');
@@ -106,7 +120,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
         }
 
         // Get Amount
-        $amount = $order->getGrandTotal();
+        $amount = $quote->getGrandTotal();
 
         // Init PayEx Environment
         $accountnumber = $method->getConfigData('accountnumber');
@@ -129,8 +143,8 @@ class Redirect extends \Magento\Framework\App\Action\Action
             'clientIdentifier' => 'USERAGENT=' . $this->_request->getServer('HTTP_USER_AGENT'),
             'additionalValues' => $additional,
             'externalID' => '',
-            'returnUrl' => $this->urlBuilder->getUrl('payex/cc/success', ['_secure' => $this->getRequest()->isSecure()]),
-            'view' => $payment_type,
+            'returnUrl' => $this->urlBuilder->getUrl('payex/masterpass/order', ['_secure' => $this->getRequest()->isSecure()]),
+            'view' => 'CREDITCARD',
             'agreementRef' => '',
             'cancelUrl' => $this->urlBuilder->getUrl('payex/cc/cancel', ['_secure' => $this->getRequest()->isSecure()]),
             'clientLanguage' => $language
@@ -142,11 +156,6 @@ class Redirect extends \Magento\Framework\App\Action\Action
         if ($result['code'] !== 'OK' || $result['description'] !== 'OK' || $result['errorCode'] !== 'OK') {
             $message = $this->payexHelper->getVerboseErrorMessage($result);
 
-            // Cancel order
-            $order->cancel();
-            $order->addStatusHistoryComment($message, \Magento\Sales\Model\Order::STATE_CANCELED);
-            $order->save();
-
             // Restore the quote
             $this->session->restoreQuote();
             $this->messageManager->addError($message);
@@ -154,47 +163,8 @@ class Redirect extends \Magento\Framework\App\Action\Action
             return;
         }
 
-        $order_ref = $result['orderRef'];
+        //$order_ref = $result['orderRef'];
         $redirectUrl = $result['redirectUrl'];
-
-        // Add Order Info
-        if ($method->getConfigData('checkoutinfo')) {
-            // Add Order Items
-            $items = $this->payexHelper->getOrderItems($order);
-            foreach ($items as $index => $item) {
-                // Call PxOrder.AddSingleOrderLine2
-                $params = [
-                    'accountNumber' => '',
-                    'orderRef' => $order_ref,
-                    'itemNumber' => ($index + 1),
-                    'itemDescription1' => $item['name'],
-                    'itemDescription2' => '',
-                    'itemDescription3' => '',
-                    'itemDescription4' => '',
-                    'itemDescription5' => '',
-                    'quantity' => $item['qty'],
-                    'amount' => (int)(100 * $item['price_with_tax']), //must include tax
-                    'vatPrice' => (int)(100 * $item['tax_price']),
-                    'vatPercent' => (int)(100 * $item['tax_percent'])
-                ];
-
-                $result = $this->payexHelper->getPx()->AddSingleOrderLine2($params);
-                $this->payexLogger->info('PxOrder.AddSingleOrderLine2', $result);
-            }
-
-            // Add Order Address Info
-            $params = array_merge([
-                'accountNumber' => '',
-                'orderRef' => $order_ref
-            ], $this->payexHelper->getAddressInfo($order));
-
-            $result = $this->payexHelper->getPx()->AddOrderAddress2($params);
-            $this->payexLogger->info('PxOrder.AddOrderAddress2', $result);
-        }
-
-        // Set Pending Payment status
-        $order->addStatusHistoryComment(__('The customer was redirected to PayEx.'), \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
-        $order->save();
 
         // Redirect to PayEx
         $resultRedirect = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_REDIRECT);

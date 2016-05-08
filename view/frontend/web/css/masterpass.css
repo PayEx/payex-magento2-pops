@@ -1,0 +1,14 @@
+.masterpass a.payex-masterpass-button,
+.masterpass a.payex-masterpass-button:hover,
+.masterpass a.payex-masterpass-button:visited,
+.masterpass a.payex-masterpass-button:hover {
+    color: transparent;
+}
+
+.masterpass img {
+    height: auto;
+    max-width: 100%;
+}
+.masterpass img {
+    border: 0;
+}
