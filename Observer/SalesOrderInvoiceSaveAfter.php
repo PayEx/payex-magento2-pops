@@ -4,7 +4,7 @@ namespace PayEx\Payments\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
 
-class Invoice implements ObserverInterface
+class SalesOrderInvoiceSaveAfter implements ObserverInterface
 {
     /** @var \PayEx\Payments\Helper\Data */
     protected $payexHelper;
