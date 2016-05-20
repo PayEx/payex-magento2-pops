@@ -1,0 +1,8 @@
+Version 1.0.0
+* First release of Magento 2 Payment Extension
+* Implemented Credit Card method
+* Implemented Bank Debit method
+* Implemented Financing Invoice method
+* Implemented PartPayment method
+* Implemented MasterPass method
+* Implemented Swish method
