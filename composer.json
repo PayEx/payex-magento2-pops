@@ -22,7 +22,7 @@
     "magento/module-theme": "100.0.*",
     "magento/framework": "100.0.*",
     "magento/magento-composer-installer": "*",
-    "payex/php-api": "*"
+    "payex/php-api": "~1.0.1"
   },
   "autoload": {
     "files": [
