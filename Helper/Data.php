@@ -12,6 +12,7 @@ use Magento\Sales\Model\Order\Payment\Transaction;
  */
 class Data extends AbstractHelper
 {
+    const MODULE_NAME = 'PayEx_Payments';
 
     /**
      * @var \Magento\Framework\Encryption\EncryptorInterface
@@ -22,6 +23,11 @@ class Data extends AbstractHelper
      * @var \Magento\Payment\Model\Config
      */
     protected $_config;
+
+    /**
+     * @var \Magento\Framework\Module\ModuleListInterface
+     */
+    protected $_moduleList;
 
     /**
      * @var \Magento\Sales\Model\Order\Config
@@ -58,6 +64,7 @@ class Data extends AbstractHelper
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Framework\Encryption\EncryptorInterface $encryptor
      * @param \Magento\Payment\Model\Config $config
+     * @param \Magento\Framework\Module\ModuleListInterface $moduleList
      * @param \Magento\Sales\Model\Order\Config $orderConfig
      * @param \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory $orderStatusCollectionFactory
      * @param \Magento\Sales\Model\Service\InvoiceService $invoiceService
@@ -68,6 +75,7 @@ class Data extends AbstractHelper
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Framework\Encryption\EncryptorInterface $encryptor,
         \Magento\Payment\Model\Config $config,
+        \Magento\Framework\Module\ModuleListInterface $moduleList,
         \Magento\Sales\Model\Order\Config $orderConfig,
         \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory $orderStatusCollectionFactory,
         \Magento\Sales\Model\Service\InvoiceService $invoiceService,
@@ -78,6 +86,7 @@ class Data extends AbstractHelper
         parent::__construct($context);
         $this->_encryptor = $encryptor;
         $this->_config = $config;
+        $this->_moduleList = $moduleList;
         $this->_orderConfig = $orderConfig;
 
         $this->orderStatusCollectionFactory = $orderStatusCollectionFactory;
@@ -85,6 +94,16 @@ class Data extends AbstractHelper
         $this->invoiceSender = $invoiceSender;
 
         $this->taxHelper = $taxHelper;
+    }
+
+    /**
+     * Get Module Version
+     * @return string
+     */
+    public function getVersion()
+    {
+        return $this->_moduleList
+            ->getOne(self::MODULE_NAME)['setup_version'];
     }
 
     /**
@@ -145,6 +164,14 @@ class Data extends AbstractHelper
     {
         if (!$this->_px) {
             $this->_px = new Px();
+
+            // Set User Agent
+            $this->_px->setUserAgent(sprintf("PayEx.Ecommerce.Php/%s PHP/%s Magento/%s PayEx.Magento2/%s",
+                \PayEx\Px::VERSION,
+                phpversion(),
+                \Magento\Framework\AppInterface::VERSION,
+                $this->getVersion()
+            ));
         }
 
         return $this->_px;
