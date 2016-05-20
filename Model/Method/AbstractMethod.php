@@ -7,7 +7,7 @@ use Magento\Payment\Model\Method\ConfigInterface;
 use Magento\Payment\Model\Method\Online\GatewayInterface;
 use \Magento\Framework\Exception\LocalizedException;
 
-class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMethod implements GatewayInterface
+abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMethod implements GatewayInterface
 {
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
