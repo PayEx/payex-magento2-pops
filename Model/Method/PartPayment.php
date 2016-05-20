@@ -3,15 +3,13 @@
 namespace PayEx\Payments\Model\Method;
 
 use Magento\Framework\DataObject;
-use Magento\Payment\Model\Method\ConfigInterface;
-use Magento\Payment\Model\Method\Online\GatewayInterface;
 use \Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class PartPayment
  * @package PayEx\Payments\Model\Method
  */
-class PartPayment extends \PayEx\Payments\Model\Method\Financing implements GatewayInterface
+class PartPayment extends \PayEx\Payments\Model\Method\Financing
 {
 
     const METHOD_CODE = 'payex_partpayment';
@@ -252,20 +250,5 @@ class PartPayment extends \PayEx\Payments\Model\Method\Financing implements Gate
         }
 
         return $this;
-    }
-
-    /**
-     * Post request to gateway and return response
-     *
-     * @param DataObject $request
-     * @param ConfigInterface $config
-     *
-     * @return DataObject
-     *
-     * @throws \Exception
-     */
-    public function postRequest(DataObject $request, ConfigInterface $config)
-    {
-        // Implement postRequest() method.
     }
 }
