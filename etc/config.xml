@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../Store/etc/config.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
         <payment>
             <payex_cc>
@@ -19,6 +19,82 @@
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_cc>
+            <payex_bankdebit>
+                <active>1</active>
+                <model>PayEx\Payments\Model\Method\Bankdebit</model>
+                <title>PayEx Bank Debit</title>
+                <debug>1</debug>
+                <accountnumber>payex account number</accountnumber>
+                <encryptionkey>payex encryption key</encryptionkey>
+                <order_status_capture>processing</order_status_capture>
+                <banks>NB,FSPA,SEB,SHB</banks>
+                <responsive>1</responsive>
+                <checkoutinfo>1</checkoutinfo>
+                <language>en-US</language>
+                <allowspecific>0</allowspecific>
+                <group>payex</group>
+            </payex_bankdebit>
+            <payex_swish>
+                <active>1</active>
+                <model>PayEx\Payments\Model\Method\Swish</model>
+                <title>Swish Payments (via PayEx)</title>
+                <debug>1</debug>
+                <accountnumber>payex account number</accountnumber>
+                <encryptionkey>payex encryption key</encryptionkey>
+                <order_status_capture>processing</order_status_capture>
+                <responsive>1</responsive>
+                <checkoutinfo>1</checkoutinfo>
+                <language>en-US</language>
+                <allowspecific>0</allowspecific>
+                <group>payex</group>
+            </payex_swish>
+            <payex_financing>
+                <active>1</active>
+                <model>PayEx\Payments\Model\Method\Financing</model>
+                <payment_action>authorize_capture</payment_action>
+                <title>PayEx Financing Invoice</title>
+                <debug>1</debug>
+                <accountnumber>payex account number</accountnumber>
+                <encryptionkey>payex encryption key</encryptionkey>
+                <transactiontype>AUTHORIZATION</transactiontype>
+                <order_status_authorize>processing</order_status_authorize>
+                <order_status_capture>processing</order_status_capture>
+                <language>en-US</language>
+                <replace_illegal>1</replace_illegal>
+                <replacement_char>-</replacement_char>
+                <allowspecific>0</allowspecific>
+                <group>payex</group>
+            </payex_financing>
+            <payex_partpayment>
+                <active>1</active>
+                <model>PayEx\Payments\Model\Method\PartPayment</model>
+                <payment_action>authorize_capture</payment_action>
+                <title>PayEx Financing Credit Account</title>
+                <debug>1</debug>
+                <accountnumber>payex account number</accountnumber>
+                <encryptionkey>payex encryption key</encryptionkey>
+                <order_status_authorize>processing</order_status_authorize>
+                <order_status_capture>processing</order_status_capture>
+                <language>en-US</language>
+                <replace_illegal>1</replace_illegal>
+                <replacement_char>-</replacement_char>
+                <allowspecific>0</allowspecific>
+                <group>payex</group>
+            </payex_partpayment>
+            <payex_masterpass>
+                <active>1</active>
+                <model>PayEx\Payments\Model\Method\MasterPass</model>
+                <title>PayEx MasterPass</title>
+                <debug>1</debug>
+                <accountnumber>payex account number</accountnumber>
+                <encryptionkey>payex encryption key</encryptionkey>
+                <transactiontype>SALE</transactiontype>
+                <order_status_authorize>processing</order_status_authorize>
+                <order_status_capture>processing</order_status_capture>
+                <language>en-US</language>
+                <allowspecific>0</allowspecific>
+                <group>payex</group>
+            </payex_masterpass>
         </payment>
     </default>
 </config>

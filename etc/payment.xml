@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<payment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="../../../Magento/Payment/etc/payment.xsd">
+<payment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Payment:etc/payment.xsd">
     <groups>
         <group id="payex">
             <label>PayEx Payment Methods</label>
@@ -8,6 +7,21 @@
     </groups>
     <methods>
         <method name="payex_cc">
+            <allow_multiple_address>1</allow_multiple_address>
+        </method>
+        <method name="payex_bankdebit">
+            <allow_multiple_address>1</allow_multiple_address>
+        </method>
+        <method name="payex_swish">
+            <allow_multiple_address>1</allow_multiple_address>
+        </method>
+        <method name="payex_financing">
+            <allow_multiple_address>1</allow_multiple_address>
+        </method>
+        <method name="payex_partpayment">
+            <allow_multiple_address>1</allow_multiple_address>
+        </method>
+        <method name="payex_masterpass">
             <allow_multiple_address>1</allow_multiple_address>
         </method>
     </methods>

@@ -12,6 +12,7 @@ use Magento\Sales\Model\Order\Payment\Transaction;
  */
 class Data extends AbstractHelper
 {
+    const MODULE_NAME = 'PayEx_Payments';
 
     /**
      * @var \Magento\Framework\Encryption\EncryptorInterface
@@ -22,6 +23,11 @@ class Data extends AbstractHelper
      * @var \Magento\Payment\Model\Config
      */
     protected $_config;
+
+    /**
+     * @var \Magento\Framework\Module\ModuleListInterface
+     */
+    protected $_moduleList;
 
     /**
      * @var \Magento\Sales\Model\Order\Config
@@ -58,6 +64,7 @@ class Data extends AbstractHelper
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Framework\Encryption\EncryptorInterface $encryptor
      * @param \Magento\Payment\Model\Config $config
+     * @param \Magento\Framework\Module\ModuleListInterface $moduleList
      * @param \Magento\Sales\Model\Order\Config $orderConfig
      * @param \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory $orderStatusCollectionFactory
      * @param \Magento\Sales\Model\Service\InvoiceService $invoiceService
@@ -68,6 +75,7 @@ class Data extends AbstractHelper
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Framework\Encryption\EncryptorInterface $encryptor,
         \Magento\Payment\Model\Config $config,
+        \Magento\Framework\Module\ModuleListInterface $moduleList,
         \Magento\Sales\Model\Order\Config $orderConfig,
         \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory $orderStatusCollectionFactory,
         \Magento\Sales\Model\Service\InvoiceService $invoiceService,
@@ -78,6 +86,7 @@ class Data extends AbstractHelper
         parent::__construct($context);
         $this->_encryptor = $encryptor;
         $this->_config = $config;
+        $this->_moduleList = $moduleList;
         $this->_orderConfig = $orderConfig;
 
         $this->orderStatusCollectionFactory = $orderStatusCollectionFactory;
@@ -85,6 +94,16 @@ class Data extends AbstractHelper
         $this->invoiceSender = $invoiceSender;
 
         $this->taxHelper = $taxHelper;
+    }
+
+    /**
+     * Get Module Version
+     * @return string
+     */
+    public function getVersion()
+    {
+        return $this->_moduleList
+            ->getOne(self::MODULE_NAME)['setup_version'];
     }
 
     /**
@@ -145,6 +164,14 @@ class Data extends AbstractHelper
     {
         if (!$this->_px) {
             $this->_px = new Px();
+
+            // Set User Agent
+            $this->_px->setUserAgent(sprintf("PayEx.Ecommerce.Php/%s PHP/%s Magento/%s PayEx.Magento2/%s",
+                \PayEx\Px::VERSION,
+                phpversion(),
+                \Magento\Framework\AppInterface::VERSION,
+                $this->getVersion()
+            ));
         }
 
         return $this->_px;
@@ -496,7 +523,7 @@ class Data extends AbstractHelper
         $transaction = null;
 
         /* Transaction statuses: 0=Sale, 1=Initialize, 2=Credit, 3=Authorize, 4=Cancel, 5=Failure, 6=Capture */
-        $transaction_status = isset($details['transactionStatus']) ? (int)$details['transactionStatus'] : null;
+        $transaction_status = !empty($details['transactionStatus']) ? (int)$details['transactionStatus'] : 'undefined';
         switch ($transaction_status) {
             case 1:
                 // From PayEx PIM:
@@ -576,5 +603,134 @@ class Data extends AbstractHelper
 
         // Use en-US as default language
         return 'en-US';
+    }
+
+    /**
+     * Generate Invoice Print XML for Financing Invoice/PartPayment
+     * @param \Magento\Sales\Model\Order $order
+     * @return array
+     */
+    public function getInvoiceExtraPrintBlocksXML(\Magento\Sales\Model\Order $order) {
+        $lines = $this->getOrderItems($order);
+
+        // Replace illegal characters of product names
+        $replace_illegal = $order->getPayment()->getMethodInstance()->getConfigData('replace_illegal', $order->getStoreId());
+        if ($replace_illegal) {
+            $replacement_char = $order->getPayment()->getMethodInstance()->getConfigData('replacement_char', $order->getStoreId());
+            if (empty($replacement_char)) {
+                $replacement_char = '-';
+            }
+
+            $lines = array_map(function($value) use($replacement_char) {
+                if (isset($value['name'])) {
+                    mb_regex_encoding('utf-8');
+                    $value['name'] = mb_ereg_replace('[^a-zA-Z0-9_:!#=?\[\]@{}´ %-\/À-ÖØ-öø-ú]', $replacement_char, $value['name']);
+                }
+                return $value;
+            }, $lines);
+        }
+
+        $dom = new \DOMDocument('1.0', 'utf-8');
+        $OnlineInvoice = $dom->createElement('OnlineInvoice');
+        $dom->appendChild($OnlineInvoice);
+        $OnlineInvoice->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+        $OnlineInvoice->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsd', 'http://www.w3.org/2001/XMLSchema');
+
+        $OrderLines = $dom->createElement('OrderLines');
+        $OnlineInvoice->appendChild($OrderLines);
+
+        // Add Order Lines
+        foreach ($lines as $line) {
+            $OrderLine = $dom->createElement('OrderLine');
+            $OrderLine->appendChild($dom->createElement('Product', $line['name']));
+            $OrderLine->appendChild($dom->createElement('Qty', $line['qty']));
+            $OrderLine->appendChild($dom->createElement('UnitPrice', sprintf("%.2f", $line['price_without_tax'] / $line['qty'])));
+            $OrderLine->appendChild($dom->createElement('VatRate', sprintf("%.2f", $line['tax_percent'])));
+            $OrderLine->appendChild($dom->createElement('VatAmount', sprintf("%.2f", $line['tax_price'])));
+            $OrderLine->appendChild($dom->createElement('Amount', sprintf("%.2f", $line['price_with_tax'])));
+            $OrderLines->appendChild($OrderLine);
+        }
+
+        return str_replace("\n", '', $dom->saveXML());
+    }
+
+    /**
+     * Get Shopping Cart XML for MasterPass
+     * @param \Magento\Sales\Model\Order $order
+     * @return string
+     */
+    public function getOrderShoppingCartXML(\Magento\Sales\Model\Order $order) {
+        /** @var \Magento\Framework\ObjectManagerInterface $om */
+        $om = \Magento\Framework\App\ObjectManager::getInstance();
+
+        /** @var \Magento\Catalog\Helper\Image $imageHelper */
+        $imageHelper = $om->get('Magento\Catalog\Helper\Image');
+
+        $dom = new \DOMDocument('1.0', 'utf-8');
+        $ShoppingCart = $dom->createElement('ShoppingCart');
+        $dom->appendChild($ShoppingCart);
+
+        $currency = $order->getOrderCurrencyCode();
+
+        $ShoppingCart->appendChild($dom->createElement('CurrencyCode', $currency));
+        $ShoppingCart->appendChild($dom->createElement('Subtotal', (int)(100 * $order->getGrandTotal())));
+
+        // Add Order Lines
+        $items = $order->getAllVisibleItems();
+        /** @var \Magento\Sales\Model\Order\Item $item */
+        foreach ($items as $item) {
+            $product = $item->getProduct();
+            $qty = $item->getQtyOrdered();
+            $image = $imageHelper->init($product, 'category_page_list')->getUrl();
+
+            $ShoppingCartItem = $dom->createElement('ShoppingCartItem');
+            $ShoppingCartItem->appendChild($dom->createElement('Description', $item->getName()));
+            $ShoppingCartItem->appendChild($dom->createElement('Quantity', (float)$qty));
+            $ShoppingCartItem->appendChild($dom->createElement('Value', (int)bcmul($product->getFinalPrice(), 100)));
+            $ShoppingCartItem->appendChild($dom->createElement('ImageURL', $image));
+            $ShoppingCart->appendChild($ShoppingCartItem);
+        }
+
+        return str_replace("\n", '', $dom->saveXML());
+    }
+
+    /**
+     * Get Shopping Cart XML for MasterPass
+     * @param \Magento\Quote\Model\Quote $quote
+     * @return mixed
+     */
+    public function getQuteShoppingCartXML(\Magento\Quote\Model\Quote $quote) {
+        /** @var \Magento\Framework\ObjectManagerInterface $om */
+        $om = \Magento\Framework\App\ObjectManager::getInstance();
+
+        /** @var \Magento\Catalog\Helper\Image $imageHelper */
+        $imageHelper = $om->get('Magento\Catalog\Helper\Image');
+
+        $dom = new \DOMDocument('1.0', 'utf-8');
+        $ShoppingCart = $dom->createElement('ShoppingCart');
+        $dom->appendChild($ShoppingCart);
+
+        $currency = $quote->getQuoteCurrencyCode();
+
+        $ShoppingCart->appendChild($dom->createElement('CurrencyCode', $currency));
+        $ShoppingCart->appendChild($dom->createElement('Subtotal', (int)(100 * $quote->getGrandTotal())));
+
+        // Add Order Lines
+        $items = $quote->getAllVisibleItems();
+        /** @var \Magento\Quote\Model\Quote\Item $item */
+        foreach ($items as $item) {
+            $product = $item->getProduct();
+            $qty = $item->getQty();
+            $image = $imageHelper->init($product, 'category_page_list')->getUrl();
+
+            $ShoppingCartItem = $dom->createElement('ShoppingCartItem');
+            $ShoppingCartItem->appendChild($dom->createElement('Description', $item->getName()));
+            $ShoppingCartItem->appendChild($dom->createElement('Quantity', (float)$qty));
+            $ShoppingCartItem->appendChild($dom->createElement('Value', (int)bcmul($product->getFinalPrice(), 100)));
+            $ShoppingCartItem->appendChild($dom->createElement('ImageURL', $image));
+            $ShoppingCart->appendChild($ShoppingCartItem);
+        }
+
+        return str_replace("\n", '', $dom->saveXML());
     }
 }

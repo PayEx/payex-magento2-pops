@@ -157,16 +157,8 @@ class Index extends \Magento\Framework\App\Action\Action
         $logger->info('OrderId', [$order_id]);
 
         // Get Order Status from External Payment Module
-        switch ($payment_method_code) {
-            case 'payex_bankdebit':
-                $order_status_authorize = $payment_method->getConfigData('order_status');
-                $order_status_capture = $payment_method->getConfigData('order_status');
-                break;
-            default:
-                $order_status_authorize = $payment_method->getConfigData('order_status_authorize');
-                $order_status_capture = $payment_method->getConfigData('order_status_capture');
-                break;
-        }
+        $order_status_authorize = $payment_method->getConfigData('order_status_authorize');
+        $order_status_capture = $payment_method->getConfigData('order_status_capture');
 
         // Register Transaction
         $order->getPayment()->setTransactionId($transactionId);

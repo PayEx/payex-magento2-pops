@@ -19,7 +19,7 @@ define(
                 template: 'PayEx_Payments/payment/cc'
             },
             /** Redirect to PayEx */
-            redirectToPayEx: function () {
+            continueToPayEx: function () {
                 //update payment method information if additional data was changed
                 this.selectPaymentMethod();
                 setPaymentMethodAction();

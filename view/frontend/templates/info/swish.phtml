@@ -1,0 +1,13 @@
+<?php
+// @codingStandardsIgnoreFile
+/**
+ * @var $block \PayEx\Payments\Block\Info\Swish
+ */
+?>
+<?php
+$_info = $block->getInfo();
+?>
+
+<dl class="payment-method payex_swish">
+        <?php echo $block->escapeHtml($block->getMethod()->getTitle()) ?><br/>
+</dl>

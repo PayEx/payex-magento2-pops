@@ -1,0 +1,10 @@
+<?php /** @var $block \PayEx\Payments\Block\MasterPass\Button */ ?>
+<div class="masterpass">
+    <a href="<?php echo $block->getCheckoutUrl(); ?>" class="payex-masterpass-button">
+        <img src="<?php echo $block->getImageUrl(); ?>" title="<?php echo __('Buy with MasterPass'); ?>" alt="<?php echo __('Buy with MasterPass'); ?>" />
+    </a>
+    <br />
+    <a target="_blank" href="<?php echo $block->getReadMoreUrl(); ?>" rel="external noopener nofollow" class="read_more">
+        <small><?php echo __('Read more'); ?></small>
+    </a>
+</div>

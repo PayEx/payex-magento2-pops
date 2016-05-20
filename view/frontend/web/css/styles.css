@@ -1,6 +1,35 @@
-.checkout-payment-method .payment-method-title label div.payex-logo {
+.checkout-payment-method .payment-method-title label div.payex-logo.payex_cc,
+.checkout-payment-method .payment-method-title label div.payex-logo.payex_bankdebit {
     display: inline-block;
     background: url(../images/payex-small.gif) no-repeat;
     width: 82px;
     height: 39px;
+}
+
+.checkout-payment-method .payment-method-title label div.payex-logo.payex_swish {
+    display: inline-block;
+    background: url(../images/swish.png) no-repeat;
+    width: 40px;
+    height: 40px;
+}
+
+.checkout-payment-method .payment-method-title label div.payex-logo.payex_financing {
+    display: inline-block;
+    background: url(../images/financing-logo.gif) no-repeat;
+    width: 82px;
+    height: 54px;
+}
+
+.checkout-payment-method .payment-method-title label div.payex-logo.payex_partpayment {
+    display: inline-block;
+    background: url(../images/partpayment-logo.gif) no-repeat;
+    width: 84px;
+    height: 55px;
+}
+
+.checkout-payment-method .payment-method-title label div.payex-logo.payex_masterpass {
+    display: inline-block;
+    background: url(../images/masterpass-logo.png) no-repeat;
+    width: 88px;
+    height: 55px;
 }

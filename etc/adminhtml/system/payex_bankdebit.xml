@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="payex_bankdebit" translate="label" type="text" sortOrder="101" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label><![CDATA[PayEx Bank Debit]]></label>
+        <frontend_model>Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Payment</frontend_model>
+        <fieldset_css>payex-method-payex-bankdebit</fieldset_css>
+        <comment><![CDATA[Direct Bank Debit payment method offers online access to bank accounts upon payment. Direct Bank Debit transactions requires authentication of account holder by their bank.]]></comment>
+        <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enabled</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/payex_bankdebit/active</config_path>
+        </field>
+        <field id="title" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Title</label>
+            <config_path>payment/payex_bankdebit/title</config_path>
+        </field>
+
+        <field id="sort_order" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Sort Order</label>
+            <frontend_class>validate-number</frontend_class>
+            <config_path>payment/payex_bankdebit/sort_order</config_path>
+        </field>
+
+        <field id="debug" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enable test mode</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        </field>
+
+        <field id="accountnumber" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Account Number</label>
+            <config_path>payment/payex_bankdebit/accountnumber</config_path>
+        </field>
+
+        <field id="encryptionkey" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Encryption Key</label>
+            <config_path>payment/payex_bankdebit/encryptionkey</config_path>
+        </field>
+
+        <field id="order_status_capture" translate="label" type="select" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Order status (for capture)</label>
+            <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+            <config_path>payment/payex_bankdebit/order_status_capture</config_path>
+        </field>
+
+        <field id="banks" translate="label" type="multiselect" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Available banks</label>
+            <source_model>PayEx\Payments\Model\Config\Source\Banks</source_model>
+            <config_path>payment/payex_bankdebit/banks</config_path>
+        </field>
+
+        <field id="responsive" translate="label" type="select" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enable Responsive Skinning</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/payex_bankdebit/responsive</config_path>
+        </field>
+
+        <field id="checkoutinfo" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Send order lines and billing/delivery addresses to PayEx</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/payex_bankdebit/checkoutinfo</config_path>
+        </field>
+
+        <field id="language" translate="label" type="select" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Client language</label>
+            <source_model>PayEx\Payments\Model\Config\Source\Language</source_model>
+            <config_path>payment/payex_bankdebit/language</config_path>
+        </field>
+
+        <group id="payex_bankdebit_country_specific" translate="label" showInDefault="1" showInWebsite="1" sortOrder="20">
+            <label>Country Specific Settings</label>
+            <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+            <field id="allowspecific" translate="label" type="allowspecific" sortOrder="21" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Payment from Applicable Countries</label>
+                <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                <config_path>payment/payex_bankdebit/allowspecific</config_path>
+            </field>
+            <field id="specificcountry" translate="label" type="multiselect" sortOrder="22" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Payment from Specific Countries</label>
+                <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                <can_be_empty>1</can_be_empty>
+                <config_path>payment/payex_bankdebit/specificcountry</config_path>
+            </field>
+        </group>
+    </group>
+</include>
