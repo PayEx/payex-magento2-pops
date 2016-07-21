@@ -4,6 +4,7 @@ namespace PayEx\Payments\Model\Method;
 
 use Magento\Framework\DataObject;
 use \Magento\Framework\Exception\LocalizedException;
+use Magento\Quote\Api\Data\PaymentInterface;
 
 /**
  * Class Financing
@@ -121,9 +122,15 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
             $data = new \Magento\Framework\DataObject($data);
         }
 
+        $additionalData = $data->getData(PaymentInterface::KEY_ADDITIONAL_DATA);
+        if (!is_object($additionalData)) {
+            $additionalData = new DataObject($additionalData ?: []);
+        }
+
         /** @var \Magento\Quote\Model\Quote\Payment $info */
         $info = $this->getInfoInstance();
-        $info->setSocialSecurityNumber($data->getSocialSecurityNumber());
+        $info->setSocialSecurityNumber($additionalData->getSocialSecurityNumber());
+
         return $this;
     }
 
