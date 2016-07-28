@@ -318,6 +318,24 @@ class Data extends AbstractHelper
             ];
         }
 
+        // add Payment Fee
+        if ($order->getPayexPaymentFee() > 0) {
+            $feeExclTax = $order->getPayexPaymentFee();
+            $feeTax = $order->getPayexPaymentFeeTax();
+            $feeIncTax = $feeExclTax + $feeTax;
+            $feeTaxRate = $feeExclTax > 0 ? (($feeIncTax / $feeExclTax) - 1) * 100 : 0;
+
+            $lines[] = [
+                'type' => 'fee',
+                'name' => __('Payment Fee'),
+                'qty' => 1,
+                'price_with_tax' => $feeIncTax,
+                'price_without_tax' => $feeExclTax,
+                'tax_price' => $feeTax,
+                'tax_percent' => $feeTaxRate
+            ];
+        }
+
         return $lines;
     }
 
@@ -732,5 +750,50 @@ class Data extends AbstractHelper
         }
 
         return str_replace("\n", '', $dom->saveXML());
+    }
+
+    /**
+     * Calculate Payment Fee Price
+     * @param float $fee
+     * @param int $tax_class
+     * @return \Magento\Framework\DataObject
+     */
+    public function getPaymentFeePrice($fee, $tax_class)
+    {
+        /** @var \Magento\Framework\ObjectManagerInterface $om */
+        $om = \Magento\Framework\App\ObjectManager::getInstance();
+
+        /** @var \Magento\Checkout\Model\Session $session */
+        $session = $om->get('Magento\Checkout\Model\Session');
+
+        /** @var \Magento\Quote\Model\Quote $quote */
+        $quote = $session->getQuote();
+
+        /** @var \Magento\Tax\Model\Calculation $calculationTool */
+        $calculationTool = $om->get('Magento\Tax\Model\Calculation');
+
+        // Get Tax Rate
+        /** @var \Magento\Framework\DataObject $request */
+        $request = $calculationTool->getRateRequest(
+            $quote->getShippingAddress(),
+            $quote->getBillingAddress(),
+            $quote->getCustomerTaxClassId(),
+            $quote->getStore()
+        );
+
+        $taxRate = $calculationTool->getRate($request->setProductClassId($tax_class));
+        $priceIncludeTax = $this->taxHelper->priceIncludesTax($quote->getStore());
+        $taxAmount = $calculationTool->calcTaxAmount($fee, $taxRate, $priceIncludeTax, true);
+        if ($priceIncludeTax) {
+            $fee -= $taxAmount;
+        }
+
+        $result = new \Magento\Framework\DataObject;
+        $result->setPaymentFeeExclTax($fee)
+            ->setPaymentFeeInclTax($fee + $taxAmount)
+            ->setPaymentFeeTax($taxAmount)
+            ->setRateRequest($request);
+
+        return $result;
     }
 }

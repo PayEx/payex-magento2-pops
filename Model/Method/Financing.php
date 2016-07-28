@@ -308,7 +308,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
             throw new LocalizedException(__('Error: Transaction failed'));
         }
 
-        if ($result['transactionStatus']) {
+        if (empty($result['transactionStatus'])) {
             throw new LocalizedException(__('Error: No transactionsStatus in response'));
         }
 
@@ -431,8 +431,6 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
      */
     public function capture(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
-        parent::capture($payment, $amount);
-
         if ($amount <= 0) {
             throw new \Magento\Framework\Exception\LocalizedException(__('Invalid amount for capture.'));
         }
