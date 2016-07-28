@@ -60,6 +60,11 @@ class Data extends AbstractHelper
     protected $taxHelper;
 
     /**
+     * @var \Magento\Framework\App\ProductMetadata
+     */
+    protected $productMetadata;
+
+    /**
      * Data constructor.
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Framework\Encryption\EncryptorInterface $encryptor
@@ -70,6 +75,7 @@ class Data extends AbstractHelper
      * @param \Magento\Sales\Model\Service\InvoiceService $invoiceService
      * @param \Magento\Sales\Model\Order\Email\Sender\InvoiceSender $invoiceSender
      * @param \Magento\Tax\Helper\Data $taxHelper
+     * @param \Magento\Framework\App\ProductMetadata $productMetadata
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
@@ -80,7 +86,8 @@ class Data extends AbstractHelper
         \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory $orderStatusCollectionFactory,
         \Magento\Sales\Model\Service\InvoiceService $invoiceService,
         \Magento\Sales\Model\Order\Email\Sender\InvoiceSender $invoiceSender,
-        \Magento\Tax\Helper\Data $taxHelper
+        \Magento\Tax\Helper\Data $taxHelper,
+        \Magento\Framework\App\ProductMetadata $productMetadata
     )
     {
         parent::__construct($context);
@@ -94,6 +101,7 @@ class Data extends AbstractHelper
         $this->invoiceSender = $invoiceSender;
 
         $this->taxHelper = $taxHelper;
+        $this->productMetadata = $productMetadata;
     }
 
     /**
@@ -169,7 +177,7 @@ class Data extends AbstractHelper
             $this->_px->setUserAgent(sprintf("PayEx.Ecommerce.Php/%s PHP/%s Magento/%s PayEx.Magento2/%s",
                 \PayEx\Px::VERSION,
                 phpversion(),
-                \Magento\Framework\AppInterface::VERSION,
+                $this->productMetadata->getVersion(),
                 $this->getVersion()
             ));
         }
