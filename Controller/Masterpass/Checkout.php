@@ -41,7 +41,6 @@ class Checkout extends \Magento\Framework\App\Action\Action
     /**
      * Success constructor.
      * @param \Magento\Framework\App\Action\Context $context
-     * @param \Magento\Framework\UrlInterface $urlBuilder
      * @param \Magento\Checkout\Model\Session $session
      * @param \PayEx\Payments\Helper\Data $payexHelper
      * @param \PayEx\Payments\Logger\Logger $payexLogger
@@ -49,7 +48,6 @@ class Checkout extends \Magento\Framework\App\Action\Action
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\UrlInterface $urlBuilder,
         \Magento\Checkout\Model\Session $session,
         \PayEx\Payments\Helper\Data $payexHelper,
         \PayEx\Payments\Logger\Logger $payexLogger,
@@ -59,7 +57,7 @@ class Checkout extends \Magento\Framework\App\Action\Action
     {
         parent::__construct($context);
 
-        $this->urlBuilder = $urlBuilder;
+        $this->urlBuilder = $context->getUrl();
         $this->session = $session;
         $this->payexHelper = $payexHelper;
         $this->payexLogger = $payexLogger;

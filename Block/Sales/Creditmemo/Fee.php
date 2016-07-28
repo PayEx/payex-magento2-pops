@@ -22,19 +22,17 @@ class Fee extends Template
      * Fee constructor.
      * @param Template\Context $context
      * @param array $data
-     * @param ScopeConfigInterface $scopeConfig
      * @param Config $feeConfig
      */
     public function __construct(
         Template\Context $context,
         array $data,
-        ScopeConfigInterface $scopeConfig,
         Config $feeConfig
     )
     {
         parent::__construct($context, $data);
 
-        $this->scopeConfig = $scopeConfig;
+        $this->scopeConfig = $context->getScopeConfig();
         $this->feeConfig = $feeConfig;
     }
 
