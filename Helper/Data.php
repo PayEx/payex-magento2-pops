@@ -60,6 +60,11 @@ class Data extends AbstractHelper
     protected $taxHelper;
 
     /**
+     * @var \Magento\Framework\App\ProductMetadata
+     */
+    protected $productMetadata;
+
+    /**
      * Data constructor.
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Framework\Encryption\EncryptorInterface $encryptor
@@ -70,6 +75,7 @@ class Data extends AbstractHelper
      * @param \Magento\Sales\Model\Service\InvoiceService $invoiceService
      * @param \Magento\Sales\Model\Order\Email\Sender\InvoiceSender $invoiceSender
      * @param \Magento\Tax\Helper\Data $taxHelper
+     * @param \Magento\Framework\App\ProductMetadata $productMetadata
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
@@ -80,7 +86,8 @@ class Data extends AbstractHelper
         \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory $orderStatusCollectionFactory,
         \Magento\Sales\Model\Service\InvoiceService $invoiceService,
         \Magento\Sales\Model\Order\Email\Sender\InvoiceSender $invoiceSender,
-        \Magento\Tax\Helper\Data $taxHelper
+        \Magento\Tax\Helper\Data $taxHelper,
+        \Magento\Framework\App\ProductMetadata $productMetadata
     )
     {
         parent::__construct($context);
@@ -94,6 +101,7 @@ class Data extends AbstractHelper
         $this->invoiceSender = $invoiceSender;
 
         $this->taxHelper = $taxHelper;
+        $this->productMetadata = $productMetadata;
     }
 
     /**
@@ -169,7 +177,7 @@ class Data extends AbstractHelper
             $this->_px->setUserAgent(sprintf("PayEx.Ecommerce.Php/%s PHP/%s Magento/%s PayEx.Magento2/%s",
                 \PayEx\Px::VERSION,
                 phpversion(),
-                \Magento\Framework\AppInterface::VERSION,
+                $this->productMetadata->getVersion(),
                 $this->getVersion()
             ));
         }
@@ -315,6 +323,24 @@ class Data extends AbstractHelper
                 'price_without_tax' => -1 * $discountExclTax,
                 'tax_price' => -1 * $discountVatAmount,
                 'tax_percent' => $discountVatPercent
+            ];
+        }
+
+        // add Payment Fee
+        if ($order->getPayexPaymentFee() > 0) {
+            $feeExclTax = $order->getPayexPaymentFee();
+            $feeTax = $order->getPayexPaymentFeeTax();
+            $feeIncTax = $feeExclTax + $feeTax;
+            $feeTaxRate = $feeExclTax > 0 ? (($feeIncTax / $feeExclTax) - 1) * 100 : 0;
+
+            $lines[] = [
+                'type' => 'fee',
+                'name' => __('Payment Fee'),
+                'qty' => 1,
+                'price_with_tax' => $feeIncTax,
+                'price_without_tax' => $feeExclTax,
+                'tax_price' => $feeTax,
+                'tax_percent' => $feeTaxRate
             ];
         }
 
@@ -732,5 +758,50 @@ class Data extends AbstractHelper
         }
 
         return str_replace("\n", '', $dom->saveXML());
+    }
+
+    /**
+     * Calculate Payment Fee Price
+     * @param float $fee
+     * @param int $tax_class
+     * @return \Magento\Framework\DataObject
+     */
+    public function getPaymentFeePrice($fee, $tax_class)
+    {
+        /** @var \Magento\Framework\ObjectManagerInterface $om */
+        $om = \Magento\Framework\App\ObjectManager::getInstance();
+
+        /** @var \Magento\Checkout\Model\Session $session */
+        $session = $om->get('Magento\Checkout\Model\Session');
+
+        /** @var \Magento\Quote\Model\Quote $quote */
+        $quote = $session->getQuote();
+
+        /** @var \Magento\Tax\Model\Calculation $calculationTool */
+        $calculationTool = $om->get('Magento\Tax\Model\Calculation');
+
+        // Get Tax Rate
+        /** @var \Magento\Framework\DataObject $request */
+        $request = $calculationTool->getRateRequest(
+            $quote->getShippingAddress(),
+            $quote->getBillingAddress(),
+            $quote->getCustomerTaxClassId(),
+            $quote->getStore()
+        );
+
+        $taxRate = $calculationTool->getRate($request->setProductClassId($tax_class));
+        $priceIncludeTax = $this->taxHelper->priceIncludesTax($quote->getStore());
+        $taxAmount = $calculationTool->calcTaxAmount($fee, $taxRate, $priceIncludeTax, true);
+        if ($priceIncludeTax) {
+            $fee -= $taxAmount;
+        }
+
+        $result = new \Magento\Framework\DataObject;
+        $result->setPaymentFeeExclTax($fee)
+            ->setPaymentFeeInclTax($fee + $taxAmount)
+            ->setPaymentFeeTax($taxAmount)
+            ->setRateRequest($request);
+
+        return $result;
     }
 }

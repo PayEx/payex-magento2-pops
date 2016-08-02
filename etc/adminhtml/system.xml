@@ -16,5 +16,22 @@
                 <include path="PayEx_Payments::system/payex_masterpass.xml"/>
             </group>
         </section>
+
+        <section id="tax" translate="label" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="cart_display">
+                <field id="payex_fee" translate="label" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display PayEx fee</label>
+                    <source_model>Magento\Tax\Model\System\Config\Source\Tax\Display\Type</source_model>
+                    <backend_model>Magento\Tax\Model\Config\Notification</backend_model>
+                </field>
+            </group>
+            <group id="sales_display">
+                <field id="payex_fee" translate="label" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display PayEx fee</label>
+                    <source_model>Magento\Tax\Model\System\Config\Source\Tax\Display\Type</source_model>
+                    <backend_model>Magento\Tax\Model\Config\Notification</backend_model>
+                </field>
+            </group>
+        </section>
     </system>
 </config>

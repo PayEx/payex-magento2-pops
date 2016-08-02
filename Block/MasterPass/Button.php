@@ -22,20 +22,18 @@ class Button extends Template
     /**
      * Constructor
      * @param Template\Context $context
-     * @param \Magento\Framework\UrlInterface $urlBuilder
      * @param \Magento\Framework\Locale\Resolver $localeResolver
      * @param array $data
      */
     public function __construct(
         Template\Context $context,
-        \Magento\Framework\UrlInterface $urlBuilder,
         \Magento\Framework\Locale\Resolver $localeResolver,
         array $data = []
     )
     {
         parent::__construct($context, $data);
 
-        $this->urlBuilder = $urlBuilder;
+        $this->urlBuilder = $context->getUrlBuilder();
         $this->localeResolver = $localeResolver;
     }
 

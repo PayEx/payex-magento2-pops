@@ -60,6 +60,8 @@
                 <order_status_authorize>processing</order_status_authorize>
                 <order_status_capture>processing</order_status_capture>
                 <language>en-US</language>
+                <paymentfee>0</paymentfee>
+                <paymentfee_tax_class>0</paymentfee_tax_class>
                 <replace_illegal>1</replace_illegal>
                 <replacement_char>-</replacement_char>
                 <allowspecific>0</allowspecific>
@@ -76,6 +78,8 @@
                 <order_status_authorize>processing</order_status_authorize>
                 <order_status_capture>processing</order_status_capture>
                 <language>en-US</language>
+                <paymentfee>0</paymentfee>
+                <paymentfee_tax_class>0</paymentfee_tax_class>
                 <replace_illegal>1</replace_illegal>
                 <replacement_char>-</replacement_char>
                 <allowspecific>0</allowspecific>
@@ -96,5 +100,14 @@
                 <group>payex</group>
             </payex_masterpass>
         </payment>
+
+        <tax>
+            <cart_display>
+                <payex_fee>3</payex_fee>
+            </cart_display>
+            <sales_display>
+                <payex_fee>3</payex_fee>
+            </sales_display>
+        </tax>
     </default>
 </config>

@@ -59,13 +59,25 @@
             <config_path>payment/payex_financing/language</config_path>
         </field>
 
-        <field id="replace_illegal" translate="label" type="select" sortOrder="14" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="paymentfee" translate="label" type="text" sortOrder="14" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Payment fee</label>
+            <frontend_class>validate-number</frontend_class>
+            <config_path>payment/payex_financing/paymentfee</config_path>
+        </field>
+
+        <field id="paymentfee_tax_class" translate="label" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Tax Class for Payment fee</label>
+            <source_model>PayEx\Payments\Model\Config\Source\TaxClass</source_model>
+            <config_path>payment/payex_financing/paymentfee_tax_class</config_path>
+        </field>
+
+        <field id="replace_illegal" translate="label" type="select" sortOrder="16" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Replace illegal characters</label>
             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
             <config_path>payment/payex_financing/replace_illegal</config_path>
         </field>
 
-        <field id="replacement_char" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="replacement_char" translate="label" type="text" sortOrder="17" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Enter replacement char</label>
             <config_path>payment/payex_financing/replacement_char</config_path>
         </field>

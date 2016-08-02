@@ -4,8 +4,33 @@
         <css src="PayEx_Payments::css/masterpass.css"/>
     </head>
     <body>
+        <!-- MasterPass Button -->
         <referenceContainer name="checkout.cart.methods">
             <block class="PayEx\Payments\Block\MasterPass\Button" name="payex.masterpass.button.cart" template="masterpass/button.phtml" ifconfig="payment/payex_masterpass/active" />
         </referenceContainer>
+
+        <!-- Payment Fee -->
+        <referenceBlock name="checkout.cart.totals">
+            <arguments>
+                <argument name="jsLayout" xsi:type="array">
+                    <item name="components" xsi:type="array">
+                        <item name="block-totals" xsi:type="array">
+                            <item name="children" xsi:type="array">
+                                <item name="payex_payment_fee" xsi:type="array">
+                                    <item name="component" xsi:type="string">PayEx_Payments/js/view/checkout/cart/totals/fee</item>
+                                    <item name="sortOrder" xsi:type="string">20</item>
+                                    <item name="config" xsi:type="array">
+                                        <item name="template" xsi:type="string">PayEx_Payments/checkout/cart/totals/fee</item>
+                                        <item name="title" xsi:type="string" translate="true">Payment Fee</item>
+                                        <item name="excludingTaxMessage" xsi:type="string" translate="true">(Excl. Tax)</item>
+                                        <item name="includingTaxMessage" xsi:type="string" translate="true">(Incl. Tax)</item>
+                                    </item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </argument>
+            </arguments>
+        </referenceBlock>
     </body>
 </page>
