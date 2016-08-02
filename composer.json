@@ -21,7 +21,6 @@
     "magento/module-directory": "100.*.*",
     "magento/module-theme": "100.*.*",
     "magento/framework": "100.*.*",
-    "magento/magento-composer-installer": "*",
     "payex/php-api": "~1.0.1"
   },
   "autoload": {
