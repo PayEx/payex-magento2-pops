@@ -1,3 +1,7 @@
+Version 1.0.1
+* Payment Fee for Financing Invoice / PartPayment
+* Bugfixes
+
 Version 1.0.0
 * First release of Magento 2 Payment Extension
 * Implemented Credit Card method
