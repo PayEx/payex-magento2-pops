@@ -819,4 +819,13 @@ class Data extends AbstractHelper
 
         return new \FullNameParser();
     }
+
+    /**
+     * Get Magento Version
+     * @return string
+     */
+    public function getMageVersion()
+    {
+        return $this->productMetadata->getVersion();
+    }
 }

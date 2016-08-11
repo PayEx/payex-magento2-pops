@@ -131,6 +131,11 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
         $info = $this->getInfoInstance();
         $info->setSocialSecurityNumber($additionalData->getSocialSecurityNumber());
 
+        // Failback
+        if (version_compare($this->payexHelper->getMageVersion(), '2.0.2', '<=')) {
+            $info->setSocialSecurityNumber($data->getSocialSecurityNumber());
+        }
+
         return $this;
     }
 
