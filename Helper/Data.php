@@ -804,4 +804,19 @@ class Data extends AbstractHelper
 
         return $result;
     }
+
+    /**
+     * Get Name Parser Instance
+     * @see https://github.com/joshfraser/PHP-Name-Parser
+     * @return \FullNameParser
+     * @throws \Exception
+     */
+    public function getNameParser()
+    {
+        if (!class_exists('FullNameParser', false)) {
+            throw new \Exception('Missing PHP-Name-Parser library. Please install from https://github.com/joshfraser/PHP-Name-Parser');
+        }
+
+        return new \FullNameParser();
+    }
 }

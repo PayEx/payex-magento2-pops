@@ -21,7 +21,8 @@
     "magento/module-directory": "100.*.*",
     "magento/module-theme": "100.*.*",
     "magento/framework": "100.*.*",
-    "payex/php-api": "~1.0.1"
+    "payex/php-api": "~1.0.1",
+    "aait/php-name-parser": "~1.0.0"
   },
   "autoload": {
     "files": [

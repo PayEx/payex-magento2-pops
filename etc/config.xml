@@ -109,5 +109,14 @@
                 <payex_fee>3</payex_fee>
             </sales_display>
         </tax>
+
+        <payex>
+            <ssn>
+                <active>0</active>
+                <debug>1</debug>
+                <accountnumber>payex account number</accountnumber>
+                <encryptionkey>payex encryption key</encryptionkey>
+            </ssn>
+        </payex>
     </default>
 </config>
