@@ -6,6 +6,7 @@ define([
     'PayEx_Payments/js/action/get-social-security-number'
 ], function (ko, Component, getSocialSecurityNumberAction) {
     'use strict';
+    var isEnabled = window.checkoutConfig.payexSSN.isEnabled;
 
     return Component.extend({
         defaults: {
@@ -14,6 +15,13 @@ define([
         initialize: function () {
             this._super();
             return this;
+        },
+
+        /**
+         * Is Displayed
+         */
+        isDisplayed: function () {
+            return isEnabled;
         },
 
         /**

@@ -112,7 +112,7 @@
 
         <payex>
             <ssn>
-                <active>0</active>
+                <enable>0</enable>
                 <debug>1</debug>
                 <accountnumber>payex account number</accountnumber>
                 <encryptionkey>payex encryption key</encryptionkey>
