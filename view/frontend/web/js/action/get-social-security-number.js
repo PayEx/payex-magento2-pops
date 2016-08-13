@@ -48,6 +48,11 @@ define(
                 $('[name="country_id"]', form).val(response.country);
                 $('[name="region_id"]', form).val('');
                 $(form).validation();
+
+                // Set Checkout Config value
+                if (window.checkoutConfig.hasOwnProperty('payexSSN')) {
+                    window.checkoutConfig.payexSSN.appliedSSN = ssn;
+                }
             });
         }
     }
