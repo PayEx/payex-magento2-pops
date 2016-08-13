@@ -46,6 +46,11 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
     protected $_canFetchTransactionInfo = true;
 
     /**
+     * @var \Magento\Checkout\Model\Session
+     */
+    protected $session;
+
+    /**
      * Constructor
      * @param \Magento\Framework\App\RequestInterface $request
      * @param \Magento\Framework\UrlInterface $urlBuilder
@@ -60,6 +65,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Payment\Model\Method\Logger $logger
      * @param \PayEx\Payments\Logger\Logger $payexLogger
+     * @param \Magento\Checkout\Model\Session $session
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -79,6 +85,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Payment\Model\Method\Logger $logger,
         \PayEx\Payments\Logger\Logger $payexLogger,
+        \Magento\Checkout\Model\Session $session,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -101,6 +108,8 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
             $resourceCollection,
             $data
         );
+
+        $this->session = $session;
 
         // Init PayEx Environment
         $accountnumber = $this->getConfigData('accountnumber');
@@ -158,6 +167,13 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
         $quote = $info->getQuote();
 
         if (!$quote) {
+            return $this;
+        }
+
+        // Check SSN is saved in session
+        $ssn = $this->session->getPayexSSN();
+        if (!empty($ssn)) {
+            $info->setAdditionalInformation('social_security_number', $ssn);
             return $this;
         }
 
@@ -359,6 +375,9 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
                 $stateObject->setState($status->getState());
                 $stateObject->setStatus($status->getStatus());
                 $stateObject->setIsNotified(true);
+
+                // Unset SSN
+                $this->session->unsPayexSSN();
                 break;
             case 0:
             case 6:
@@ -384,6 +403,9 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
                 $invoice = $this->payexHelper->makeInvoice($order, [], false, $message);
                 $invoice->setTransactionId($result['transactionNumber']);
                 $invoice->save();
+
+                // Unset SSN
+                $this->session->unsPayexSSN();
                 break;
             case 2:
             case 4:

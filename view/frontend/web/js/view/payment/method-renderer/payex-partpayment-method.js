@@ -15,6 +15,7 @@ define(
     ],
     function (ko, $, Component, placeOrderAction, $t, additionalValidators, setPaymentMethodAction, selectPaymentMethodAction, quote, checkoutData) {
         'use strict';
+        var appliedSSN = window.checkoutConfig.payexSSN.appliedSSN;
 
         return Component.extend({
             defaults: {
@@ -54,6 +55,20 @@ define(
                 }
                 return false;
             },
+
+            /**
+             * Is Applied SSN
+             */
+            isAppliedSSN: function() {
+                return !!appliedSSN;
+            },
+
+            /**
+             * Get Applied SSN
+             */
+            getAppliedSSN: function() {
+                return appliedSSN;
+            }
 
         });
     }

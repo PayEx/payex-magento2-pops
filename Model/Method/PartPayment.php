@@ -179,6 +179,9 @@ class PartPayment extends \PayEx\Payments\Model\Method\Financing
                 $stateObject->setState($status->getState());
                 $stateObject->setStatus($status->getStatus());
                 $stateObject->setIsNotified(true);
+
+                // Unset SSN
+                $this->session->unsPayexSSN();
                 break;
             case 0:
             case 6:
@@ -204,6 +207,9 @@ class PartPayment extends \PayEx\Payments\Model\Method\Financing
                 $invoice = $this->payexHelper->makeInvoice($order, [], false, $message);
                 $invoice->setTransactionId($result['transactionNumber']);
                 $invoice->save();
+
+                // Unset SSN
+                $this->session->unsPayexSSN();
                 break;
             case 2:
             case 4:
