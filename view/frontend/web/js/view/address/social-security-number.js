@@ -7,6 +7,7 @@ define([
 ], function (ko, Component, getSocialSecurityNumberAction) {
     'use strict';
     var isEnabled = window.checkoutConfig.payexSSN.isEnabled;
+    var appliedSSN = window.checkoutConfig.payexSSN.appliedSSN;
 
     return Component.extend({
         defaults: {
@@ -30,6 +31,20 @@ define([
         getAddress: function() {
             getSocialSecurityNumberAction();
             return this;
+        },
+
+        /**
+         * Is Applied SSN
+         */
+        isAppliedSSN: function() {
+            return !!appliedSSN;
+        },
+
+        /**
+         * Get Applied SSN
+         */
+        getAppliedSSN: function() {
+            return appliedSSN;
         }
     });
 });
