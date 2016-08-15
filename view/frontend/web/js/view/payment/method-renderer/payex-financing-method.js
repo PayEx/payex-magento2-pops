@@ -33,28 +33,6 @@ define(
                     }
                 };
             },
-            /**
-             * @override
-             */
-            placeOrder: function(data, event) {
-                var self = this,
-                    placeOrder;
-
-                if (event) {
-                    event.preventDefault();
-                }
-
-                if (this.validate() && additionalValidators.validate()) {
-                    //this.isPlaceOrderActionAllowed(false);
-                    placeOrder = placeOrderAction(this.getData(), this.redirectAfterPlaceOrder);
-
-                    $.when(placeOrder).fail(function(response) {
-                        //self.isPlaceOrderActionAllowed(true);
-                    });
-                    return true;
-                }
-                return false;
-            },
 
             /**
              * Is Applied SSN
