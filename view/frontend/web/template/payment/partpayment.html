@@ -29,7 +29,8 @@
                                     title: $t('Social Security Number'),
                                     'data-container': getCode() + '-social-security-number',
                                     'data-validate': JSON.stringify({'required-number':true})},
-                                    value: '' "/>
+                                    value: getAppliedSSN(),
+                                    disable: isAppliedSSN()" />
                 </div>
             </div>
         </fieldset>

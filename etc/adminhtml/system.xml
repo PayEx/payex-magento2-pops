@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
+        <tab id="payex" translate="label" sortOrder="110">
+            <label>PayEx</label>
+        </tab>
+
         <section id="payment">
             <group id="payex_payments" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>PayEx Payment Methods</label>
@@ -30,6 +34,34 @@
                     <label>Display PayEx fee</label>
                     <source_model>Magento\Tax\Model\System\Config\Source\Tax\Display\Type</source_model>
                     <backend_model>Magento\Tax\Model\Config\Notification</backend_model>
+                </field>
+            </group>
+        </section>
+
+        <section id="payex" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Social Security Number</label>
+            <tab>payex</tab>
+            <resource>PayEx_Payments::payex_settings</resource>
+            <group id="ssn" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label>PayEx Settings</label>
+                <field id="enable" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>payex/ssn/enable</config_path>
+                    <comment>Activate Social Security Number extension on Checkout page.</comment>
+                </field>
+                <field id="debug" translate="label comment" type="select" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Test mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>payex/ssn/debug</config_path>
+                </field>
+                <field id="accountnumber" translate="label comment" type="text" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Account Number</label>
+                    <config_path>payex/ssn/accountnumber</config_path>
+                </field>
+                <field id="encryptionkey" translate="label comment" type="text" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Encryption Key</label>
+                    <config_path>payex/ssn/encryptionkey</config_path>
                 </field>
             </group>
         </section>

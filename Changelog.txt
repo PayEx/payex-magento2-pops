@@ -1,3 +1,7 @@
+Version 1.0.2
+* Social Security Number addon
+* Compatibility Magento2 v2.1.0
+
 Version 1.0.1
 * Payment Fee for Financing Invoice / PartPayment
 * Bugfixes

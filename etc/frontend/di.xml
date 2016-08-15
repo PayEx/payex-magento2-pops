@@ -14,4 +14,11 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="payex_ssn_config_provider" xsi:type="object">PayEx\Payments\Model\SsnConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

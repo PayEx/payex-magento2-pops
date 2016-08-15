@@ -1,0 +1,22 @@
+<!-- ko if: isDisplayed() -->
+<div class="field">
+    <label class="label" for="customer-ssn">
+        <span data-bind="i18n: 'Social Security Number'"></span>
+    </label>
+    <div class="control _with-tooltip">
+        <input class="input-text"
+               type="text"
+               name="customer-ssn"
+               id="customer-ssn"
+               data-bind="value: getAppliedSSN()" />
+        <!-- ko template: 'ui/form/element/helper/tooltip' --><!-- /ko -->
+    </div>
+</div>
+<div class="field">
+    <button class="action primary checkout"
+            type="submit"
+            data-bind="click: getAddress">
+        <span data-bind="i18n: 'Get address'"></span>
+    </button>
+</div>
+<!-- /ko -->
