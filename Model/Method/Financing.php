@@ -121,14 +121,14 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
     /**
      * Assign data to info model instance
      *
-     * @param \Magento\Framework\DataObject|mixed $data
+     * @param DataObject|mixed $data
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function assignData(\Magento\Framework\DataObject $data)
+    public function assignData(DataObject $data)
     {
-        if (!$data instanceof \Magento\Framework\DataObject) {
-            $data = new \Magento\Framework\DataObject($data);
+        if (!$data instanceof DataObject) {
+            $data = new DataObject($data);
         }
 
         $additionalData = $data->getData(PaymentInterface::KEY_ADDITIONAL_DATA);

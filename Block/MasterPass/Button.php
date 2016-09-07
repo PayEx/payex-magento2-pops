@@ -65,7 +65,7 @@ class Button extends Template
         $iso_code = explode('_', $locale);
         $country_code = strtoupper($iso_code[0]);
 
-        $links = array(
+        $links = [
             'US' => 'https://www.mastercard.com/mc_us/wallet/learnmore/en/',
             'SE' => 'https://www.mastercard.com/mc_us/wallet/learnmore/se/',
             'NO' => 'https://www.mastercard.com/mc_us/wallet/learnmore/en/NO/',
@@ -75,7 +75,7 @@ class Button extends Template
             'FR' => 'https://www.mastercard.com/mc_us/wallet/learnmore/fr/FR/',
             'PL' => 'https://www.mastercard.com/mc_us/wallet/learnmore/pl/PL/',
             'CZ' => 'https://www.mastercard.com/mc_us/wallet/learnmore/cs/CZ/'
-        );
+        ];
 
         return isset($links[$country_code]) ? $links[$country_code] : $links['US'];
     }

@@ -72,7 +72,8 @@ class Success extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         // Check OrderRef
-        if (empty($_GET['orderRef'])) {
+        $orderRef = $this->getRequest()->getParam('orderRef');
+        if (empty($orderRef)) {
             $this->session->restoreQuote();
             $this->messageManager->addError(__('Order reference is empty'));
             $this->_redirect('checkout/cart');
@@ -104,7 +105,7 @@ class Success extends \Magento\Framework\App\Action\Action
         // Call PxOrder.FinalizeTransaction
         $params = [
             'accountNumber' => '',
-            'orderRef' => $_GET['orderRef'],
+            'orderRef' => $orderRef,
             'amount' => round($amount * 100),
             'vatAmount' => 0,
             'clientIPAddress' => $this->payexHelper->getRemoteAddr()
@@ -230,7 +231,9 @@ class Success extends \Magento\Framework\App\Action\Action
             case 4:
             case 5:
                 if ($transaction_status === 2) {
-                    $message = __('Detected an abnormal payment process (Transaction Status: %1).', $transaction_status);
+                    $message = __('Detected an abnormal payment process (Transaction Status: %1).',
+                        $transaction_status)
+                    ;
                 } elseif ($transaction_status === 4) {
                     $message = __('Order automatically canceled.');
                 } else {

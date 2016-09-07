@@ -99,7 +99,7 @@ class GetAddress extends \Magento\Framework\App\Action\Action
             ]);
         }
 
-        if (!in_array($country_code, array('SE', 'NO'))) {
+        if (!in_array($country_code, ['SE', 'NO'])) {
             /** @var \Magento\Framework\Controller\Result\Json $json */
             $json = $this->resultJsonFactory->create();
             return $json->setData([

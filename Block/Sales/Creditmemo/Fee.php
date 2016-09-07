@@ -5,6 +5,7 @@ namespace PayEx\Payments\Block\Sales\Creditmemo;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use PayEx\Payments\Model\Fee\Config;
+use Magento\Framework\DataObject;
 
 class Fee extends Template
 {
@@ -47,7 +48,7 @@ class Fee extends Template
         if ($source->getBasePayexPaymentFee() > 0) {
             if ($this->displaySalesFeeBoth()) {
                 $parent->addTotal(
-                    new \Magento\Framework\DataObject([
+                    new DataObject([
                         'code' => 'payex_payment_fee_with_tax',
                         'strong' => false,
                         'value' => $source->getPayexPaymentFee() + $source->getPayexPaymentFeeTax(),
@@ -57,7 +58,7 @@ class Fee extends Template
                 );
 
                 $parent->addTotal(
-                    new \Magento\Framework\DataObject([
+                    new DataObject([
                         'code' => 'payex_payment_fee',
                         'strong' => false,
                         'value' => $source->getPayexPaymentFee(),
@@ -65,11 +66,9 @@ class Fee extends Template
                     ]),
                     'payex_payment_fee_with_tax'
                 );
-
-
             } elseif ($this->displaySalesFeeInclTax()) {
                 $parent->addTotal(
-                    new \Magento\Framework\DataObject([
+                    new DataObject([
                         'code' => 'payex_payment_fee_with_tax',
                         'strong' => false,
                         'value' => $source->getPayexPaymentFee() + $source->getPayexPaymentFeeTax(),
@@ -79,7 +78,7 @@ class Fee extends Template
                 );
             } else {
                 $parent->addTotal(
-                    new \Magento\Framework\DataObject([
+                    new DataObject([
                         'code' => 'payex_payment_fee',
                         'strong' => false,
                         'value' => $source->getPayexPaymentFee(),

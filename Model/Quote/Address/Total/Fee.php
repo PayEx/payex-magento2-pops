@@ -257,7 +257,7 @@ class Fee extends AbstractTotal
                 $previouslyAppliedTaxes[$row['id']] = $row;
             }
 
-            if (!is_null($row['percent'])) {
+            if ($row['percent'] > 0) {
                 $row['percent'] = $row['percent'] ? $row['percent'] : 1;
                 $rate = $rate ? $rate : 1;
 

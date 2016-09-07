@@ -72,7 +72,8 @@ class Success extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         // Check OrderRef
-        if (empty($_GET['orderRef'])) {
+        $orderRef = $this->getRequest()->getParam('orderRef');
+        if (empty($orderRef)) {
             $this->session->restoreQuote();
             $this->messageManager->addError(__('Order reference is empty'));
             $this->_redirect('checkout/cart');
@@ -102,7 +103,7 @@ class Success extends \Magento\Framework\App\Action\Action
         // Call PxOrder.Complete
         $params = [
             'accountNumber' => '',
-            'orderRef' => $_GET['orderRef']
+            'orderRef' => $orderRef
         ];
         $details = $this->payexHelper->getPx()->Complete($params);
         $this->payexLogger->info('PxOrder.Complete', $details);

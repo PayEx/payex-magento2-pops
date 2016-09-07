@@ -109,7 +109,8 @@ class Checkout extends \Magento\Framework\App\Action\Action
         $operation = $method->getConfigData('transactiontype');
 
         // Get Additional Values
-        $additional = 'USEMASTERPASS=1&RESPONSIVE=1&SHOPPINGCARTXML=' . urlencode($this->payexHelper->getQuteShoppingCartXML($quote));
+        $additional = 'USEMASTERPASS=1&RESPONSIVE=1&SHOPPINGCARTXML=' .
+            urlencode($this->payexHelper->getQuteShoppingCartXML($quote));
 
         // Language
         $language = $method->getConfigData('language');
@@ -141,7 +142,9 @@ class Checkout extends \Magento\Framework\App\Action\Action
             'clientIdentifier' => 'USERAGENT=' . $this->_request->getServer('HTTP_USER_AGENT'),
             'additionalValues' => $additional,
             'externalID' => '',
-            'returnUrl' => $this->urlBuilder->getUrl('payex/masterpass/order', ['_secure' => $this->getRequest()->isSecure()]),
+            'returnUrl' => $this->urlBuilder->getUrl('payex/masterpass/order', [
+                '_secure' => $this->getRequest()->isSecure()
+            ]),
             'view' => 'CREDITCARD',
             'agreementRef' => '',
             'cancelUrl' => $this->urlBuilder->getUrl('payex/cc/cancel', ['_secure' => $this->getRequest()->isSecure()]),

@@ -1,6 +1,8 @@
 <?php
-
 namespace PayEx\Payments\Controller\Transaction;
+
+use Zend\Log\Logger;
+use Zend\Log\Writer\Stream;
 
 /**
  * Class Index
@@ -11,10 +13,10 @@ namespace PayEx\Payments\Controller\Transaction;
 class Index extends \Magento\Framework\App\Action\Action
 {
     /** @var array PayEx TC Spider IPs */
-    static protected $_allowed_ips = array(
+    static protected $_allowed_ips = [
         '82.115.146.170', // Production
         '82.115.146.10' // Test
-    );
+    ];
 
     /**
      * @var \PayEx\Payments\Helper\Data
@@ -22,14 +24,24 @@ class Index extends \Magento\Framework\App\Action\Action
     protected $payexHelper;
 
     /**
+     * @var \Magento\Framework\Controller\Result\RawFactory
+     */
+    protected $rawResultFactory;
+
+    /**
+     * Constructor
      * @param \Magento\Framework\App\Action\Context $context
+     * @param \Magento\Framework\Controller\Result\RawFactory $rawResultFactory
+     * @param \PayEx\Payments\Helper\Data $payexHelper
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
+        \Magento\Framework\Controller\Result\RawFactory $rawResultFactory,
         \PayEx\Payments\Helper\Data $payexHelper
     )
     {
         parent::__construct($context);
+        $this->rawResultFactory = $rawResultFactory;
         $this->payexHelper = $payexHelper;
     }
 
@@ -42,51 +54,53 @@ class Index extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         // Init Logger
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/payex_tc.log');
-        $logger = new \Zend\Log\Logger();
+        $writer = new Stream(BP . '/var/log/payex_tc.log');
+        $logger = new Logger();
         $logger->addWriter($writer);
 
         $remote_addr = $this->payexHelper->getRemoteAddr();
         $logger->info('Start Transaction Callback process', [$remote_addr]);
 
+        /** @var \Magento\Framework\Controller\Result\Raw $result */
+        $result = $this->rawResultFactory->create();
+
         // Check is PayEx Request
         if (!in_array($remote_addr, self::$_allowed_ips)) {
             $logger->err('Access denied for this request. It\'s not PayEx Spider.', [$remote_addr]);
-            header(sprintf('%s %s %s', 'HTTP/1.1', '403', 'Access denied. Accept PayEx Transaction Callback only.'), true, '403');
-            header(sprintf('Status: %s %s', '403', 'Access denied. Accept PayEx Transaction Callback only.'), true, '403');
-            exit('Error: Access denied. Accept PayEx Transaction Callback only. ');
+            $result->setStatusHeader('403', '1.1', 'Access denied. Accept PayEx Transaction Callback only.');
+            $result->setContents('Error: Access denied. Accept PayEx Transaction Callback only.');
+            return $result;
         }
 
         // Check Post Fields
-        if (count($_POST) === 0) {
+        if (count($this->getRequest()->getParams()) === 0) {
             $logger->err('Empty request received');
-            header(sprintf('%s %s %s', 'HTTP/1.1', '500', 'FAILURE'), true, '500');
-            header(sprintf('Status: %s %s', '500', 'FAILURE'), true, '500');
-            exit('FAILURE');
+            $result->setStatusHeader('500', '1.1', 'FAILURE');
+            $result->setContents('FAILURE');
+            return $result;
         }
 
         // Log requested params for Debug
-        $logger->info('Requested Params', $_POST);
+        $logger->info('Requested Params', $this->getRequest()->getParams());
 
         // Detect Payment Method of Order
-        if (empty($_POST['orderId'])) {
+        $order_id = $this->getRequest()->getParam('orderId');
+        if (empty($order_id)) {
             $logger->err('Param orderId is undefined');
-            header(sprintf('%s %s %s', 'HTTP/1.1', '500', 'FAILURE'), true, '500');
-            header(sprintf('Status: %s %s', '500', 'FAILURE'), true, '500');
-            exit('FAILURE');
+            $result->setStatusHeader('500', '1.1', 'FAILURE');
+            $result->setContents('FAILURE');
+            return $result;
         }
 
-        // Detect Payment Method of Order
-        $order_id = $_POST['orderId'];
         $orderFactory = $this->_objectManager->get('Magento\Sales\Model\OrderFactory');
 
         /** @var \Magento\Sales\Model\Order $order */
         $order = $orderFactory->create()->loadByIncrementId($order_id);
         if (!$order->getId()) {
             $logger->err('Order don\'t exists in store', [$order_id]);
-            header(sprintf('%s %s %s', 'HTTP/1.1', '500', 'FAILURE'), true, '500');
-            header(sprintf('Status: %s %s', '500', 'FAILURE'), true, '500');
-            exit('FAILURE');
+            $result->setStatusHeader('500', '1.1', 'FAILURE');
+            $result->setContents('FAILURE');
+            return $result;
         }
 
         // Check Payment Method
@@ -95,9 +109,9 @@ class Index extends \Magento\Framework\App\Action\Action
         $payment_method_code = $payment_method->getCode();
         if (strpos($payment_method_code, 'payex_') === false) {
             $logger->err('Unsupported payment method', [$payment_method_code]);
-            header(sprintf('%s %s %s', 'HTTP/1.1', '500', 'FAILURE'), true, '500');
-            header(sprintf('Status: %s %s', '500', 'FAILURE'), true, '500');
-            exit('FAILURE');
+            $result->setStatusHeader('500', '1.1', 'FAILURE');
+            $result->setContents('FAILURE');
+            return $result;
         }
 
         // Get Account Details
@@ -106,15 +120,15 @@ class Index extends \Magento\Framework\App\Action\Action
         $debug = (bool)$payment_method->getConfigData('debug');
 
         // Check Requested Account Number
-        if ($_POST['accountNumber'] !== $accountNumber) {
-            $logger->err('Can\'t to get API details of merchant account', [$_POST['accountNumber']]);
-            header(sprintf('%s %s %s', 'HTTP/1.1', '500', 'FAILURE'), true, '500');
-            header(sprintf('Status: %s %s', '500', 'FAILURE'), true, '500');
-            exit('FAILURE');
+        if ($this->getRequest()->getParam('accountNumber') !== $accountNumber) {
+            $logger->err('Can\'t to get API details of merchant account', [$this->getRequest()->getParam('accountNumber')]);
+            $result->setStatusHeader('500', '1.1', 'FAILURE');
+            $result->setContents('FAILURE');
+            return $result;
         }
 
         // Get Transaction Details
-        $transactionId = $_POST['transactionNumber'];
+        $transactionId = $this->getRequest()->getParam('transactionNumber');
 
         // Lookup Transaction
         $transactionRepository = $this->_objectManager->get('Magento\Sales\Model\Order\Payment\Transaction\Repository');
@@ -128,9 +142,9 @@ class Index extends \Magento\Framework\App\Action\Action
 
         if (!$transaction) {
             $logger->info('Transaction already processed', [$transactionId]);
-            header(sprintf('%s %s %s', 'HTTP/1.1', '500', 'FAILURE'), true, '500');
-            header(sprintf('Status: %s %s', '500', 'FAILURE'), true, '500');
-            exit('FAILURE');
+            $result->setStatusHeader('500', '1.1', 'FAILURE');
+            $result->setContents('FAILURE');
+            return $result;
         }
 
         // Init PayEx Environment
@@ -144,9 +158,9 @@ class Index extends \Magento\Framework\App\Action\Action
         $details = $this->payexHelper->getPx()->GetTransactionDetails2($params);
         if ($details['code'] !== 'OK' || $details['errorCode'] !== 'OK') {
             $logger->err('Failed to get transaction details', $details);
-            header(sprintf('%s %s %s', 'HTTP/1.1', '500', 'FAILURE'), true, '500');
-            header(sprintf('Status: %s %s', '500', 'FAILURE'), true, '500');
-            exit('FAILURE');
+            $result->setStatusHeader('500', '1.1', 'FAILURE');
+            $result->setContents('FAILURE');
+            return $result;
         }
 
         $order_id = $details['orderId'];
@@ -165,9 +179,9 @@ class Index extends \Magento\Framework\App\Action\Action
         $transaction = $this->payexHelper->addPaymentTransaction($order, $details);
         if (!$transaction) {
             $logger->err('Failed to save transaction', [$transactionId]);
-            header(sprintf('%s %s %s', 'HTTP/1.1', '500', 'FAILURE'), true, '500');
-            header(sprintf('Status: %s %s', '500', 'FAILURE'), true, '500');
-            exit('FAILURE');
+            $result->setStatusHeader('500', '1.1', 'FAILURE');
+            $result->setContents('FAILURE');
+            return $result;
         }
 
         // Set Last Transaction ID
@@ -176,9 +190,9 @@ class Index extends \Magento\Framework\App\Action\Action
         // Check Order and Transaction Result
         /* Transaction statuses: 0=Sale, 1=Initialize, 2=Credit, 3=Authorize, 4=Cancel, 5=Failure, 6=Capture */
         switch ($transaction_status) {
-            case 0;
-            case 1;
-            case 3;
+            case 0:
+            case 1:
+            case 3:
             case 6:
                 // Complete order
                 $logger->info('Action: Complete order', [$order_id]);
@@ -186,22 +200,22 @@ class Index extends \Magento\Framework\App\Action\Action
                 // Call PxOrder.Complete
                 $params = [
                     'accountNumber' => '',
-                    'orderRef' => $_POST['orderRef'],
+                    'orderRef' => $this->getRequest()->getParam('orderRef'),
                 ];
                 $result = $this->payexHelper->getPx()->Complete($params);
                 if ($result['errorCodeSimple'] !== 'OK') {
                     $logger->err('Failed to complete payment', $result);
-                    header(sprintf('%s %s %s', 'HTTP/1.1', '500', 'FAILURE'), true, '500');
-                    header(sprintf('Status: %s %s', '500', 'FAILURE'), true, '500');
-                    exit('FAILURE');
+                    $result->setStatusHeader('500', '1.1', 'FAILURE');
+                    $result->setContents('FAILURE');
+                    return $result;
                 }
 
                 // Verify transaction status
                 if ((int)$result['transactionStatus'] !== $transaction_status) {
                     $logger->err('Failed to complete payment. Transaction status is different');
-                    header(sprintf('%s %s %s', 'HTTP/1.1', '500', 'FAILURE'), true, '500');
-                    header(sprintf('Status: %s %s', '500', 'FAILURE'), true, '500');
-                    exit('FAILURE');
+                    $result->setStatusHeader('500', '1.1', 'FAILURE');
+                    $result->setContents('FAILURE');
+                    return $result;
                 }
 
                 // Select Order Status
@@ -281,7 +295,7 @@ class Index extends \Magento\Framework\App\Action\Action
                     }
                 }
                 break;
-            case 4;
+            case 4:
             case 5:
                 // Change Order Status to Canceled
                 $logger->info('Action: Cancel order', [$order_id]);
@@ -296,15 +310,15 @@ class Index extends \Magento\Framework\App\Action\Action
                 break;
             default:
                 $logger->err('Unknown Transaction Status', [$order_id]);
-                header(sprintf('%s %s %s', 'HTTP/1.1', '500', 'FAILURE'), true, '500');
-                header(sprintf('Status: %s %s', '500', 'FAILURE'), true, '500');
-                exit('FAILURE');
+                $result->setStatusHeader('500', '1.1', 'FAILURE');
+                $result->setContents('FAILURE');
+                return $result;
         }
 
         // Show "OK"
         $logger->info('Transaction Callback OK', [$order_id]);
-        header(sprintf('%s %s %s', 'HTTP/1.1', '200', 'OK'), true, '200');
-        header(sprintf('Status: %s %s', '200', 'OK'), true, '200');
-        exit('OK');
+        $result->setStatusHeader('200', '1.1', 'OK');
+        $result->setContents('OK');
+        return $result;
     }
 }

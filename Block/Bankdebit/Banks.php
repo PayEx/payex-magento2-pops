@@ -66,7 +66,8 @@ class Banks extends \Magento\Framework\View\Element\AbstractBlock implements \Ma
     {
         $selected_banks = $this->_scopeConfig->getValue(
             'payment/payex_bankdebit/banks',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
         $selected_banks = explode(',', $selected_banks);
 
         /** @var \Magento\Framework\ObjectManagerInterface $om */
@@ -78,7 +79,7 @@ class Banks extends \Magento\Framework\View\Element\AbstractBlock implements \Ma
         // Get Banks
         $banks = $banks_source->toOptionArray();
 
-        $result = array();
+        $result = [];
         foreach ($banks as $current) {
             if (in_array($current['value'], $selected_banks)) {
                 $result[] = $current;

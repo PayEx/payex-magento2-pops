@@ -38,4 +38,3 @@ class MasterPass extends \PayEx\Payments\Block\Info\AbstractInfo
         return $this->toHtml();
     }
 }
-

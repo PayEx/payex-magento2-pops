@@ -127,10 +127,14 @@ class Redirect extends \Magento\Framework\App\Action\Action
             'clientIdentifier' => 'USERAGENT=' . $this->_request->getServer('HTTP_USER_AGENT'),
             'additionalValues' => $additional,
             'externalID' => '',
-            'returnUrl' => $this->urlBuilder->getUrl('payex/cc/success', ['_secure' => $this->getRequest()->isSecure()]),
+            'returnUrl' => $this->urlBuilder->getUrl('payex/cc/success', [
+                '_secure' => $this->getRequest()->isSecure()
+            ]),
             'view' => $payment_type,
             'agreementRef' => '',
-            'cancelUrl' => $this->urlBuilder->getUrl('payex/cc/cancel', ['_secure' => $this->getRequest()->isSecure()]),
+            'cancelUrl' => $this->urlBuilder->getUrl('payex/cc/cancel', [
+                '_secure' => $this->getRequest()->isSecure()
+            ]),
             'clientLanguage' => $language
         ];
         $result = $this->payexHelper->getPx()->Initialize8($params);

@@ -77,7 +77,7 @@ abstract class AbstractInfo extends \Magento\Payment\Block\Info
                     // Filter empty values
                     $transaction_data = array_filter($transaction_data, 'strlen');
 
-                    $result = array();
+                    $result = [];
                     foreach ($this->transactionFields as $description => $list) {
                         foreach ($list as $key => $value) {
                             if (isset($transaction_data[$value])) {

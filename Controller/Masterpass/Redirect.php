@@ -108,7 +108,9 @@ class Redirect extends \Magento\Framework\App\Action\Action
             'clientIdentifier' => 'USERAGENT=' . $this->_request->getServer('HTTP_USER_AGENT'),
             'additionalValues' => $additional,
             'externalID' => '',
-            'returnUrl' => $this->urlBuilder->getUrl('payex/masterpass/success', ['_secure' => $this->getRequest()->isSecure()]),
+            'returnUrl' => $this->urlBuilder->getUrl('payex/masterpass/success', [
+                '_secure' => $this->getRequest()->isSecure()
+            ]),
             'view' => 'CREDITCARD',
             'agreementRef' => '',
             'cancelUrl' => $this->urlBuilder->getUrl('payex/cc/cancel', ['_secure' => $this->getRequest()->isSecure()]),
@@ -137,7 +139,10 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $redirectUrl = $result['redirectUrl'];
 
         // Set Pending Payment status
-        $order->addStatusHistoryComment(__('The customer was redirected to PayEx.'), \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
+        $order->addStatusHistoryComment(
+            __('The customer was redirected to PayEx.'),
+            \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT
+        );
         $order->save();
 
         // Redirect to PayEx

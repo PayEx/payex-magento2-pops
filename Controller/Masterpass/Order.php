@@ -90,7 +90,8 @@ class Order extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         // Check OrderRef
-        if (empty($_GET['orderRef'])) {
+        $orderRef = $this->getRequest()->getParam('orderRef');
+        if (empty($orderRef)) {
             $this->session->restoreQuote();
             $this->messageManager->addError(__('Order reference is empty'));
             $this->_redirect('checkout/cart');
@@ -104,8 +105,6 @@ class Order extends \Magento\Framework\App\Action\Action
             $this->_redirect('checkout/cart');
             return;
         }
-
-        $orderRef = $_GET['orderRef'];
 
         /** @var \Magento\Payment\Model\Method\AbstractMethod $method */
         $method = $this->_objectManager->get('PayEx\Payments\Model\Method\MasterPass');
@@ -134,15 +133,15 @@ class Order extends \Magento\Framework\App\Action\Action
         }
 
         // Billing Address
-        $billingAddress = array(
+        $billingAddress = [
             'firstname' => $result['firstName'],
             'lastname' => $result['lastName'],
             'company' => '',
             'email' => $result['eMail'],
-            'street' => array(
+            'street' => [
                 $result['address1'],
                 trim($result['address2'] . ' ' . $result['address3'])
-            ),
+            ],
             'city' => ucfirst($result['city']),
             'region_id' => '',
             'region' => '',
@@ -154,7 +153,7 @@ class Order extends \Magento\Framework\App\Action\Action
             'confirm_password' => '',
             'save_in_address_book' => '0',
             'use_for_shipping' => '1',
-        );
+        ];
 
         // Set Billing Address
         $quote->getBillingAddress()
@@ -185,7 +184,7 @@ class Order extends \Magento\Framework\App\Action\Action
             ->setCustomerGroupId(\Magento\Customer\Api\Data\GroupInterface::NOT_LOGGED_IN_ID);
 
         // Set Payment Method
-        $quote->getPayment()->importData(array('method' => \PayEx\Payments\Model\Method\MasterPass::METHOD_CODE));
+        $quote->getPayment()->importData(['method' => \PayEx\Payments\Model\Method\MasterPass::METHOD_CODE]);
 
         // Save Order
         try {

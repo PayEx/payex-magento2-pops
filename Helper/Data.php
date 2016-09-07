@@ -3,9 +3,11 @@
 namespace PayEx\Payments\Helper;
 
 use PayEx\Px;
+use DOMDocument;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Sales\Model\Order\Payment\Transaction;
-
+use Magento\Framework\DataObject;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * @SuppressWarnings(PHPMD.LongVariable)
@@ -175,7 +177,7 @@ class Data extends AbstractHelper
 
             // Set User Agent
             $this->_px->setUserAgent(sprintf("PayEx.Ecommerce.Php/%s PHP/%s Magento/%s PayEx.Magento2/%s",
-                \PayEx\Px::VERSION,
+                Px::VERSION,
                 phpversion(),
                 $this->productMetadata->getVersion(),
                 $this->getVersion()
@@ -193,38 +195,70 @@ class Data extends AbstractHelper
     public function getErrorMessageByCode($errorCode)
     {
         $errorMessages = [
-            'REJECTED_BY_ACQUIRER' => __('Your customers bank declined the transaction, your customer can contact their bank for more information'),
-            //'Error_Generic' => __('An unhandled exception occurred'),
-            '3DSecureDirectoryServerError' => __('A problem with Visa or MasterCards directory server, that communicates transactions for 3D-Secure verification'),
-            'AcquirerComunicationError' => __('Communication error with the acquiring bank'),
-            'AmountNotEqualOrderLinesTotal' => __('The sum of your order lines is not equal to the price set in initialize'),
-            'CardNotEligible' => __('Your customers card is not eligible for this kind of purchase, your customer can contact their bank for more information'),
-            'CreditCard_Error' => __('Some problem occurred with the credit card, your customer can contact their bank for more information'),
-            'PaymentRefusedByFinancialInstitution' => __('Your customers bank declined the transaction, your customer can contact their bank for more information'),
-            'Merchant_InvalidAccountNumber' => __('The merchant account number sent in on request is invalid'),
-            'Merchant_InvalidIpAddress' => __('The IP address the request comes from is not registered in PayEx, you can set it up in PayEx Admin under Merchant profile'),
-            'Access_MissingAccessProperties' => __('The merchant does not have access to requested functionality'),
-            'Access_DuplicateRequest' => __('Your customers bank declined the transaction, your customer can contact their bank for more information'),
-            'Admin_AccountTerminated' => __('The merchant account is not active'),
-            'Admin_AccountDisabled' => __('The merchant account is not active'),
-            'ValidationError_AccountLockedOut' => __('The merchant account is locked out'),
-            'ValidationError_Generic' => __('Generic validation error'),
-            'ValidationError_HashNotValid' => __('The hash on request is not valid, this might be due to the encryption key being incorrect'),
-            //'ValidationError_InvalidParameter' => __('One of the input parameters has invalid data. See paramName and description for more information'),
-            'OperationCancelledbyCustomer' => __('The operation was cancelled by the client'),
-            'PaymentDeclinedDoToUnspecifiedErr' => __('Unexpecter error at 3rd party'),
-            'InvalidAmount' => __('The amount is not valid for this operation'),
-            'NoRecordFound' => __('No data found'),
-            'OperationNotAllowed' => __('The operation is not allowed, transaction is in invalid state'),
-            'ACQUIRER_HOST_OFFLINE' => __('Could not get in touch with the card issuer'),
-            'ARCOT_MERCHANT_PLUGIN_ERROR' => __('The card could not be verified'),
-            'REJECTED_BY_ACQUIRER_CARD_BLACKLISTED' => __('There is a problem with this card'),
-            'REJECTED_BY_ACQUIRER_CARD_EXPIRED' => __('The card expired'),
-            'REJECTED_BY_ACQUIRER_INSUFFICIENT_FUNDS' => __('Insufficient funds'),
-            'REJECTED_BY_ACQUIRER_INVALID_AMOUNT' => __('Incorrect amount'),
-            'USER_CANCELED' => __('Payment cancelled'),
-            'CardNotAcceptedForThisPurchase' => __('Your Credit Card not accepted for this purchase'),
-            'CreditCheckNotApproved' => __('Credit check was declined, please try another payment option')
+            'REJECTED_BY_ACQUIRER' =>
+                __('Your customers bank declined the transaction, your customer can contact their bank for more information'),
+            //'Error_Generic' =>
+            //    __('An unhandled exception occurred'),
+            '3DSecureDirectoryServerError' =>
+                __('A problem with Visa or MasterCards directory server, that communicates transactions for 3D-Secure verification'),
+            'AcquirerComunicationError' =>
+                __('Communication error with the acquiring bank'),
+            'AmountNotEqualOrderLinesTotal' =>
+                __('The sum of your order lines is not equal to the price set in initialize'),
+            'CardNotEligible' =>
+                __('Your customers card is not eligible for this kind of purchase, your customer can contact their bank for more information'),
+            'CreditCard_Error' =>
+                __('Some problem occurred with the credit card, your customer can contact their bank for more information'),
+            'PaymentRefusedByFinancialInstitution' =>
+                __('Your customers bank declined the transaction, your customer can contact their bank for more information'),
+            'Merchant_InvalidAccountNumber' =>
+                __('The merchant account number sent in on request is invalid'),
+            'Merchant_InvalidIpAddress' =>
+                __('The IP address the request comes from is not registered in PayEx, you can set it up in PayEx Admin under Merchant profile'),
+            'Access_MissingAccessProperties' =>
+                __('The merchant does not have access to requested functionality'),
+            'Access_DuplicateRequest' =>
+                __('Your customers bank declined the transaction, your customer can contact their bank for more information'),
+            'Admin_AccountTerminated' =>
+                __('The merchant account is not active'),
+            'Admin_AccountDisabled' =>
+                __('The merchant account is not active'),
+            'ValidationError_AccountLockedOut' =>
+                __('The merchant account is locked out'),
+            'ValidationError_Generic' =>
+                __('Generic validation error'),
+            'ValidationError_HashNotValid' =>
+                __('The hash on request is not valid, this might be due to the encryption key being incorrect'),
+            //'ValidationError_InvalidParameter' =>
+            //    __('One of the input parameters has invalid data. See paramName and description for more information'),
+            'OperationCancelledbyCustomer' =>
+                __('The operation was cancelled by the client'),
+            'PaymentDeclinedDoToUnspecifiedErr' =>
+                __('Unexpecter error at 3rd party'),
+            'InvalidAmount' =>
+                __('The amount is not valid for this operation'),
+            'NoRecordFound' =>
+                __('No data found'),
+            'OperationNotAllowed' =>
+                __('The operation is not allowed, transaction is in invalid state'),
+            'ACQUIRER_HOST_OFFLINE' =>
+                __('Could not get in touch with the card issuer'),
+            'ARCOT_MERCHANT_PLUGIN_ERROR' =>
+                __('The card could not be verified'),
+            'REJECTED_BY_ACQUIRER_CARD_BLACKLISTED' =>
+                __('There is a problem with this card'),
+            'REJECTED_BY_ACQUIRER_CARD_EXPIRED' =>
+                __('The card expired'),
+            'REJECTED_BY_ACQUIRER_INSUFFICIENT_FUNDS' =>
+                __('Insufficient funds'),
+            'REJECTED_BY_ACQUIRER_INVALID_AMOUNT' =>
+                __('Incorrect amount'),
+            'USER_CANCELED' =>
+                __('Payment cancelled'),
+            'CardNotAcceptedForThisPurchase' =>
+                __('Your Credit Card not accepted for this purchase'),
+            'CreditCheckNotApproved' =>
+                __('Credit check was declined, please try another payment option')
         ];
         $errorMessages = array_change_key_case($errorMessages, CASE_UPPER);
 
@@ -420,7 +454,6 @@ class Data extends AbstractHelper
      * @return \Magento\Framework\DataObject
      */
     public function getAssignedState($status) {
-
         $collection = $this->orderStatusCollectionFactory->create()->joinStates();
         $status = $collection->addAttributeToFilter('main_table.status', $status)->getFirstItem();
         return $status;
@@ -531,7 +564,7 @@ class Data extends AbstractHelper
             $discountExcl += $shippingDiscount / $shippingTaxRate;
         }
 
-        $return = new \Magento\Framework\DataObject;
+        $return = new DataObject;
         return $return->setDiscountInclTax($discountIncl)->setDiscountExclTax($discountExcl);
     }
 
@@ -574,7 +607,7 @@ class Data extends AbstractHelper
                 $transaction->setAdditionalInformation(Transaction::RAW_DETAILS, $details);
                 $transaction->save();
                 break;
-            case 0;
+            case 0:
             case 6:
                 $transaction = $order->getPayment()->addTransaction(Transaction::TYPE_CAPTURE, null, true);
                 $transaction->isFailsafe(true)->close(false);
@@ -587,13 +620,13 @@ class Data extends AbstractHelper
                 $transaction->setAdditionalInformation(Transaction::RAW_DETAILS, $details);
                 $transaction->save();
                 break;
-            case 4;
+            case 4:
                 $transaction = $order->getPayment()->addTransaction(Transaction::TYPE_VOID, null, true);
                 $transaction->isFailsafe(true)->close(false);
                 $transaction->setAdditionalInformation(Transaction::RAW_DETAILS, $details);
                 $transaction->save();
                 break;
-            case 5;
+            case 5:
                 $transaction = $order->getPayment()->addTransaction(Transaction::TYPE_PAYMENT, null, true);
                 $transaction->setAdditionalInformation(Transaction::RAW_DETAILS, $details);
                 $transaction->save();
@@ -640,14 +673,16 @@ class Data extends AbstractHelper
         $lines = $this->getOrderItems($order);
 
         // Replace illegal characters of product names
-        $replace_illegal = $order->getPayment()->getMethodInstance()->getConfigData('replace_illegal', $order->getStoreId());
+        $replace_illegal = $order->getPayment()->getMethodInstance()
+            ->getConfigData('replace_illegal', $order->getStoreId());
         if ($replace_illegal) {
-            $replacement_char = $order->getPayment()->getMethodInstance()->getConfigData('replacement_char', $order->getStoreId());
+            $replacement_char = $order->getPayment()->getMethodInstance()
+                ->getConfigData('replacement_char', $order->getStoreId());
             if (empty($replacement_char)) {
                 $replacement_char = '-';
             }
 
-            $lines = array_map(function($value) use($replacement_char) {
+            $lines = array_map(function ($value) use ($replacement_char) {
                 if (isset($value['name'])) {
                     mb_regex_encoding('utf-8');
                     $value['name'] = mb_ereg_replace('[^a-zA-Z0-9_:!#=?\[\]@{}´ %-\/À-ÖØ-öø-ú]', $replacement_char, $value['name']);
@@ -656,7 +691,7 @@ class Data extends AbstractHelper
             }, $lines);
         }
 
-        $dom = new \DOMDocument('1.0', 'utf-8');
+        $dom = new DOMDocument('1.0', 'utf-8');
         $OnlineInvoice = $dom->createElement('OnlineInvoice');
         $dom->appendChild($OnlineInvoice);
         $OnlineInvoice->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
@@ -692,7 +727,7 @@ class Data extends AbstractHelper
         /** @var \Magento\Catalog\Helper\Image $imageHelper */
         $imageHelper = $om->get('Magento\Catalog\Helper\Image');
 
-        $dom = new \DOMDocument('1.0', 'utf-8');
+        $dom = new DOMDocument('1.0', 'utf-8');
         $ShoppingCart = $dom->createElement('ShoppingCart');
         $dom->appendChild($ShoppingCart);
 
@@ -732,7 +767,7 @@ class Data extends AbstractHelper
         /** @var \Magento\Catalog\Helper\Image $imageHelper */
         $imageHelper = $om->get('Magento\Catalog\Helper\Image');
 
-        $dom = new \DOMDocument('1.0', 'utf-8');
+        $dom = new DOMDocument('1.0', 'utf-8');
         $ShoppingCart = $dom->createElement('ShoppingCart');
         $dom->appendChild($ShoppingCart);
 
@@ -796,7 +831,7 @@ class Data extends AbstractHelper
             $fee -= $taxAmount;
         }
 
-        $result = new \Magento\Framework\DataObject;
+        $result = new DataObject;
         $result->setPaymentFeeExclTax($fee)
             ->setPaymentFeeInclTax($fee + $taxAmount)
             ->setPaymentFeeTax($taxAmount)
@@ -809,12 +844,13 @@ class Data extends AbstractHelper
      * Get Name Parser Instance
      * @see https://github.com/joshfraser/PHP-Name-Parser
      * @return \FullNameParser
-     * @throws \Exception
+     * @throws LocalizedException
+     * @SuppressWarnings(MEQP2.Classes.ObjectInstantiation.FoundDirectInstantiation)
      */
     public function getNameParser()
     {
         if (!class_exists('FullNameParser', false)) {
-            throw new \Exception('Missing PHP-Name-Parser library. Please install from https://github.com/joshfraser/PHP-Name-Parser');
+            throw new LocalizedException(__('Missing PHP-Name-Parser library. Please install from https://github.com/joshfraser/PHP-Name-Parser'));
         }
 
         return new \FullNameParser();

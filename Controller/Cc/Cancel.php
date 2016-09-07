@@ -86,5 +86,4 @@ class Cancel extends \Magento\Framework\App\Action\Action
     {
         return $this->_objectManager->get('Magento\Checkout\Model\Session');
     }
-
 }
