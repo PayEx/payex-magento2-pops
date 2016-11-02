@@ -20,6 +20,19 @@ All payments will be processed in a secure PCI DSS compliant environment so you
 don't have to think about any such compliance requirements in your web shop.
 With PayEx, your customers can pay by:
 
+* Bank Debit
+* Credit and Debit Cards (Visa, MasterCard, Visa Electron, Maestro)
+* One-Click Credit Card
+* Financing Credit Account
+* Financing Invoice
+* Invoice Ledger Service
+* Factoring Service (currently Sweden Only)
+* [MasterPass][masterpass]
+* [WyWallet][wywallet]
+
+Settle your orders with the largest and most complete payment provider in the
+Nordics!
+
 ## Installation
 
 ### Magento Marketplace
@@ -52,3 +65,5 @@ find [The Official PayEx Payment Gateway Extension][marketplace].
 
 [payex]: http://payex.com/
 [marketplace]: https://marketplace.magento.com/payex-magento2-payments.html
+[masterpass]: https://www.mastercard.se/sv-se/konsument/tjaenster-och-innovation/innovation/masterpass.html
+[wywallet]: http://wywallet.se/
