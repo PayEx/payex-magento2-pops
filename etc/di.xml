@@ -16,4 +16,7 @@
     <type name="Magento\Checkout\Model\PaymentInformationManagement">
         <plugin name="payex_payments_checkout_model_paymentinformationmanagement" type="PayEx\Payments\Model\Checkout\PaymentInformationManagement\Plugin" sortOrder="1" />
     </type>
+    <type name="Magento\Checkout\Model\GuestPaymentInformationManagement">
+        <plugin name="payex_payments_checkout_model_guestpaymentinformationmanagement" type="PayEx\Payments\Model\Checkout\GuestPaymentInformationManagement\Plugin" sortOrder="1" />
+    </type>
 </config>

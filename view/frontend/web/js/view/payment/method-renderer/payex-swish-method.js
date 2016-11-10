@@ -2,15 +2,21 @@
 /*global define*/
 define(
     [
-        'ko',
         'jquery',
         'Magento_Checkout/js/view/payment/default',
         'PayEx_Payments/js/action/set-payment-method',
-        'Magento_Checkout/js/action/select-payment-method',
+        'Magento_Checkout/js/model/payment/additional-validators',
         'Magento_Checkout/js/model/quote',
-        'Magento_Checkout/js/checkout-data'
+        'Magento_Customer/js/customer-data'
     ],
-    function (ko, $, Component, setPaymentMethodAction, selectPaymentMethodAction, quote, checkoutData) {
+    function (
+        $,
+        Component,
+        setPaymentMethodAction,
+        additionalValidators,
+        quote,
+        customerData
+    ) {
         'use strict';
 
         return Component.extend({
@@ -20,11 +26,23 @@ define(
             },
             /** Redirect to PayEx */
             continueToPayEx: function () {
-                //update payment method information if additional data was changed
-                this.selectPaymentMethod();
-                setPaymentMethodAction();
-                return false;
-            },
+                if (additionalValidators.validate()) {
+                    //update payment method information if additional data was changed
+                    this.selectPaymentMethod();
+                    setPaymentMethodAction(this.getData(), this.messageContainer).done(
+                        function (response) {
+                            if (response.hasOwnProperty('order_id')) {
+                                customerData.invalidate(['cart']);
+                                $.mage.redirect(
+                                    window.checkoutConfig.payment.payex_swish.redirectUrl + '?order_id=' + response.order_id
+                                );
+                            }
+                        }
+                    );
+
+                    return false;
+                }
+            }
         });
     }
 );

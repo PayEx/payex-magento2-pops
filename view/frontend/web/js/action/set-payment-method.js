@@ -1,7 +1,3 @@
-/**
- * Copyright © 2015 Magento. All rights reserved.
- * See COPYING.txt for license details.
- */
 define(
     [
         'jquery',
@@ -10,55 +6,42 @@ define(
         'mage/storage',
         'Magento_Checkout/js/model/error-processor',
         'Magento_Customer/js/model/customer',
-        'Magento_Checkout/js/action/get-totals',
         'Magento_Checkout/js/model/full-screen-loader'
     ],
-    function ($, quote, urlBuilder, storage, errorProcessor, customer, getTotalsAction, fullScreenLoader) {
+    function ($, quote, urlBuilder, storage, errorProcessor, customer, fullScreenLoader) {
         'use strict';
 
-        return function () {
+        return function (paymentData, messageContainer) {
+            var payload;
 
-            var serviceUrl,
-                payload,
+            if (!paymentData) {
                 paymentData = quote.paymentMethod();
-
+            }
 
             /**
              * Checkout for guest and registered customer.
              */
-            if (!customer.isLoggedIn()) {
-                serviceUrl = urlBuilder.createUrl('/guest-carts/:cartId/payment-information', {
-                    cartId: quote.getQuoteId()
-                });
-                payload = {
-                    cartId: quote.getQuoteId(),
-                    email: quote.guestEmail,
-                    paymentMethod: paymentData,
-                    billingAddress: quote.billingAddress()
-                };
-            } else {
-                serviceUrl = urlBuilder.createUrl('/carts/mine/payment-information', {});
-                payload = {
-                    cartId: quote.getQuoteId(),
-                    paymentMethod: paymentData,
-                    billingAddress: quote.billingAddress()
-                };
-            }
+            payload = {
+                cartId: quote.getQuoteId(),
+                email: !customer.isLoggedIn() ? quote.guestEmail : '',
+                paymentMethod: paymentData,
+                billingAddress: quote.billingAddress(),
+                mode: customer.isLoggedIn() ? 'guest' : 'registered'
+            };
 
-            fullScreenLoader.startLoader();
-
-            return storage.post(
-                serviceUrl, JSON.stringify(payload)
-            ).done(
-                function () {
-                    $.mage.redirect(window.checkoutConfig.payment[quote.paymentMethod().method].redirectUrl);
+            return $.ajax('/payex/checkout/placeorder', {
+                data: JSON.stringify(payload),
+                method: 'POST',
+                beforeSend: function() {
+                    fullScreenLoader.startLoader();
                 }
-            ).fail(
-                function (response) {
-                    errorProcessor.process(response);
-                    fullScreenLoader.stopLoader();
+            }).always(function() {
+                fullScreenLoader.stopLoader();
+            }).done(function(response) {
+                if (!response.success) {
+                    errorProcessor.process(response, messageContainer);
                 }
-            );
+            });
         };
     }
 );

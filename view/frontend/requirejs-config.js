@@ -7,6 +7,11 @@ var config = {
         //        'Magento_CheckoutAgreements/js/model/place-order-mixin': true
         //    }
         //}
+        mixins: {
+            'Magento_Checkout/js/model/error-processor': {
+                'PayEx_Payments/js/model/error-processor-mixin': true
+            }
+        }
     },
     map: {
         '*': {
