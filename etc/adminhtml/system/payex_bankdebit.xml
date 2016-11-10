@@ -24,6 +24,7 @@
         <field id="debug" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Enable test mode</label>
             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/payex_bankdebit/debug</config_path>
         </field>
 
         <field id="accountnumber" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">

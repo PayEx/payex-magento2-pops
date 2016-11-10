@@ -210,20 +210,6 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
             }
         }
 
-        // Validate SSN using PayEx
-        $params = [
-            'accountNumber' => '',
-            'paymentMethod' => 'PXFINANCINGINVOICE' . $country_code,
-            'ssn' => $ssn,
-            'zipcode' => $postcode,
-            'countryCode' => $country_code,
-            'ipAddress' => $this->payexHelper->getRemoteAddr()
-        ];
-        $result = $this->payexHelper->getPx()->GetAddressByPaymentMethod($params);
-        if ($result['code'] !== 'OK' || $result['description'] !== 'OK' || $result['errorCode'] !== 'OK') {
-            throw new LocalizedException(__($this->payexHelper->getVerboseErrorMessage($result)));
-        }
-
         // Save SSN
         $info->setAdditionalInformation('social_security_number', $ssn);
 

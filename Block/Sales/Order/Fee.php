@@ -45,6 +45,14 @@ class Fee extends Template
         $parent = $this->getParentBlock();
         $source = $parent->getSource();
 
+        // Check is fee allowed for payment method
+        if (!in_array($parent->getOrder()->getPayment()->getMethod(), [
+            \PayEx\Payments\Model\Method\Financing::METHOD_CODE,
+            \PayEx\Payments\Model\Method\PartPayment::METHOD_CODE
+        ])) {
+            return $this;
+        }
+
         if ($source->getBasePayexPaymentFee() > 0) {
             if ($this->displaySalesFeeBoth()) {
                 $parent->addTotal(
