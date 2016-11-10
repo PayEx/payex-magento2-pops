@@ -11,9 +11,12 @@ define(
     function ($, quote, urlBuilder, storage, errorProcessor, customer, fullScreenLoader) {
         'use strict';
 
-        return function (messageContainer) {
-            var payload,
+        return function (paymentData, messageContainer) {
+            var payload;
+
+            if (!paymentData) {
                 paymentData = quote.paymentMethod();
+            }
 
             /**
              * Checkout for guest and registered customer.

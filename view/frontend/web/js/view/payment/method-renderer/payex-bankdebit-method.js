@@ -36,14 +36,14 @@ define(
                 };
             },
             availableBanks: function() {
-                return ko.observableArray(window.checkoutConfig.payment.payex_bankdebit.banks);
+                return window.checkoutConfig.payment.payex_bankdebit.banks;
             },
             /** Redirect to PayEx */
             continueToPayEx: function () {
                 if (additionalValidators.validate()) {
                     //update payment method information if additional data was changed
                     this.selectPaymentMethod();
-                    setPaymentMethodAction(this.messageContainer).done(
+                    setPaymentMethodAction(this.getData(), this.messageContainer).done(
                         function (response) {
                             if (response.hasOwnProperty('order_id')) {
                                 customerData.invalidate(['cart']);
