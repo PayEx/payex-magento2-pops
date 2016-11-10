@@ -361,7 +361,11 @@ class Data extends AbstractHelper
         }
 
         // add Payment Fee
-        if ($order->getPayexPaymentFee() > 0) {
+        if ($order->getPayexPaymentFee() > 0 &&
+            in_array($order->getPayment()->getMethod(), [
+                \PayEx\Payments\Model\Method\Financing::METHOD_CODE,
+                \PayEx\Payments\Model\Method\PartPayment::METHOD_CODE
+            ])) {
             $feeExclTax = $order->getPayexPaymentFee();
             $feeTax = $order->getPayexPaymentFeeTax();
             $feeIncTax = $feeExclTax + $feeTax;
