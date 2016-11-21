@@ -33,6 +33,15 @@
                                     disable: isAppliedSSN()" />
                 </div>
             </div>
+            <div class="field required choice">
+                <input type="checkbox" name="payment[tos]" data-bind="checked: false, attr: {id: getCode() + '_tos'}" class="checkbox required" />
+                <label data-bind="attr: {for: getCode() + '_tos'}">
+                    <span><!-- ko i18n: 'I accept the'--><!-- /ko --></span>
+                    <a href="#" data-bind="click: showTOS">
+                        <!-- ko i18n: 'Terms of Service'--><!-- /ko -->
+                    </a>
+                </label>
+            </div>
         </fieldset>
 
         <div class="checkout-agreements-block">

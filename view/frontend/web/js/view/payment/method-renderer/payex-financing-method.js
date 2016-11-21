@@ -5,15 +5,11 @@ define(
         'ko',
         'jquery',
         'Magento_Checkout/js/view/payment/default',
-        'Magento_Checkout/js/action/place-order',
         'mage/translate',
-        'Magento_Checkout/js/model/payment/additional-validators',
-        'PayEx_Payments/js/action/set-payment-method',
-        'Magento_Checkout/js/action/select-payment-method',
-        'Magento_Checkout/js/model/quote',
-        'Magento_Checkout/js/checkout-data'
+        'Magento_Checkout/js/model/full-screen-loader',
+        'Magento_Ui/js/modal/alert'
     ],
-    function (ko, $, Component, placeOrderAction, $t, additionalValidators, setPaymentMethodAction, selectPaymentMethodAction, quote, checkoutData) {
+    function (ko, $, Component, $t, fullScreenLoader, alert) {
         'use strict';
         var appliedSSN = window.checkoutConfig.payexSSN.appliedSSN;
 
@@ -29,7 +25,8 @@ define(
                 return {
                     'method': this.getCode(),
                     'additional_data': {
-                        'social_security_number': $('#' + this.getCode() + '_social_security_number').val()
+                        'social_security_number': $('#' + this.getCode() + '_social_security_number').val(),
+                        'tos': $('#' + this.getCode() + '_tos').prop('checked')
                     }
                 };
             },
@@ -46,6 +43,33 @@ define(
              */
             getAppliedSSN: function() {
                 return appliedSSN;
+            },
+
+            /**
+             * Show Terms Of Service Window
+             * @returns {boolean}
+             */
+            showTOS: function() {
+                $.ajax('/payex/checkout/termsOfService', {
+                    data: {
+                        method: this.getCode()
+                    },
+                    beforeSend: function() {
+                        fullScreenLoader.startLoader();
+                    }
+                }).always(function() {
+                    fullScreenLoader.stopLoader();
+                }).done(function(response) {
+                    alert({
+                        title: response.title,
+                        content: response.content,
+                        actions: {
+                            always: function(){}
+                        }
+                    });
+                });
+
+                return false;
             }
 
         });
