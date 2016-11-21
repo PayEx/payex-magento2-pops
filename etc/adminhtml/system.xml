@@ -18,6 +18,8 @@
                 <include path="PayEx_Payments::system/payex_financing.xml"/>
                 <include path="PayEx_Payments::system/payex_partpayment.xml"/>
                 <include path="PayEx_Payments::system/payex_masterpass.xml"/>
+                <include path="PayEx_Payments::system/payex_gc.xml"/>
+                <include path="PayEx_Payments::system/payex_evc.xml"/>
             </group>
         </section>
 

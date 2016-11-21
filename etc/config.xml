@@ -99,6 +99,38 @@
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_masterpass>
+            <payex_gc>
+                <active>1</active>
+                <model>PayEx\Payments\Model\Method\Gc</model>
+                <title>Purchase using PayEx Gift Card</title>
+                <debug>1</debug>
+                <accountnumber>payex account number</accountnumber>
+                <encryptionkey>payex encryption key</encryptionkey>
+                <transactiontype>SALE</transactiontype>
+                <order_status_authorize>processing</order_status_authorize>
+                <order_status_capture>processing</order_status_capture>
+                <responsive>1</responsive>
+                <checkoutinfo>1</checkoutinfo>
+                <language>en-US</language>
+                <allowspecific>0</allowspecific>
+                <group>payex</group>
+            </payex_gc>
+            <payex_evc>
+                <active>1</active>
+                <model>PayEx\Payments\Model\Method\Evc</model>
+                <title>Purchase using Electronic Value Codes</title>
+                <debug>1</debug>
+                <accountnumber>payex account number</accountnumber>
+                <encryptionkey>payex encryption key</encryptionkey>
+                <transactiontype>SALE</transactiontype>
+                <order_status_authorize>processing</order_status_authorize>
+                <order_status_capture>processing</order_status_capture>
+                <responsive>1</responsive>
+                <checkoutinfo>1</checkoutinfo>
+                <language>en-US</language>
+                <allowspecific>0</allowspecific>
+                <group>payex</group>
+            </payex_evc>
         </payment>
 
         <tax>

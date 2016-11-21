@@ -32,6 +32,14 @@ define(
             {
                 type: 'payex_masterpass',
                 component: 'PayEx_Payments/js/view/payment/method-renderer/payex-masterpass-method'
+            },
+            {
+                type: 'payex_gc',
+                component: 'PayEx_Payments/js/view/payment/method-renderer/payex-gc-method'
+            },
+            {
+                type: 'payex_evc',
+                component: 'PayEx_Payments/js/view/payment/method-renderer/payex-evc-method'
             }
         );
         /** Add view logic here if needed */
