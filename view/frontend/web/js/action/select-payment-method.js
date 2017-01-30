@@ -15,7 +15,7 @@ define(
             if (window.checkoutConfig.payexPaymentFee.isEnabled) {
                 fullScreenLoader.startLoader();
 
-                jQuery.ajax('/payex/checkout/applyPaymentMethod', {
+                return jQuery.ajax('/payex/checkout/applyPaymentMethod', {
                     data: {
                         payment_method: paymentMethod
                     },
@@ -25,6 +25,12 @@ define(
                     }
                 });
             }
+
+            return {
+                done: function (callback) {
+                    callback();
+                }
+            };
         }
     }
 );
