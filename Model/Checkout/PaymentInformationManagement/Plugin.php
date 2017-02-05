@@ -21,6 +21,7 @@ class Plugin
 
     /**
      * Save Bank Id from payment additional data to session
+     *
      * @param \Magento\Checkout\Model\PaymentInformationManagement $subject
      * @param int $cartId
      * @param \Magento\Quote\Api\Data\PaymentInterface $paymentMethod

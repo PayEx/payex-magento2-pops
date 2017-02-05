@@ -19,13 +19,15 @@ class Plugin
         $this->session = $session;
     }
 
+
     /**
-     * Save Bank Id from payment additional data to session
+     * Save Bank Id from payment additional data to session.
+     *
      * @param \Magento\Checkout\Model\GuestPaymentInformationManagement $subject
      * @param int $cartId
      * @param string $email
      * @param \Magento\Quote\Api\Data\PaymentInterface $paymentMethod
-     * @param \Magento\Quote\Api\Data\AddressInterface $billingAddress
+     * @param \Magento\Quote\Api\Data\AddressInterface|null $billingAddress
      * @return void
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -34,7 +36,7 @@ class Plugin
         $cartId,
         $email,
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
-        \Magento\Quote\Api\Data\AddressInterface $billingAddress
+        \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
     )
     {
         if ($paymentMethod->getMethod() === \PayEx\Payments\Model\Method\Bankdebit::METHOD_CODE) {

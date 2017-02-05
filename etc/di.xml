@@ -14,9 +14,9 @@
         </arguments>
     </type>
     <type name="Magento\Checkout\Model\PaymentInformationManagement">
-        <plugin name="payex_payments_checkout_model_paymentinformationmanagement" type="PayEx\Payments\Model\Checkout\PaymentInformationManagement\Plugin" sortOrder="1" />
+        <plugin name="beforeSavePaymentInformationAndPlaceOrder" type="PayEx\Payments\Model\Checkout\PaymentInformationManagement\Plugin" />
     </type>
     <type name="Magento\Checkout\Model\GuestPaymentInformationManagement">
-        <plugin name="payex_payments_checkout_model_guestpaymentinformationmanagement" type="PayEx\Payments\Model\Checkout\GuestPaymentInformationManagement\Plugin" sortOrder="1" />
+        <plugin name="beforeSavePaymentInformationAndPlaceOrderGuest" type="PayEx\Payments\Model\Checkout\GuestPaymentInformationManagement\Plugin" />
     </type>
 </config>
