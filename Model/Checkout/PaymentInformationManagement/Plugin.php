@@ -21,7 +21,6 @@ class Plugin
 
     /**
      * Save Bank Id from payment additional data to session
-     *
      * @param \Magento\Checkout\Model\PaymentInformationManagement $subject
      * @param int $cartId
      * @param \Magento\Quote\Api\Data\PaymentInterface $paymentMethod
@@ -39,6 +38,11 @@ class Plugin
         if ($paymentMethod->getMethod() === \PayEx\Payments\Model\Method\Bankdebit::METHOD_CODE) {
             $additionalData = $paymentMethod->getAdditionalData();
             $this->session->setBankId(isset($additionalData['bank_id']) ? $additionalData['bank_id'] : null);
+        }
+
+        if ($paymentMethod->getMethod() === \PayEx\Payments\Model\Method\PartPayment::METHOD_CODE) {
+            $additionalData = $paymentMethod->getAdditionalData();
+            $this->session->setPayexSSN(isset($additionalData['social_security_number']) ? $additionalData['social_security_number'] : null);
         }
     }
 }
