@@ -10,12 +10,12 @@ define(
     function(quote, fullScreenLoader, jQuery, getTotalsAction) {
         'use strict';
         return function (paymentMethod) {
+
             quote.paymentMethod(paymentMethod);
 
             if (window.checkoutConfig.payexPaymentFee.isEnabled) {
                 fullScreenLoader.startLoader();
-
-                return jQuery.ajax('/payex/checkout/applyPaymentMethod', {
+                jQuery.ajax('/payex/checkout/applyPaymentMethod', {
                     data: {
                         payment_method: paymentMethod
                     },
@@ -25,12 +25,6 @@ define(
                     }
                 });
             }
-
-            return {
-                done: function (callback) {
-                    callback();
-                }
-            };
         }
     }
 );
