@@ -53,3 +53,10 @@
     background-size: 82px 39px;
     line-height: 39px;
 }
+
+.payex-method-payex-mobilepay > .entry-edit-head > .config-heading .heading strong {
+    padding-left: 90px;
+    background: url(images/mobilepay-small.png) no-repeat 0 5px;
+    background-size: 81px 43px;
+    line-height: 47px;
+}

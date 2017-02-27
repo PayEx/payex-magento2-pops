@@ -129,6 +129,7 @@ class PartPayment extends \PayEx\Payments\Model\Method\Financing
             'ipAddress' => $this->payexHelper->getRemoteAddr()
         ];
         $result = $this->payexHelper->getPx()->PurchaseCreditAccount($params);
+
         $this->payexLogger->info('PxOrder.PurchaseCreditAccount', $result);
         if ($result['code'] !== 'OK' || $result['description'] !== 'OK') {
             $message = $this->payexHelper->getVerboseErrorMessage($result);
@@ -140,7 +141,7 @@ class PartPayment extends \PayEx\Payments\Model\Method\Financing
             throw new LocalizedException(__('Error: Transaction failed'));
         }
 
-        if ($result['transactionStatus']) {
+        if (!$result['transactionStatus']) {
             throw new LocalizedException(__('Error: No transactionsStatus in response'));
         }
 

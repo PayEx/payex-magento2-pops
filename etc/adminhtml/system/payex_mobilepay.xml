@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="payex_mobilepay" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label><![CDATA[PayEx MobilePay Online]]></label>
+        <frontend_model>Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Payment</frontend_model>
+        <fieldset_css>payex-method-payex-mobilepay</fieldset_css>
+        <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enabled</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/payex_mobilepay/active</config_path>
+        </field>
+        <field id="title" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Title</label>
+            <config_path>payment/payex_mobilepay/title</config_path>
+        </field>
+
+        <field id="sort_order" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Sort Order</label>
+            <frontend_class>validate-number</frontend_class>
+            <config_path>payment/payex_mobilepay/sort_order</config_path>
+        </field>
+
+        <field id="debug" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enable test mode</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/payex_mobilepay/debug</config_path>
+        </field>
+
+        <field id="accountnumber" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Account Number</label>
+            <config_path>payment/payex_mobilepay/accountnumber</config_path>
+        </field>
+
+        <field id="encryptionkey" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Encryption Key</label>
+            <config_path>payment/payex_mobilepay/encryptionkey</config_path>
+        </field>
+
+        <field id="transactiontype" translate="label" type="select" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Transaction Type</label>
+            <source_model>PayEx\Payments\Model\Config\Source\Operation</source_model>
+            <config_path>payment/payex_mobilepay/transactiontype</config_path>
+        </field>
+
+        <!--<field id="payment_type" translate="label" type="select" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">-->
+            <!--<label>Payment Type</label>-->
+            <!--<source_model>PayEx\Payments\Model\Config\Source\Type</source_model>-->
+            <!--<config_path>payment/payex_mobilepay/payment_type</config_path>-->
+        <!--</field>-->
+
+        <field id="order_status_authorize" translate="label" type="select" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Order status (for authorize)</label>
+            <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+            <config_path>payment/payex_mobilepay/order_status_authorize</config_path>
+        </field>
+
+        <field id="order_status_capture" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Order status (for capture)</label>
+            <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+            <config_path>payment/payex_mobilepay/order_status_capture</config_path>
+        </field>
+
+        <field id="responsive" translate="label" type="select" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enable Responsive Skinning</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/payex_mobilepay/responsive</config_path>
+        </field>
+
+        <field id="checkoutinfo" translate="label" type="select" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Send order lines and billing/delivery addresses to PayEx</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/payex_mobilepay/checkoutinfo</config_path>
+        </field>
+
+        <field id="discount_calc" translate="label" type="select" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Discount Calculation</label>
+            <source_model>PayEx\Payments\Model\Config\Source\DiscountCalculation</source_model>
+            <config_path>payment/payex_mobilepay/discount_calc</config_path>
+        </field>
+
+        <field id="language" translate="label" type="select" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Client language</label>
+            <source_model>PayEx\Payments\Model\Config\Source\Language</source_model>
+            <config_path>payment/payex_mobilepay/language</config_path>
+        </field>
+
+        <group id="payex_mobilepay_country_specific" translate="label" showInDefault="1" showInWebsite="1" sortOrder="20">
+            <label>Country Specific Settings</label>
+            <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+            <field id="allowspecific" translate="label" type="allowspecific" sortOrder="21" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Payment from Applicable Countries</label>
+                <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                <config_path>payment/payex_mobilepay/allowspecific</config_path>
+            </field>
+            <field id="specificcountry" translate="label" type="multiselect" sortOrder="22" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Payment from Specific Countries</label>
+                <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                <can_be_empty>1</can_be_empty>
+                <config_path>payment/payex_mobilepay/specificcountry</config_path>
+            </field>
+        </group>
+    </group>
+</include>

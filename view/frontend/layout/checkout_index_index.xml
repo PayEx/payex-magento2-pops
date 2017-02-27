@@ -24,7 +24,7 @@
                                                                 <item name="payex-payments" xsi:type="array">
                                                                     <item name="component" xsi:type="string">PayEx_Payments/js/view/payment/payex-methods</item>
                                                                     <item name="methods" xsi:type="array">
-																		 <item name="payex_cc" xsi:type="array">
+                                                                        <item name="payex_cc" xsi:type="array">
                                                                             <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
                                                                         </item>
                                                                         <item name="payex_bankdebit" xsi:type="array">
@@ -46,6 +46,9 @@
                                                                             <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
                                                                         </item>
                                                                         <item name="payex_evc" xsi:type="array">
+                                                                            <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
+                                                                        </item>
+                                                                        <item name="payex_mobilepay" xsi:type="array">
                                                                             <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
                                                                         </item>
                                                                     </item>

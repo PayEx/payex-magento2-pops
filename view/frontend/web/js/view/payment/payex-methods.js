@@ -40,6 +40,10 @@ define(
             {
                 type: 'payex_evc',
                 component: 'PayEx_Payments/js/view/payment/method-renderer/payex-evc-method'
+            },
+            {
+                type: 'payex_mobilepay',
+                component: 'PayEx_Payments/js/view/payment/method-renderer/payex-mobilepay-method'
             }
         );
         /** Add view logic here if needed */

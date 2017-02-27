@@ -6,7 +6,7 @@
         </tab>
 
         <section id="payment">
-            <group id="payex_payments" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="payex_payments" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>PayEx Payment Methods</label>
                 <comment><![CDATA[PayEx Payment Methods]]></comment>
                 <attribute type="expanded">1</attribute>
@@ -20,6 +20,7 @@
                 <include path="PayEx_Payments::system/payex_masterpass.xml"/>
                 <include path="PayEx_Payments::system/payex_gc.xml"/>
                 <include path="PayEx_Payments::system/payex_evc.xml"/>
+                <include path="PayEx_Payments::system/payex_mobilepay.xml"/>
             </group>
         </section>
 
