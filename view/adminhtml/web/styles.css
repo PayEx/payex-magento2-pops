@@ -40,6 +40,20 @@
     line-height: 55px;
 }
 
+.payex-method-payex-gc > .entry-edit-head > .config-heading .heading strong {
+    padding-left: 90px;
+    background: url(images/payex.gif) no-repeat 0 0;
+    background-size: 82px 39px;
+    line-height: 39px;
+}
+
+.payex-method-payex-evc > .entry-edit-head > .config-heading .heading strong {
+    padding-left: 90px;
+    background: url(images/payex.gif) no-repeat 0 0;
+    background-size: 82px 39px;
+    line-height: 39px;
+}
+
 .payex-method-payex-mobilepay > .entry-edit-head > .config-heading .heading strong {
     padding-left: 90px;
     background: url(images/mobilepay-small.png) no-repeat 0 5px;

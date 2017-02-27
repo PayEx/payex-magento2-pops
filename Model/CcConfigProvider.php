@@ -106,11 +106,23 @@ class CcConfigProvider implements ConfigProviderInterface
             $config['payment'] [\PayEx\Payments\Model\Method\MasterPass::METHOD_CODE]['redirectUrl'] = $method->getCheckoutRedirectUrl();
         }
 
+        /** @var \PayEx\Payments\Model\Method\Gc $method */
+        $method = $this->_paymentHelper->getMethodInstance(\PayEx\Payments\Model\Method\Gc::METHOD_CODE);
+        if ($method->isAvailable()) {
+            $config['payment'] [\PayEx\Payments\Model\Method\Gc::METHOD_CODE]['redirectUrl'] = $method->getCheckoutRedirectUrl();
+        }
+
+        /** @var \PayEx\Payments\Model\Method\Evc $method */
+        $method = $this->_paymentHelper->getMethodInstance(\PayEx\Payments\Model\Method\Evc::METHOD_CODE);
+        if ($method->isAvailable()) {
+            $config['payment'] [\PayEx\Payments\Model\Method\Evc::METHOD_CODE]['redirectUrl'] = $method->getCheckoutRedirectUrl();
+
         /** @var \PayEx\Payments\Model\Method\MobilePay $method */
         $method = $this->_paymentHelper->getMethodInstance(\PayEx\Payments\Model\Method\MobilePay::METHOD_CODE);
         if ($method->isAvailable()) {
             $config['payment'] [\PayEx\Payments\Model\Method\MobilePay::METHOD_CODE]['redirectUrl']
                 = $method->getCheckoutRedirectUrl();
+
         }
 
         return $config;

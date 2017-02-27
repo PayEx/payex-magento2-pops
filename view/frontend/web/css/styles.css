@@ -1,5 +1,7 @@
 .checkout-payment-method .payment-method-title label div.payex-logo.payex_cc,
-.checkout-payment-method .payment-method-title label div.payex-logo.payex_bankdebit {
+.checkout-payment-method .payment-method-title label div.payex-logo.payex_bankdebit,
+.checkout-payment-method .payment-method-title label div.payex-logo.payex_gc,
+.checkout-payment-method .payment-method-title label div.payex-logo.payex_evc {
     display: inline-block;
     background: url(../images/payex-small.gif) no-repeat;
     width: 82px;
