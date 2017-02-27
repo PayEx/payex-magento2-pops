@@ -139,10 +139,12 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
         /** @var \Magento\Quote\Model\Quote\Payment $info */
         $info = $this->getInfoInstance();
         $info->setSocialSecurityNumber($additionalData->getSocialSecurityNumber());
+        $info->setTos($additionalData->getTos());
 
         // Failback
         if (version_compare($this->payexHelper->getMageVersion(), '2.0.2', '<=')) {
             $info->setSocialSecurityNumber($data->getSocialSecurityNumber());
+            $info->setTos($data->getTos());
         }
 
         return $this;
@@ -168,6 +170,10 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
 
         if (!$quote) {
             return $this;
+        }
+
+        if (!$info->getTos()) {
+            throw new LocalizedException(__('Please accept the Terms of service.'));
         }
 
         // Check SSN is saved in session
