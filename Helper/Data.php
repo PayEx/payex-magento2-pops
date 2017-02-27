@@ -258,7 +258,9 @@ class Data extends AbstractHelper
             'CardNotAcceptedForThisPurchase' =>
                 __('Your Credit Card not accepted for this purchase'),
             'CreditCheckNotApproved' =>
-                __('Credit check was declined, please try another payment option')
+                __('Credit check was declined, please try another payment option'),
+            'NotSupportedPaymentMethod' =>
+                __('Not supported paymentmethod')
         ];
         $errorMessages = array_change_key_case($errorMessages, CASE_UPPER);
 

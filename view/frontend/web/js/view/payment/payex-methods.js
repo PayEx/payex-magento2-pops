@@ -32,6 +32,10 @@ define(
             {
                 type: 'payex_masterpass',
                 component: 'PayEx_Payments/js/view/payment/method-renderer/payex-masterpass-method'
+            },
+            {
+                type: 'payex_mobilepay',
+                component: 'PayEx_Payments/js/view/payment/method-renderer/payex-mobilepay-method'
             }
         );
         /** Add view logic here if needed */
