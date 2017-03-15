@@ -328,7 +328,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
             throw new LocalizedException(__('Error: Transaction failed'));
         }
 
-        if (empty($result['transactionStatus'])) {
+        if (!isset($result['transactionStatus'])) {
             throw new LocalizedException(__('Error: No transactionsStatus in response'));
         }
 
