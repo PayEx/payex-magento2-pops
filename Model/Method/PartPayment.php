@@ -141,7 +141,7 @@ class PartPayment extends \PayEx\Payments\Model\Method\Financing
             throw new LocalizedException(__('Error: Transaction failed'));
         }
 
-        if (!$result['transactionStatus']) {
+        if (!isset($result['transactionStatus'])) {
             throw new LocalizedException(__('Error: No transactionsStatus in response'));
         }
 
