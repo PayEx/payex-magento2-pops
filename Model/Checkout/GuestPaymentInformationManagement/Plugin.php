@@ -2,6 +2,8 @@
 
 namespace PayEx\Payments\Model\Checkout\GuestPaymentInformationManagement;
 
+use Magento\Framework\Exception\CouldNotSaveException;
+
 class Plugin
 {
     /**
@@ -10,13 +12,21 @@ class Plugin
     protected $session;
 
     /**
+     * @var \Magento\Quote\Api\CartManagementInterface
+     */
+    protected $cartManagement;
+
+    /**
      * @param \Magento\Checkout\Model\Session $session
+     * @param \Magento\Quote\Api\CartManagementInterface $cartManagement
      */
     public function __construct(
-        \Magento\Checkout\Model\Session $session
+        \Magento\Checkout\Model\Session $session,
+        \Magento\Quote\Api\CartManagementInterface $cartManagement
     )
     {
         $this->session = $session;
+        $this->cartManagement = $cartManagement;
     }
 
     /**
@@ -45,5 +55,42 @@ class Plugin
             $additionalData = $paymentMethod->getAdditionalData();
             $this->session->setPayexSSN(isset($additionalData['social_security_number']) ? $additionalData['social_security_number'] : null);
         }
+    }
+
+    /**
+     * Set payment information and place order for a specified cart.
+     *
+     * Override this method to get correct exceptions instead
+     * "An error occurred on the server. Please try to place the order again."
+     *
+     * @param \Magento\Checkout\Model\GuestPaymentInformationManagement $subject
+     * @param \Closure $proceed
+     * @param string $cartId
+     * @param string $email
+     * @param \Magento\Quote\Api\Data\PaymentInterface $paymentMethod
+     * @param \Magento\Quote\Api\Data\AddressInterface|null $billingAddress
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @return int Order ID.
+     */
+    public function aroundSavePaymentInformationAndPlaceOrder(
+        \Magento\Checkout\Model\GuestPaymentInformationManagement $subject,
+        \Closure $proceed,
+        $cartId,
+        $email,
+        \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
+        \Magento\Quote\Api\Data\AddressInterface $billingAddress
+    )
+    {
+        $subject->savePaymentInformation($cartId, $email, $paymentMethod, $billingAddress);
+        try {
+            $orderId = $this->cartManagement->placeOrder($cartId);
+        } catch (\Exception $e) {
+            throw new CouldNotSaveException(
+                __($e->getMessage()),
+                $e
+            );
+        }
+
+        return $orderId;
     }
 }
