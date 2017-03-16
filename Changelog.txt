@@ -1,3 +1,8 @@
+Version 1.0.6
+* Error messages during payment process
+* Fixed JS error of payex cc method
+* Fixed transaction check bug in Financing Invoice
+
 Version 1.0.5
 * Implemented GiftCards and EVC methods
 * Implemented MobilePay Online method
