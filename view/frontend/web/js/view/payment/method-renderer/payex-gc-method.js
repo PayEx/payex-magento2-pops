@@ -31,13 +31,11 @@ define(
                     this.selectPaymentMethod();
                     var method = this.getCode();
                     setPaymentMethodAction(this.getData(), this.messageContainer).done(
-                        function (response) {
-                            if (response.hasOwnProperty('order_id')) {
-                                customerData.invalidate(['cart']);
-                                $.mage.redirect(
-                                    window.checkoutConfig.payment[method].redirectUrl + '?order_id=' + response.order_id
-                                );
-                            }
+                        function () {
+                            customerData.invalidate(['cart']);
+                            $.mage.redirect(
+                                window.checkoutConfig.payment[method].redirectUrl
+                            );
                         }
                     );
 
