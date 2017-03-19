@@ -121,6 +121,7 @@
             <payex_evc>
                 <active>1</active>
                 <model>PayEx\Payments\Model\Method\Evc</model>
+                <payment_action>authorize_capture</payment_action>
                 <title>Purchase using Electronic Value Codes</title>
                 <debug>1</debug>
                 <accountnumber>payex account number</accountnumber>
