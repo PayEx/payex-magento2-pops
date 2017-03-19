@@ -3,6 +3,7 @@
 namespace PayEx\Payments\Model\Method;
 
 use Magento\Framework\DataObject;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class Cc
@@ -44,11 +45,6 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
     protected $_canFetchTransactionInfo = true;
 
     /**
-     * @var \Magento\Checkout\Model\Session
-     */
-    protected $session;
-
-    /**
      * Constructor
      * @param \Magento\Framework\App\RequestInterface $request
      * @param \Magento\Framework\UrlInterface $urlBuilder
@@ -62,8 +58,8 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
      * @param \Magento\Payment\Helper\Data $paymentData
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Payment\Model\Method\Logger $logger
-     * @param \PayEx\Payments\Logger\Logger $payexLogger
      * @param \Magento\Checkout\Model\Session $session
+     * @param \PayEx\Payments\Logger\Logger $payexLogger
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -82,8 +78,8 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
         \Magento\Payment\Helper\Data $paymentData,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Payment\Model\Method\Logger $logger,
-        \PayEx\Payments\Logger\Logger $payexLogger,
         \Magento\Checkout\Model\Session $session,
+        \PayEx\Payments\Logger\Logger $payexLogger,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -101,13 +97,12 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
             $paymentData,
             $scopeConfig,
             $logger,
+            $session,
             $payexLogger,
             $resource,
             $resourceCollection,
             $data
         );
-
-        $this->session = $session;
 
         // Init PayEx Environment
         $accountnumber = $this->getConfigData('accountnumber');
@@ -124,6 +119,7 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
      * @param object $stateObject
      *
      * @return $this
+     * @throws LocalizedException
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @api
      */
@@ -176,12 +172,6 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
 
         // Get Amount
         $amount = $order->getGrandTotal();
-
-        // Init PayEx Environment
-        $accountnumber = $this->getConfigData('accountnumber');
-        $encryptionkey = $this->getConfigData('encryptionkey');
-        $debug = (bool)$this->getConfigData('debug');
-        $this->payexHelper->getPx()->setEnvironment($accountnumber, $encryptionkey, $debug);
 
         // Call PxOrder.Initialize8
         $params = [
@@ -263,17 +253,5 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
         $this->session->setPayexRedirectUrl($redirectUrl);
 
         return $this;
-    }
-
-    /**
-     * Checkout redirect URL getter for onepage checkout (hardcode)
-     *
-     * @see \Magento\Checkout\Controller\Onepage::savePaymentAction()
-     * @see \Magento\Quote\Model\Quote\Payment::getCheckoutRedirectUrl()
-     * @return string
-     */
-    public function getCheckoutRedirectUrl()
-    {
-        return $this->urlBuilder->getUrl('payex/cc/redirect', ['_secure' => $this->request->isSecure()]);
     }
 }
