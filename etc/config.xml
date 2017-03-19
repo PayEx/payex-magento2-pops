@@ -139,12 +139,13 @@
             <payex_mobilepay>
                 <active>1</active>
                 <model>PayEx\Payments\Model\Method\MobilePay</model>
+                <payment_action>authorize_capture</payment_action>
                 <title>MobilePay Online</title>
                 <debug>1</debug>
                 <accountnumber>payex account number</accountnumber>
                 <encryptionkey>payex encryption key</encryptionkey>
                 <order_status_authorize>processing</order_status_authorize>
-                <order_status_capture>shipped</order_status_capture>
+                <order_status_capture>processing</order_status_capture>
                 <transactiontype>SALE</transactiontype>
                 <language>en-US</language>
                 <allowspecific>0</allowspecific>
