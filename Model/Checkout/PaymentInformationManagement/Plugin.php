@@ -45,11 +45,6 @@ class Plugin
         \Magento\Quote\Api\Data\AddressInterface $billingAddress
     )
     {
-        if ($paymentMethod->getMethod() === \PayEx\Payments\Model\Method\Bankdebit::METHOD_CODE) {
-            $additionalData = $paymentMethod->getAdditionalData();
-            $this->session->setBankId(isset($additionalData['bank_id']) ? $additionalData['bank_id'] : null);
-        }
-
         if ($paymentMethod->getMethod() === \PayEx\Payments\Model\Method\PartPayment::METHOD_CODE) {
             $additionalData = $paymentMethod->getAdditionalData();
             $this->session->setPayexSSN(isset($additionalData['social_security_number']) ? $additionalData['social_security_number'] : null);

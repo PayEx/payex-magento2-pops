@@ -24,6 +24,7 @@
                 <active>1</active>
                 <model>PayEx\Payments\Model\Method\Bankdebit</model>
                 <title>PayEx Bank Debit</title>
+                <payment_action>authorize_capture</payment_action>
                 <debug>1</debug>
                 <accountnumber>payex account number</accountnumber>
                 <encryptionkey>payex encryption key</encryptionkey>
