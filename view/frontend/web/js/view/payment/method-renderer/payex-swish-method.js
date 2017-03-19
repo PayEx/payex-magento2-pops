@@ -2,45 +2,17 @@
 /*global define*/
 define(
     [
+        'ko',
         'jquery',
-        'Magento_Checkout/js/view/payment/default',
-        'PayEx_Payments/js/action/set-payment-method',
-        'Magento_Checkout/js/model/payment/additional-validators',
-        'Magento_Checkout/js/model/quote',
-        'Magento_Customer/js/customer-data'
+        'PayEx_Payments/js/view/payment/method-renderer/payex-cc-method'
     ],
-    function (
-        $,
-        Component,
-        setPaymentMethodAction,
-        additionalValidators,
-        quote,
-        customerData
-    ) {
+    function (ko, $, Component) {
         'use strict';
 
         return Component.extend({
             defaults: {
                 self: this,
                 template: 'PayEx_Payments/payment/swish'
-            },
-            /** Redirect to PayEx */
-            continueToPayEx: function () {
-                if (additionalValidators.validate()) {
-                    //update payment method information if additional data was changed
-                    this.selectPaymentMethod();
-                    var method = this.getCode();
-                    setPaymentMethodAction(this.getData(), this.messageContainer).done(
-                        function () {
-                            customerData.invalidate(['cart']);
-                            $.mage.redirect(
-                                window.checkoutConfig.payment[method].redirectUrl
-                            );
-                        }
-                    );
-
-                    return false;
-                }
             }
         });
     }

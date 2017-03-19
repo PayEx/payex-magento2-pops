@@ -39,6 +39,7 @@
             <payex_swish>
                 <active>1</active>
                 <model>PayEx\Payments\Model\Method\Swish</model>
+                <payment_action>authorize_capture</payment_action>
                 <title>Swish Payments (via PayEx)</title>
                 <debug>1</debug>
                 <accountnumber>payex account number</accountnumber>
