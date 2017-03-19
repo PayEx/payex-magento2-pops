@@ -44,6 +44,11 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
     protected $_canFetchTransactionInfo = true;
 
     /**
+     * @var \Magento\Checkout\Model\Session
+     */
+    protected $session;
+
+    /**
      * Constructor
      * @param \Magento\Framework\App\RequestInterface $request
      * @param \Magento\Framework\UrlInterface $urlBuilder
@@ -58,6 +63,7 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Payment\Model\Method\Logger $logger
      * @param \PayEx\Payments\Logger\Logger $payexLogger
+     * @param \Magento\Checkout\Model\Session $session
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -77,6 +83,7 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Payment\Model\Method\Logger $logger,
         \PayEx\Payments\Logger\Logger $payexLogger,
+        \Magento\Checkout\Model\Session $session,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -100,6 +107,8 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
             $data
         );
 
+        $this->session = $session;
+
         // Init PayEx Environment
         $accountnumber = $this->getConfigData('accountnumber');
         $encryptionkey = $this->getConfigData('encryptionkey');
@@ -120,31 +129,140 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
      */
     public function initialize($paymentAction, $stateObject)
     {
-        /** @var \Magento\Sales\Model\Order\Payment $payment */
-        $payment = $this->getInfoInstance();
+        $this->payexLogger->info('initialize');
+
+        /** @var \Magento\Quote\Model\Quote\Payment $info */
+        $info = $this->getInfoInstance();
 
         /** @var \Magento\Sales\Model\Order $order */
-        $order = $payment->getOrder();
-        $order->setCanSendNewEmailFlag(false);
+        $order = $info->getOrder();
 
-        // Set Initial Order Status
-        $state = \Magento\Sales\Model\Order::STATE_NEW;
-        $stateObject->setState($state);
-        $stateObject->setStatus($state);
-        $stateObject->setIsNotified(false);
-    }
+        $order_id = $order->getIncrementId();
 
-    /**
-     * Get config payment action url
-     * Used to universalize payment actions when processing payment place
-     *
-     * @return string
-     * @api
-     */
-    public function getConfigPaymentAction()
-    {
-        $paymentAction = $this->getConfigData('payment_action');
-        return empty($paymentAction) ? true : $paymentAction;
+        // Get Currency code
+        $currency_code = $order->getOrderCurrency()->getCurrencyCode();
+
+        // Get Operation Type (AUTHORIZATION / SALE)
+        $operation = $this->getConfigData('transactiontype');
+
+        // Get Payment Type (PX, CREDITCARD etc)
+        $payment_type = $this->getConfigData('payment_type');
+
+        // Get Additional Values
+        $additional = ($payment_type === 'PX' ? 'PAYMENTMENU=TRUE' : '');
+
+        // Direct Debit uses 'SALE' only
+        if ($payment_type === 'DIRECTDEBIT') {
+            $operation = 'SALE';
+        }
+
+        // Responsive Skinning
+        if ($this->getConfigData('responsive') === '1') {
+            $separator = (!empty($additional) && mb_substr($additional, -1) !== '&') ? '&' : '';
+
+            // PayEx Payment Page 2.0  works only for View 'Credit Card' and 'Direct Debit' at the moment
+            if (in_array($payment_type, ['CREDITCARD', 'DIRECTDEBIT'])) {
+                $additional .= $separator . 'RESPONSIVE=1';
+            } else {
+                $additional .= $separator . 'USECSS=RESPONSIVEDESIGN';
+            }
+        }
+
+        // Language
+        $language = $this->getConfigData('language');
+        if (empty($language)) {
+            $language = $this->payexHelper->getLanguage();
+        }
+
+        // Get Amount
+        $amount = $order->getGrandTotal();
+
+        // Init PayEx Environment
+        $accountnumber = $this->getConfigData('accountnumber');
+        $encryptionkey = $this->getConfigData('encryptionkey');
+        $debug = (bool)$this->getConfigData('debug');
+        $this->payexHelper->getPx()->setEnvironment($accountnumber, $encryptionkey, $debug);
+
+        // Call PxOrder.Initialize8
+        $params = [
+            'accountNumber' => '',
+            'purchaseOperation' => $operation,
+            'price' => round($amount * 100),
+            'priceArgList' => '',
+            'currency' => $currency_code,
+            'vat' => 0,
+            'orderID' => $order_id,
+            'productNumber' => $order_id,
+            'description' => $this->payexHelper->getStore()->getName(),
+            'clientIPAddress' => $this->payexHelper->getRemoteAddr(),
+            'clientIdentifier' => 'USERAGENT=' . $this->request->getServer('HTTP_USER_AGENT'),
+            'additionalValues' => $additional,
+            'externalID' => '',
+            'returnUrl' => $this->urlBuilder->getUrl('payex/cc/success', [
+                '_secure' => $this->request->isSecure()
+            ]),
+            'view' => $payment_type,
+            'agreementRef' => '',
+            'cancelUrl' => $this->urlBuilder->getUrl('payex/cc/cancel', [
+                '_secure' => $this->request->isSecure()
+            ]),
+            'clientLanguage' => $language
+        ];
+        $result = $this->payexHelper->getPx()->Initialize8($params);
+        $this->payexLogger->info('PxOrder.Initialize8', $result);
+
+        // Check Errors
+        if ($result['code'] !== 'OK' || $result['description'] !== 'OK' || $result['errorCode'] !== 'OK') {
+            $message = $this->payexHelper->getVerboseErrorMessage($result);
+            throw new LocalizedException(__($message));
+        }
+
+        $order_ref = $result['orderRef'];
+        $redirectUrl = $result['redirectUrl'];
+
+        // Add Order Info
+        if ($this->getConfigData('checkoutinfo')) {
+            // Add Order Items
+            $items = $this->payexHelper->getOrderItems($order);
+            foreach ($items as $index => $item) {
+                // Call PxOrder.AddSingleOrderLine2
+                $params = [
+                    'accountNumber' => '',
+                    'orderRef' => $order_ref,
+                    'itemNumber' => ($index + 1),
+                    'itemDescription1' => $item['name'],
+                    'itemDescription2' => '',
+                    'itemDescription3' => '',
+                    'itemDescription4' => '',
+                    'itemDescription5' => '',
+                    'quantity' => $item['qty'],
+                    'amount' => (int)(100 * $item['price_with_tax']), //must include tax
+                    'vatPrice' => (int)(100 * $item['tax_price']),
+                    'vatPercent' => (int)(100 * $item['tax_percent'])
+                ];
+
+                $result = $this->payexHelper->getPx()->AddSingleOrderLine2($params);
+                $this->payexLogger->info('PxOrder.AddSingleOrderLine2', $result);
+            }
+
+            // Add Order Address Info
+            $params = array_merge([
+                'accountNumber' => '',
+                'orderRef' => $order_ref
+            ], $this->payexHelper->getAddressInfo($order));
+
+            $result = $this->payexHelper->getPx()->AddOrderAddress2($params);
+            $this->payexLogger->info('PxOrder.AddOrderAddress2', $result);
+        }
+
+        // Set Pending Payment status
+        $order->addStatusHistoryComment(__('The customer was redirected to PayEx.'), \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
+        $order->save();
+
+        // Save Redirect URL in Session
+        $this->session->setPayexRedirectUrl($redirectUrl);
+
+        return $this;
     }
 
     /**

@@ -35,37 +35,6 @@ define(
             }
 
             return placeOrderService(serviceUrl, payload, messageContainer);
-
-            var payload;
-
-            if (!paymentData) {
-                paymentData = quote.paymentMethod();
-            }
-
-            /**
-             * Checkout for guest and registered customer.
-             */
-            payload = {
-                cartId: quote.getQuoteId(),
-                email: !customer.isLoggedIn() ? quote.guestEmail : '',
-                paymentMethod: paymentData,
-                billingAddress: quote.billingAddress(),
-                mode: customer.isLoggedIn() ? 'guest' : 'registered'
-            };
-
-            return $.ajax('/payex/checkout/placeorder', {
-                data: JSON.stringify(payload),
-                method: 'POST',
-                beforeSend: function() {
-                    fullScreenLoader.startLoader();
-                }
-            }).always(function() {
-                fullScreenLoader.stopLoader();
-            }).done(function(response) {
-                if (!response.success) {
-                    errorProcessor.process(response, messageContainer);
-                }
-            });
         };
     }
 );
