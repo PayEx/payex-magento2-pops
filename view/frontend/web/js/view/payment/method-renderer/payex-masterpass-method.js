@@ -29,14 +29,13 @@ define(
                 if (additionalValidators.validate()) {
                     //update payment method information if additional data was changed
                     this.selectPaymentMethod();
+                    var method = this.getCode();
                     setPaymentMethodAction(this.getData(), this.messageContainer).done(
-                        function (response) {
-                            if (response.hasOwnProperty('order_id')) {
-                                customerData.invalidate(['cart']);
-                                $.mage.redirect(
-                                    window.checkoutConfig.payment.payex_masterpass.redirectUrl + '?order_id=' + response.order_id
-                                );
-                            }
+                        function () {
+                            customerData.invalidate(['cart']);
+                            $.mage.redirect(
+                                window.checkoutConfig.payment[method].redirectUrl
+                            );
                         }
                     );
 

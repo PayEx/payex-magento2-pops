@@ -89,6 +89,9 @@ class Success extends \Magento\Framework\App\Action\Action
             return;
         }
 
+        // Remove Redirect Url from Session
+        $this->session->unsPayexRedirectUrl();
+
         $order_id = $order->getIncrementId();
 
         /** @var \Magento\Payment\Model\Method\AbstractMethod $method */

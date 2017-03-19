@@ -6,6 +6,7 @@
                 <active>1</active>
                 <model>PayEx\Payments\Model\Method\Cc</model>
                 <title>PayEx Credit Card</title>
+                <payment_action>authorize_capture</payment_action>
                 <debug>1</debug>
                 <accountnumber>payex account number</accountnumber>
                 <encryptionkey>payex encryption key</encryptionkey>
@@ -23,6 +24,7 @@
                 <active>1</active>
                 <model>PayEx\Payments\Model\Method\Bankdebit</model>
                 <title>PayEx Bank Debit</title>
+                <payment_action>authorize_capture</payment_action>
                 <debug>1</debug>
                 <accountnumber>payex account number</accountnumber>
                 <encryptionkey>payex encryption key</encryptionkey>
@@ -37,6 +39,7 @@
             <payex_swish>
                 <active>1</active>
                 <model>PayEx\Payments\Model\Method\Swish</model>
+                <payment_action>authorize_capture</payment_action>
                 <title>Swish Payments (via PayEx)</title>
                 <debug>1</debug>
                 <accountnumber>payex account number</accountnumber>
@@ -102,6 +105,7 @@
             <payex_gc>
                 <active>1</active>
                 <model>PayEx\Payments\Model\Method\Gc</model>
+                <payment_action>authorize_capture</payment_action>
                 <title>Purchase using PayEx Gift Card</title>
                 <debug>1</debug>
                 <accountnumber>payex account number</accountnumber>
@@ -118,6 +122,7 @@
             <payex_evc>
                 <active>1</active>
                 <model>PayEx\Payments\Model\Method\Evc</model>
+                <payment_action>authorize_capture</payment_action>
                 <title>Purchase using Electronic Value Codes</title>
                 <debug>1</debug>
                 <accountnumber>payex account number</accountnumber>
@@ -134,12 +139,13 @@
             <payex_mobilepay>
                 <active>1</active>
                 <model>PayEx\Payments\Model\Method\MobilePay</model>
+                <payment_action>authorize_capture</payment_action>
                 <title>MobilePay Online</title>
                 <debug>1</debug>
                 <accountnumber>payex account number</accountnumber>
                 <encryptionkey>payex encryption key</encryptionkey>
                 <order_status_authorize>processing</order_status_authorize>
-                <order_status_capture>shipped</order_status_capture>
+                <order_status_capture>processing</order_status_capture>
                 <transactiontype>SALE</transactiontype>
                 <language>en-US</language>
                 <allowspecific>0</allowspecific>

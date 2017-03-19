@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
-    <group id="payex_mobilepay" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+    <group id="payex_mobilepay" translate="label" type="text" sortOrder="108" showInDefault="1" showInWebsite="1" showInStore="1">
         <label><![CDATA[PayEx MobilePay Online]]></label>
         <frontend_model>Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Payment</frontend_model>
         <fieldset_css>payex-method-payex-mobilepay</fieldset_css>
@@ -42,12 +42,6 @@
             <config_path>payment/payex_mobilepay/transactiontype</config_path>
         </field>
 
-        <!--<field id="payment_type" translate="label" type="select" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">-->
-            <!--<label>Payment Type</label>-->
-            <!--<source_model>PayEx\Payments\Model\Config\Source\Type</source_model>-->
-            <!--<config_path>payment/payex_mobilepay/payment_type</config_path>-->
-        <!--</field>-->
-
         <field id="order_status_authorize" translate="label" type="select" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Order status (for authorize)</label>
             <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
@@ -58,12 +52,6 @@
             <label>Order status (for capture)</label>
             <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
             <config_path>payment/payex_mobilepay/order_status_capture</config_path>
-        </field>
-
-        <field id="responsive" translate="label" type="select" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>Enable Responsive Skinning</label>
-            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-            <config_path>payment/payex_mobilepay/responsive</config_path>
         </field>
 
         <field id="checkoutinfo" translate="label" type="select" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
