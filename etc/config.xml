@@ -104,6 +104,7 @@
             <payex_gc>
                 <active>1</active>
                 <model>PayEx\Payments\Model\Method\Gc</model>
+                <payment_action>authorize_capture</payment_action>
                 <title>Purchase using PayEx Gift Card</title>
                 <debug>1</debug>
                 <accountnumber>payex account number</accountnumber>
