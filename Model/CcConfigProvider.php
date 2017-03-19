@@ -73,57 +73,22 @@ class CcConfigProvider implements ConfigProviderInterface
     {
         $config = [
             'payment' => [
-                \PayEx\Payments\Model\Method\Cc::METHOD_CODE => [],
                 \PayEx\Payments\Model\Method\Bankdebit::METHOD_CODE => [],
-                \PayEx\Payments\Model\Method\MobilePay::METHOD_CODE => []
+                \PayEx\Payments\Model\Method\MasterPass::METHOD_CODE => []
             ]
         ];
-
-        /** @var \PayEx\Payments\Model\Method\Cc $method */
-        $method = $this->_paymentHelper->getMethodInstance(\PayEx\Payments\Model\Method\Cc::METHOD_CODE);
-        if ($method->isAvailable()) {
-            $config['payment'] [\PayEx\Payments\Model\Method\Cc::METHOD_CODE]['redirectUrl'] = $method->getCheckoutRedirectUrl();
-        }
 
         /** @var \PayEx\Payments\Model\Method\Bankdebit $method */
         $method = $this->_paymentHelper->getMethodInstance(\PayEx\Payments\Model\Method\Bankdebit::METHOD_CODE);
         if ($method->isAvailable()) {
             $banks = \Magento\Framework\App\ObjectManager::getInstance()->get('PayEx\Payments\Block\Bankdebit\Banks')->getAvailableBanks();
-
-            $config['payment'] [\PayEx\Payments\Model\Method\Bankdebit::METHOD_CODE]['redirectUrl'] = $method->getCheckoutRedirectUrl();
             $config['payment'] [\PayEx\Payments\Model\Method\Bankdebit::METHOD_CODE]['banks'] = $banks;
-        }
-
-        /** @var \PayEx\Payments\Model\Method\Swish $method */
-        $method = $this->_paymentHelper->getMethodInstance(\PayEx\Payments\Model\Method\Swish::METHOD_CODE);
-        if ($method->isAvailable()) {
-            $config['payment'] [\PayEx\Payments\Model\Method\Swish::METHOD_CODE]['redirectUrl'] = $method->getCheckoutRedirectUrl();
         }
 
         /** @var \PayEx\Payments\Model\Method\MasterPass $method */
         $method = $this->_paymentHelper->getMethodInstance(\PayEx\Payments\Model\Method\MasterPass::METHOD_CODE);
         if ($method->isAvailable()) {
             $config['payment'] [\PayEx\Payments\Model\Method\MasterPass::METHOD_CODE]['redirectUrl'] = $method->getCheckoutRedirectUrl();
-        }
-
-        /** @var \PayEx\Payments\Model\Method\Gc $method */
-        $method = $this->_paymentHelper->getMethodInstance(\PayEx\Payments\Model\Method\Gc::METHOD_CODE);
-        if ($method->isAvailable()) {
-            $config['payment'] [\PayEx\Payments\Model\Method\Gc::METHOD_CODE]['redirectUrl'] = $method->getCheckoutRedirectUrl();
-        }
-
-        /** @var \PayEx\Payments\Model\Method\Evc $method */
-        $method = $this->_paymentHelper->getMethodInstance(\PayEx\Payments\Model\Method\Evc::METHOD_CODE);
-        if ($method->isAvailable()) {
-            $config['payment'] [\PayEx\Payments\Model\Method\Evc::METHOD_CODE]['redirectUrl'] = $method->getCheckoutRedirectUrl();
-        }
-
-        /** @var \PayEx\Payments\Model\Method\MobilePay $method */
-        $method = $this->_paymentHelper->getMethodInstance(\PayEx\Payments\Model\Method\MobilePay::METHOD_CODE);
-        if ($method->isAvailable()) {
-            $config['payment'] [\PayEx\Payments\Model\Method\MobilePay::METHOD_CODE]['redirectUrl']
-                = $method->getCheckoutRedirectUrl();
-
         }
 
         return $config;
