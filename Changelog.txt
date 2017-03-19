@@ -1,3 +1,7 @@
+Version 1.0.7
+* Improvements of payment methods
+* Bugfixes
+
 Version 1.0.6
 * Error messages during payment process
 * Fixed JS error of payex cc method
