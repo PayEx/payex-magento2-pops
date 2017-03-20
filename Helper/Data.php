@@ -305,7 +305,7 @@ class Data extends AbstractHelper
             $itemQty = (int)$item->getQtyOrdered();
             $priceWithTax = $item->getRowTotalInclTax();
             $priceWithoutTax = $item->getRowTotal();
-            $taxPercent = (($priceWithTax / $priceWithoutTax) - 1) * 100; // works for all types
+            $taxPercent = $priceWithoutTax > 0 ? (($priceWithTax / $priceWithoutTax) - 1) * 100 : 0; // works for all types
             $taxPrice = $priceWithTax - $priceWithoutTax;
 
             $lines[] = [
@@ -349,7 +349,7 @@ class Data extends AbstractHelper
             $discountInclTax = $discountData->getDiscountInclTax();
             $discountExclTax = $discountData->getDiscountExclTax();
             $discountVatAmount = $discountInclTax - $discountExclTax;
-            $discountVatPercent = (($discountInclTax / $discountExclTax) - 1) * 100;
+            $discountVatPercent = $discountExclTax > 0 ? (($discountInclTax / $discountExclTax) - 1) * 100 : 0;
 
             $lines[] = [
                 'type' => 'discount',
