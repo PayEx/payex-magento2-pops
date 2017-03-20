@@ -302,6 +302,11 @@ class Data extends AbstractHelper
         $items = $order->getAllVisibleItems();
         foreach ($items as $item) {
             /** @var \Magento\Sales\Model\Order\Item $item */
+            // Skip configurable product which should be invisible
+            if ($item->getProductType() === \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE && $item->getParentItem()) {
+                continue;
+            }
+
             $itemQty = (int)$item->getQtyOrdered();
             $priceWithTax = $item->getRowTotalInclTax();
             $priceWithoutTax = $item->getRowTotal();
