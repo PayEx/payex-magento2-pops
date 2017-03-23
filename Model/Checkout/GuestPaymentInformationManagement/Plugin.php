@@ -12,17 +12,17 @@ class Plugin
     protected $session;
 
     /**
-     * @var \Magento\Quote\Api\CartManagementInterface
+     * @var \Magento\Quote\Api\GuestCartManagementInterface
      */
     protected $cartManagement;
 
     /**
      * @param \Magento\Checkout\Model\Session $session
-     * @param \Magento\Quote\Api\CartManagementInterface $cartManagement
+     * @param \Magento\Quote\Api\GuestCartManagementInterface $cartManagement
      */
     public function __construct(
         \Magento\Checkout\Model\Session $session,
-        \Magento\Quote\Api\CartManagementInterface $cartManagement
+        \Magento\Quote\Api\GuestCartManagementInterface $cartManagement
     )
     {
         $this->session = $session;
