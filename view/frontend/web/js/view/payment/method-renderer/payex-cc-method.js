@@ -35,14 +35,14 @@ define(
                 template: 'PayEx_Payments/payment/cc'
             },
             /** Redirect to PayEx */
-            continueToPayEx: function () {
+            placeOrder: function () {
                 if (additionalValidators.validate()) {
                     var self = this;
                     selectPaymentMethodAction(this.getData()).done(function () {
                         //update payment method information if additional data was changed
                         //this.selectPaymentMethod();
                         //var method = this.getCode();
-                        setPaymentMethodAction(self.getData(), this.messageContainer).done(function () {
+                        setPaymentMethodAction(self.getData(), self.messageContainer).done(function () {
                             getPaymentUrlAction().always(function() {
                                 fullScreenLoader.stopLoader();
                             }).done(function(response) {

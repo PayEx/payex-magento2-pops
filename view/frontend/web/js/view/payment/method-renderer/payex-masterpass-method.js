@@ -25,7 +25,7 @@ define(
                 template: 'PayEx_Payments/payment/masterpass'
             },
             /** Redirect to PayEx */
-            continueToPayEx: function () {
+            placeOrder: function () {
                 if (additionalValidators.validate()) {
                     //update payment method information if additional data was changed
                     this.selectPaymentMethod();
