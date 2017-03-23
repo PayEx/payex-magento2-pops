@@ -1,3 +1,6 @@
+Version 1.0.9
+* Guest checkout bugfix
+
 Version 1.0.8
 * Order lines: Skip configurable product which should be invisible
 * Fixed "Division by zero" error
