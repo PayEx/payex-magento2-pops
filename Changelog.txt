@@ -1,3 +1,6 @@
+Version 1.0.10
+* Use native placeOrderAction to fix checkout agreements error
+
 Version 1.0.9
 * Guest checkout bugfix
 
