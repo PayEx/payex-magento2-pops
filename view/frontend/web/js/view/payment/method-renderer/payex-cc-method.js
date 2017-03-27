@@ -4,7 +4,7 @@ define(
     [
         'jquery',
         'Magento_Checkout/js/view/payment/default',
-        'PayEx_Payments/js/action/set-payment-method',
+        'Magento_Checkout/js/action/place-order',
         'PayEx_Payments/js/action/select-payment-method',
         'PayEx_Payments/js/action/get-payment-url',
         'Magento_Checkout/js/model/payment/additional-validators',
@@ -17,7 +17,7 @@ define(
     function (
         $,
         Component,
-        setPaymentMethodAction,
+        placeOrderAction,
         selectPaymentMethodAction,
         getPaymentUrlAction,
         additionalValidators,
@@ -34,15 +34,17 @@ define(
                 self: this,
                 template: 'PayEx_Payments/payment/cc'
             },
+            redirectAfterPlaceOrder: false,
+
             /** Redirect to PayEx */
-            continueToPayEx: function () {
+            placeOrder: function () {
                 if (additionalValidators.validate()) {
                     var self = this;
                     selectPaymentMethodAction(this.getData()).done(function () {
                         //update payment method information if additional data was changed
                         //this.selectPaymentMethod();
                         //var method = this.getCode();
-                        setPaymentMethodAction(self.getData(), this.messageContainer).done(function () {
+                        placeOrderAction(self.getData(), self.messageContainer).done(function () {
                             getPaymentUrlAction().always(function() {
                                 fullScreenLoader.stopLoader();
                             }).done(function(response) {
