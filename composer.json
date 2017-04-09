@@ -21,6 +21,7 @@
     "magento/module-directory": "*",
     "magento/module-theme": "*",
     "magento/framework": "*",
+    "magento/module-paypal": "*",
     "payex/php-api": "~1.0.1",
     "aait/php-name-parser": "~1.0.0"
   },
