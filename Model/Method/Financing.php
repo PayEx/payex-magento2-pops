@@ -260,7 +260,9 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
         }
 
         // Get Amount
-        $amount = $order->getGrandTotal();
+        //$amount = $order->getGrandTotal();
+        $items = $this->payexHelper->getOrderItems($order);
+        $amount = array_sum(array_column($items, 'price_with_tax'));
 
         // Get SSN
         $ssn = $info->getAdditionalInformation('social_security_number');

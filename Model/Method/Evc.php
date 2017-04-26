@@ -85,7 +85,9 @@ class Evc extends \PayEx\Payments\Model\Method\Cc
         }
 
         // Get Amount
-        $amount = $order->getGrandTotal();
+        //$amount = $order->getGrandTotal();
+        $items = $this->payexHelper->getOrderItems($order);
+        $amount = array_sum(array_column($items, 'price_with_tax'));
 
         // Call PxOrder.Initialize8
         $params = [

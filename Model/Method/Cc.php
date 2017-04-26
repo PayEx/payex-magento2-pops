@@ -171,7 +171,9 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
         }
 
         // Get Amount
-        $amount = $order->getGrandTotal();
+        //$amount = $order->getGrandTotal();
+        $items = $this->payexHelper->getOrderItems($order);
+        $amount = array_sum(array_column($items, 'price_with_tax'));
 
         // Call PxOrder.Initialize8
         $params = [
@@ -213,7 +215,6 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
         // Add Order Info
         if ($this->getConfigData('checkoutinfo')) {
             // Add Order Items
-            $items = $this->payexHelper->getOrderItems($order);
             foreach ($items as $index => $item) {
                 // Call PxOrder.AddSingleOrderLine2
                 $params = [

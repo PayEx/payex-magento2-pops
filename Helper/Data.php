@@ -317,10 +317,10 @@ class Data extends AbstractHelper
                 'type' => 'product',
                 'name' => $item->getName(),
                 'qty' => $itemQty,
-                'price_with_tax' => $priceWithTax,
-                'price_without_tax' => $priceWithoutTax,
-                'tax_price' => $taxPrice,
-                'tax_percent' => $taxPercent
+                'price_with_tax' => sprintf("%.2f", $priceWithTax),
+                'price_without_tax' => sprintf("%.2f", $priceWithoutTax),
+                'tax_price' => sprintf("%.2f", $taxPrice),
+                'tax_percent' => sprintf("%.2f", $taxPercent)
             ];
         }
 
@@ -341,10 +341,10 @@ class Data extends AbstractHelper
                 'type' => 'shipping',
                 'name' => $order->getShippingDescription(),
                 'qty' => 1,
-                'price_with_tax' => $shippingIncTax,
-                'price_without_tax' => $shippingExclTax,
-                'tax_price' => $shippingTax,
-                'tax_percent' => $shippingTaxRate
+                'price_with_tax' => sprintf("%.2f", $shippingIncTax),
+                'price_without_tax' => sprintf("%.2f", $shippingExclTax),
+                'tax_price' => sprintf("%.2f", $shippingTax),
+                'tax_percent' => sprintf("%.2f", $shippingTaxRate)
             ];
         }
 
@@ -360,10 +360,10 @@ class Data extends AbstractHelper
                 'type' => 'discount',
                 'name' => __('Discount (%1)', $order->getDiscountDescription()),
                 'qty' => 1,
-                'price_with_tax' => -1 * $discountInclTax,
-                'price_without_tax' => -1 * $discountExclTax,
-                'tax_price' => -1 * $discountVatAmount,
-                'tax_percent' => $discountVatPercent
+                'price_with_tax' => sprintf("%.2f", -1 * $discountInclTax),
+                'price_without_tax' => sprintf("%.2f", -1 * $discountExclTax),
+                'tax_price' => sprintf("%.2f", -1 * $discountVatAmount),
+                'tax_percent' => sprintf("%.2f", $discountVatPercent)
             ];
         }
 
@@ -382,10 +382,10 @@ class Data extends AbstractHelper
                 'type' => 'fee',
                 'name' => __('Payment Fee'),
                 'qty' => 1,
-                'price_with_tax' => $feeIncTax,
-                'price_without_tax' => $feeExclTax,
-                'tax_price' => $feeTax,
-                'tax_percent' => $feeTaxRate
+                'price_with_tax' => sprintf("%.2f", $feeIncTax),
+                'price_without_tax' => sprintf("%.2f", $feeExclTax),
+                'tax_price' => sprintf("%.2f", $feeTax),
+                'tax_percent' => sprintf("%.2f", $feeTaxRate)
             ];
         }
 
