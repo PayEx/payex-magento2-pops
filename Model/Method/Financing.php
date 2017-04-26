@@ -180,6 +180,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
         $ssn = preg_replace('/[\-\s]+/', '', $info->getSocialSecurityNumber());
         $country_code = $quote->getBillingAddress()->getCountry();
         $postcode = str_replace(' ', '', $quote->getBillingAddress()->getPostcode());
+        $phone = $quote->getBillingAddress()->getTelephone();
 
         // Validate fields
         if (empty($ssn)) {
@@ -196,6 +197,14 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
 
         if (empty($postcode)) {
             throw new LocalizedException(__('Please enter postcode.'));
+        }
+
+        // Validate country phone code
+        if (in_array($country_code, ['SE', 'NO'])) {
+            $phone_code = mb_substr(ltrim($phone,'+'), 0, 2, 'UTF-8');
+            if (!in_array($phone_code, ['46', '47'])) {
+                throw new LocalizedException(__('Invalid phone number. Phone code must include country phone code.'));
+            }
         }
 
         // Validate Product names
