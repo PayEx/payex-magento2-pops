@@ -165,6 +165,13 @@ class Evc extends \PayEx\Payments\Model\Method\Cc
         $order->addStatusHistoryComment(__('The customer was redirected to PayEx.'), \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
         $order->save();
 
+        // Set state object
+        /** @var \Magento\Sales\Model\Order\Status $status */
+        $status = $this->payexHelper->getAssignedState(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
+        $stateObject->setState($status->getState());
+        $stateObject->setStatus($status->getStatus());
+        $stateObject->setIsNotified(false);
+
         // Save Redirect URL in Session
         $this->session->setPayexRedirectUrl($redirectUrl);
 
