@@ -21,4 +21,7 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Checkout\Block\Checkout\LayoutProcessor">
+        <plugin name="removeBillingAddressComponent" type="PayEx\Payments\Model\Checkout\LayoutProcessor\Plugin" />
+    </type>
 </config>
