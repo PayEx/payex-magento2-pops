@@ -17,6 +17,7 @@
                 <responsive>1</responsive>
                 <checkoutinfo>1</checkoutinfo>
                 <language>en-US</language>
+                <billing_address_required>1</billing_address_required>
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_cc>
@@ -33,6 +34,7 @@
                 <responsive>1</responsive>
                 <checkoutinfo>1</checkoutinfo>
                 <language>en-US</language>
+                <billing_address_required>1</billing_address_required>
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_bankdebit>
@@ -48,6 +50,7 @@
                 <responsive>1</responsive>
                 <checkoutinfo>1</checkoutinfo>
                 <language>en-US</language>
+                <billing_address_required>1</billing_address_required>
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_swish>
@@ -67,6 +70,7 @@
                 <paymentfee_tax_class>0</paymentfee_tax_class>
                 <replace_illegal>1</replace_illegal>
                 <replacement_char>-</replacement_char>
+                <billing_address_required>1</billing_address_required>
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_financing>
@@ -85,6 +89,7 @@
                 <paymentfee_tax_class>0</paymentfee_tax_class>
                 <replace_illegal>1</replace_illegal>
                 <replacement_char>-</replacement_char>
+                <billing_address_required>1</billing_address_required>
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_partpayment>
@@ -99,6 +104,7 @@
                 <order_status_authorize>processing</order_status_authorize>
                 <order_status_capture>processing</order_status_capture>
                 <language>en-US</language>
+                <billing_address_required>1</billing_address_required>
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_masterpass>
@@ -116,6 +122,7 @@
                 <responsive>1</responsive>
                 <checkoutinfo>1</checkoutinfo>
                 <language>en-US</language>
+                <billing_address_required>1</billing_address_required>
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_gc>
@@ -133,6 +140,7 @@
                 <responsive>1</responsive>
                 <checkoutinfo>1</checkoutinfo>
                 <language>en-US</language>
+                <billing_address_required>1</billing_address_required>
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_evc>
@@ -148,6 +156,7 @@
                 <order_status_capture>processing</order_status_capture>
                 <transactiontype>SALE</transactiontype>
                 <language>en-US</language>
+                <billing_address_required>1</billing_address_required>
                 <allowspecific>0</allowspecific>
                 <cleantime>20</cleantime>
                 <discount_calc>classic</discount_calc>
