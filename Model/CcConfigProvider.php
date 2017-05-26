@@ -5,6 +5,7 @@ namespace PayEx\Payments\Model;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Payment\Helper\Data as PaymentHelper;
 use Magento\Directory\Helper\Data;
+use Magento\Framework\UrlInterface;
 
 class CcConfigProvider implements ConfigProviderInterface
 {
@@ -40,6 +41,11 @@ class CcConfigProvider implements ConfigProviderInterface
     protected $_config;
 
     /**
+     * @var UrlInterface
+     */
+    protected $urlBuilder;
+
+    /**
      * @var \Magento\Payment\Model\Method\AbstractMethod[]
      */
     protected $methods = [];
@@ -51,6 +57,7 @@ class CcConfigProvider implements ConfigProviderInterface
      * @param PaymentHelper $paymentHelper
      * @param \Magento\Framework\Locale\ResolverInterface $localeResolver
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $config
+     * @param UrlInterface $urlBuilder
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
@@ -58,7 +65,8 @@ class CcConfigProvider implements ConfigProviderInterface
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         PaymentHelper $paymentHelper,
         \Magento\Framework\Locale\ResolverInterface $localeResolver,
-        \Magento\Framework\App\Config\ScopeConfigInterface $config
+        \Magento\Framework\App\Config\ScopeConfigInterface $config,
+        UrlInterface $urlBuilder
     ) {
         $this->_appState = $context->getAppState();
         $this->_session = $session;
@@ -66,6 +74,7 @@ class CcConfigProvider implements ConfigProviderInterface
         $this->_paymentHelper = $paymentHelper;
         $this->_localeResolver = $localeResolver;
         $this->_config = $config;
+        $this->urlBuilder = $urlBuilder;
     }
 
 
@@ -75,6 +84,10 @@ class CcConfigProvider implements ConfigProviderInterface
             'payment' => [
                 \PayEx\Payments\Model\Method\Bankdebit::METHOD_CODE => [],
                 \PayEx\Payments\Model\Method\MasterPass::METHOD_CODE => []
+            ],
+            'payex' => [
+                'payment_url' => $this->urlBuilder->getUrl('payex/checkout/getPaymentUrl'),
+                'address_url' => $this->urlBuilder->getUrl('payex/checkout/getAddress')
             ]
         ];
 

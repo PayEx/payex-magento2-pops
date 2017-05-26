@@ -9,7 +9,7 @@ define(
         'use strict';
         return function () {
             fullScreenLoader.startLoader();
-            return jQuery.ajax('/payex/checkout/getPaymentUrl', {
+            return jQuery.ajax(window.checkoutConfig.payex.payment_url, {
                 cache: false,
                 complete: function () {
                     fullScreenLoader.stopLoader();
