@@ -11,7 +11,12 @@
     <?php $_specificInfo = $block->getSpecificInformation(); ?>
     <?php if (count($_specificInfo) > 0): ?>
         <?php foreach($_specificInfo as $_label => $_value): ?>
-            <?php echo $block->escapeHtml($_label) . ': ' . $block->escapeHtml($_value); ?>
+            <?php
+            if ($_label === 'PayEx Transaction Status') {
+                $_value = $block->getTransactionStatusLabel($_value);
+            }
+            ?>
+            <?php echo __($block->escapeHtml($_label)) . ': ' . $block->escapeHtml($_value); ?>
             {{pdf_row_separator}}
         <?php endforeach; ?>
     <?php endif; ?>

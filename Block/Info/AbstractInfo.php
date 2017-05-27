@@ -93,4 +93,31 @@ abstract class AbstractInfo extends \Magento\Payment\Block\Info
 
         return $this->_prepareSpecificInformation()->getData();
     }
+
+    /**
+     * Get Transaction Status Label
+     * @param $code
+     *
+     * @return \Magento\Framework\Phrase
+     */
+    public function getTransactionStatusLabel($code) {
+        switch ($code) {
+            case '0':
+                return __('Sale');
+            case '1':
+                return __('Initialize');
+            case '2':
+                return __('Credit');
+            case '3':
+                return __('Authorize');
+            case '4':
+                return __('Cancel');
+            case '5':
+                return __('Failure');
+            case '6':
+                return __('Capture');
+            default:
+                return __('Unknown');
+        }
+    }
 }
