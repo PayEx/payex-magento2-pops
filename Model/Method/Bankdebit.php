@@ -310,6 +310,7 @@ class Bankdebit extends \PayEx\Payments\Model\Method\AbstractMethod
         }
 
         // Set Pending Payment status
+        $order->setCanSendNewEmailFlag(false);
         $order->addStatusHistoryComment(__('The customer was redirected to PayEx.'), \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
         $order->save();
 
