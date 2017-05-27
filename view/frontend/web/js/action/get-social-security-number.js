@@ -16,7 +16,7 @@ define(
             var country_code = $('[name="country_id"]', form).val();
             var postcode = $('[name="postcode"]', form).val();
 
-            $.ajax('/payex/checkout/getAddress', {
+            $.ajax(window.checkoutConfig.payex.address_url, {
                 data: {
                     ssn: ssn,
                     country_code: country_code,

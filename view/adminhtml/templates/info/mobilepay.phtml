@@ -11,8 +11,13 @@
     <?php $_specificInfo = $block->getSpecificInformation(); ?>
     <table class="data-table admin__table-secondary">
         <?php foreach ($_specificInfo as $_label => $_value):?>
+            <?php
+            if ($_label === 'PayEx Transaction Status') {
+                $_value = $block->getTransactionStatusLabel($_value);
+            }
+            ?>
             <tr>
-                <th><?php echo $block->escapeHtml($_label)?>:</th>
+                <th><?php echo __($block->escapeHtml($_label))?>:</th>
                 <td><?php echo nl2br(implode("\n", $block->getValueAsArray($_value, true)))?></td>
             </tr>
         <?php endforeach; ?>
