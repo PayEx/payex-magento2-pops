@@ -21,14 +21,16 @@ class Banks implements \Magento\Framework\Option\ArrayInterface
             // Norway (NOK)
             ['value' => 'BAX', 'label' => __('BankAxess')],
             // Finland (EUR)
-            ['value' => 'SAMPO', 'label' => __('Sampo')],
-            ['value' => 'AKTIA', 'label' => __('Aktia, Säästöpankki')],
-            ['value' => 'OP', 'label' => __('Osuuspanki, Pohjola, Oko')],
-            ['value' => 'NB:FI', 'label' => __('Nordea Bank Finland')],
-            ['value' => 'SHB:FI', 'label' => __('SHB:FI')],
-            ['value' => 'SPANKKI', 'label' => __('SPANKKI')],
+            ['value' => 'SAMPO', 'label' => __('Danske Bank')],
+            ['value' => 'AKTIA', 'label' => __('Aktia')],
+            ['value' => 'OP', 'label' => __('OP')],
+            ['value' => 'NB:FI', 'label' => __('Nordea Finland')],
+            ['value' => 'SHB:FI', 'label' => __('Handelsbanken Finland')],
+            ['value' => 'SPANKKI', 'label' => __('S-Pankki')],
             ['value' => 'TAPIOLA', 'label' => __('TAPIOLA')],
-            ['value' => 'AALAND', 'label' => __('Ålandsbanken')]
+            ['value' => 'AALAND', 'label' => __('Ålandsbanken')],
+            ['value' => 'POP', 'label' => __('POP Pankki')],
+            ['value' => 'SP', 'label' => __('Säästöpankki')]
         ];
     }
 }
