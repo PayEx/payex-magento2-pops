@@ -62,7 +62,9 @@ class CcConfigProvider implements ConfigProviderInterface
             ],
             'payex' => [
                 'payment_url' => $this->urlBuilder->getUrl('payex/checkout/getPaymentUrl'),
-                'address_url' => $this->urlBuilder->getUrl('payex/checkout/getAddress')
+                'address_url' => $this->urlBuilder->getUrl('payex/checkout/getAddress'),
+                'apply_pm_url' => $this->urlBuilder->getUrl('payex/checkout/applyPaymentMethod'),
+                'tos_url' => $this->urlBuilder->getUrl('payex/checkout/termsOfService')
             ]
         ];
 

@@ -2,6 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Sales:etc/pdf_file.xsd">
     <totals>
         <total name="payex_payment_fee">
+            <model>PayEx\Payments\Model\Sales\Pdf\Fee</model>
             <title translate="true">Payment Fee</title>
             <source_field>payex_payment_fee</source_field>
             <font_size>7</font_size>

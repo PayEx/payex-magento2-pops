@@ -50,7 +50,7 @@ define(
              * @returns {boolean}
              */
             showTOS: function () {
-                $.ajax('/payex/checkout/termsOfService', {
+                $.ajax(window.checkoutConfig.payex.tos_url, {
                     data: {
                         method: this.getCode()
                     },

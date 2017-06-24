@@ -35,8 +35,12 @@ class Fee extends AbstractTotal
             $order->setPayexPaymentFeeTaxInvoiced($order->getPayexPaymentFeeTax());
 
             // Update totals
-            $invoice->setBaseGrandTotal($invoice->getBaseGrandTotal() + $order->getBasePayexPaymentFee());
-            $invoice->setGrandTotal($invoice->getGrandTotal() + $order->getPayexPaymentFee());
+            //$invoice->setBaseGrandTotal($invoice->getBaseGrandTotal() + $order->getBasePayexPaymentFee());
+            //$invoice->setGrandTotal($invoice->getGrandTotal() + $order->getPayexPaymentFee());
+            $invoice->setBaseGrandTotal($order->getBaseGrandTotal());
+            $invoice->setGrandTotal($order->getGrandTotal());
+            $invoice->setTaxAmount($order->getTaxAmount());
+            $invoice->setBaseTaxAmount($order->getBaseTaxAmount());
         }
 
         return $this;

@@ -714,6 +714,7 @@ class Data extends AbstractHelper
                 break;
             case 5:
                 $transaction = $order->getPayment()->addTransaction(Transaction::TYPE_PAYMENT, null, true);
+                $transaction->setIsClosed(0);
                 $transaction->setAdditionalInformation(Transaction::RAW_DETAILS, $details);
                 $transaction->save();
                 break;
