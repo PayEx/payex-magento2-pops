@@ -7,17 +7,17 @@ class ApplyPaymentMethod extends \Magento\Framework\App\Action\Action
     /**
      * @var \Magento\Framework\Controller\Result\ForwardFactory
      */
-    protected $resultForwardFactory;
+    private $resultForwardFactory;
 
     /**
      * @var \Magento\Framework\View\LayoutFactory
      */
-    protected $layoutFactory;
+    private $layoutFactory;
 
     /**
      * @var \Magento\Checkout\Model\Cart
      */
-    protected $cart;
+    private $cart;
 
     /**
      * @param \Magento\Framework\App\Action\Context $context
@@ -29,8 +29,8 @@ class ApplyPaymentMethod extends \Magento\Framework\App\Action\Action
         \Magento\Framework\Controller\Result\ForwardFactory $resultForwardFactory,
         \Magento\Framework\View\LayoutFactory $layoutFactory,
         \Magento\Checkout\Model\Cart $cart
-    )
-    {
+    ) {
+    
         $this->resultForwardFactory = $resultForwardFactory;
         $this->layoutFactory = $layoutFactory;
         $this->cart = $cart;

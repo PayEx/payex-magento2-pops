@@ -2,7 +2,9 @@
 
 namespace PayEx\Payments\Model\Config\Source;
 
-class DiscountCalculation implements \Magento\Framework\Option\ArrayInterface
+use Magento\Framework\Option\ArrayInterface;
+
+class DiscountCalculation implements ArrayInterface
 {
     /**
      * {@inheritdoc}

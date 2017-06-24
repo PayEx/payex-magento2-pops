@@ -16,42 +16,42 @@ class PlaceOrder extends Action
     /**
      * @var CartManagementInterface
      */
-    protected $quoteManagement;
+    private $quoteManagement;
 
     /**
      * @var QuoteIdMaskFactory
      */
-    protected $quoteIdMaskFactory;
+    private $quoteIdMaskFactory;
 
     /**
      * @var CartRepositoryInterface
      */
-    protected $cartRepository;
+    private $cartRepository;
 
     /**
      * @var \Magento\Customer\Model\Session
      */
-    protected $_customerSession;
+    private $customerSession;
 
     /**
      * @var \Magento\Checkout\Model\Session
      */
-    protected $_checkoutSession;
+    private $checkoutSession;
 
     /**
      * @var ServiceInputProcessor
      */
-    protected $inputProcessor;
+    private $inputProcessor;
 
     /**
      * @var \Magento\Sales\Model\OrderFactory
      */
-    protected $_orderFactory;
+    private $orderFactory;
 
     /**
      * @var JsonFactory
      */
-    protected $resultJsonFactory;
+    private $resultJsonFactory;
 
     /**
      * Constructor
@@ -75,15 +75,15 @@ class PlaceOrder extends Action
         ServiceInputProcessor $inputProcessor,
         OrderFactory $orderFactory,
         JsonFactory $resultJsonFactory
-    )
-    {
+    ) {
+    
         $this->quoteManagement = $quoteManagement;
         $this->quoteIdMaskFactory = $quoteIdMaskFactory;
         $this->cartRepository = $cartRepository;
-        $this->_customerSession = $customerSession;
-        $this->_checkoutSession = $checkoutSession;
+        $this->customerSession = $customerSession;
+        $this->checkoutSession = $checkoutSession;
         $this->inputProcessor = $inputProcessor;
-        $this->_orderFactory = $orderFactory;
+        $this->orderFactory = $orderFactory;
         $this->resultJsonFactory = $resultJsonFactory;
 
         parent::__construct($context);
@@ -102,13 +102,13 @@ class PlaceOrder extends Action
         $email = $payload['email'];
 
         // Check is order already placed
-        $incrementId = $this->_checkoutSession->getLastRealOrderId();
+        $incrementId = $this->checkoutSession->getLastRealOrderId();
         if ($incrementId) {
             /** @var \Magento\Sales\Model\Order $order */
-            $order = $this->_orderFactory->create()->loadByIncrementId($incrementId);
+            $order = $this->orderFactory->create()->loadByIncrementId($incrementId);
             if ($order->getId()) {
                 // add order information to the session
-                $this->_checkoutSession
+                $this->checkoutSession
                     ->setLastOrderId($order->getId())
                     ->setLastRealOrderId($order->getIncrementId())
                     ->setLastOrderStatus($order->getStatus());
@@ -132,7 +132,7 @@ class PlaceOrder extends Action
         $ba = $this->inputProcessor->convertValue($payload['billingAddress'], 'Magento\Quote\Api\Data\AddressInterface');
 
         try {
-            if (!$this->_customerSession->isLoggedIn()) {
+            if (!$this->customerSession->isLoggedIn()) {
                 /** @var \Magento\Checkout\Model\GuestPaymentInformationManagement $info */
                 $info = $this->_objectManager->create('Magento\Checkout\Model\GuestPaymentInformationManagement');
                 $orderId = $info->savePaymentInformationAndPlaceOrder($cartId, $email, $pm, $ba);
@@ -165,10 +165,10 @@ class PlaceOrder extends Action
         //$this->_checkoutSession->setLastQuoteId($quoteId)->setLastSuccessQuoteId($quoteId);
 
         /** @var \Magento\Sales\Model\Order $order */
-        $order = $this->_orderFactory->create()->load($orderId);
+        $order = $this->orderFactory->create()->load($orderId);
 
         // add order information to the session
-        $this->_checkoutSession
+        $this->checkoutSession
             ->setLastOrderId($order->getId())
             ->setLastRealOrderId($order->getIncrementId())
             ->setLastOrderStatus($order->getStatus());

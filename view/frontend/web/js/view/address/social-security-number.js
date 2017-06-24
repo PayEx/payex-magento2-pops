@@ -28,7 +28,7 @@ define([
         /**
          * Get Address by SSN
          */
-        getAddress: function() {
+        getAddress: function () {
             getSocialSecurityNumberAction();
             return this;
         },
@@ -36,14 +36,14 @@ define([
         /**
          * Is Applied SSN
          */
-        isAppliedSSN: function() {
+        isAppliedSSN: function () {
             return !!appliedSSN;
         },
 
         /**
          * Get Applied SSN
          */
-        getAppliedSSN: function() {
+        getAppliedSSN: function () {
             return appliedSSN;
         }
     });

@@ -3,7 +3,8 @@
 namespace PayEx\Payments\Model\Method;
 
 use Magento\Framework\DataObject;
-use \Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Sales\Model\Order;
 
 /**
  * Class PartPayment
@@ -127,7 +128,7 @@ class PartPayment extends \PayEx\Payments\Model\Method\Financing
             'countryCode' => $order->getBillingAddress()->getCountryId(),
             'paymentMethod' => 'PXCREDITACCOUNT' . $order->getBillingAddress()->getCountryId(),
             'email' => $order->getBillingAddress()->getEmail(),
-            'msisdn' => (mb_substr($order->getBillingAddress()->getTelephone(), 0, 1) === '+') ? $order->getBillingAddress()->getTelephone() : '+' . $order->getBillingAddress()->getTelephone(),
+            'msisdn' => '+' . ltrim('+', $order->getBillingAddress()->getTelephone()),
             'ipAddress' => $this->payexHelper->getRemoteAddr()
         ];
         $result = $this->payexHelper->getPx()->PurchaseCreditAccount($params);
@@ -184,7 +185,7 @@ class PartPayment extends \PayEx\Payments\Model\Method\Financing
                 $stateObject->setIsNotified(true);
 
                 // Unset SSN
-                $this->session->unsPayexSSN();
+                $this->checkoutHelper->getCheckout()->unsPayexSSN();
                 break;
             case 0:
             case 6:
@@ -212,7 +213,7 @@ class PartPayment extends \PayEx\Payments\Model\Method\Financing
                 $invoice->save();
 
                 // Unset SSN
-                $this->session->unsPayexSSN();
+                $this->checkoutHelper->getCheckout()->unsPayexSSN();
                 break;
             case 2:
             case 4:
@@ -232,7 +233,7 @@ class PartPayment extends \PayEx\Payments\Model\Method\Financing
 
                 // Set state object
                 /** @var \Magento\Sales\Model\Order\Status $status */
-                $status = $this->payexHelper->getAssignedState(\Magento\Sales\Model\Order::STATE_CANCELED);
+                $status = $this->payexHelper->getAssignedState(Order::STATE_CANCELED);
                 $stateObject->setState($status->getState());
                 $stateObject->setStatus($status->getStatus());
                 $stateObject->setIsNotified(true);
@@ -250,7 +251,7 @@ class PartPayment extends \PayEx\Payments\Model\Method\Financing
 
                 // Set state object
                 /** @var \Magento\Sales\Model\Order\Status $status */
-                $status = $this->payexHelper->getAssignedState(\Magento\Sales\Model\Order::STATE_CANCELED);
+                $status = $this->payexHelper->getAssignedState(Order::STATE_CANCELED);
                 $stateObject->setState($status->getState());
                 $stateObject->setStatus($status->getStatus());
                 $stateObject->setIsNotified(true);

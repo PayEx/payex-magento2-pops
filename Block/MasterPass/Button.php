@@ -12,12 +12,12 @@ class Button extends Template
     /**
      * @var \Magento\Framework\UrlInterface
      */
-    protected $urlBuilder;
+    private $urlBuilder;
 
     /**
      * @var \Magento\Framework\Locale\Resolver
      */
-    protected $localeResolver;
+    private $localeResolver;
 
     /**
      * Constructor
@@ -29,8 +29,8 @@ class Button extends Template
         Template\Context $context,
         \Magento\Framework\Locale\Resolver $localeResolver,
         array $data = []
-    )
-    {
+    ) {
+    
         parent::__construct($context, $data);
 
         $this->urlBuilder = $context->getUrlBuilder();
@@ -80,4 +80,3 @@ class Button extends Template
         return isset($links[$country_code]) ? $links[$country_code] : $links['US'];
     }
 }
-

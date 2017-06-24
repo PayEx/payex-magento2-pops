@@ -20,10 +20,10 @@ define(
             isDisplayed: function () {
                 return this.getValue(true) > 0;
             },
-            isBothPricesDisplayed: function() {
+            isBothPricesDisplayed: function () {
                 return 'both' == this.displayMode;
             },
-            isIncludingTaxDisplayed: function() {
+            isIncludingTaxDisplayed: function () {
                 return 'including' == this.displayMode;
             },
             getValue: function (noformat) {
@@ -33,14 +33,14 @@ define(
                 }
                 return noformat ? price : this.getFormattedPrice(price);
             },
-            getValueInclTax: function() {
+            getValueInclTax: function () {
                 var price = 0;
                 if (this.totals()) {
                     price = totals.getSegment('payex_payment_fee').value + totals.getSegment('payex_payment_fee_tax').value;
                 }
                 return this.getFormattedPrice(price);
             },
-            getBaseValue: function() {
+            getBaseValue: function () {
                 var basePrice = 0;
                 if (this.totals()) {
                     basePrice = totals.getSegment('payex_payment_fee').value;

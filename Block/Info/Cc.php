@@ -38,4 +38,3 @@ class Cc extends \PayEx\Payments\Block\Info\AbstractInfo
         return $this->toHtml();
     }
 }
-

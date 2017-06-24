@@ -2,12 +2,11 @@
 
 namespace PayEx\Payments\Model\Method;
 
-use Magento\Framework\DataObject;
-use Magento\Payment\Model\Method\ConfigInterface;
-use Magento\Payment\Model\Method\Online\GatewayInterface;
-use \Magento\Framework\Exception\LocalizedException;
+use Magento\Quote\Api\Data\PaymentMethodInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Sales\Model\Order\Payment\Transaction;
 
-abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMethod implements GatewayInterface
+abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMethod implements PaymentMethodInterface
 {
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
@@ -40,9 +39,14 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
     protected $payexLogger;
 
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var \Magento\Checkout\Helper\Data
      */
-    protected $session;
+    protected $checkoutHelper;
+
+    /**
+     * @var Transaction\Repository
+     */
+    protected $transactionRepository;
 
     /**
      * Constructor
@@ -50,7 +54,6 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
      * @param \Magento\Framework\UrlInterface $urlBuilder
      * @param \PayEx\Payments\Helper\Data $payexHelper
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Framework\Locale\ResolverInterface $resolver
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory
@@ -58,7 +61,8 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
      * @param \Magento\Payment\Helper\Data $paymentData
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Payment\Model\Method\Logger $logger
-     * @param \Magento\Checkout\Model\Session $session
+     * @param \Magento\Checkout\Helper\Data $checkoutHelper
+     * @param Transaction\Repository $transactionRepository
      * @param \PayEx\Payments\Logger\Logger $payexLogger
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
@@ -70,7 +74,6 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
         \Magento\Framework\UrlInterface $urlBuilder,
         \PayEx\Payments\Helper\Data $payexHelper,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\Locale\ResolverInterface $resolver,
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory,
@@ -78,7 +81,8 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
         \Magento\Payment\Helper\Data $paymentData,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Payment\Model\Method\Logger $logger,
-        \Magento\Checkout\Model\Session $session,
+        \Magento\Checkout\Helper\Data $checkoutHelper,
+        Transaction\Repository $transactionRepository,
         \PayEx\Payments\Logger\Logger $payexLogger,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
@@ -103,28 +107,13 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
         $this->payexLogger = $payexLogger;
         $this->logger = $logger;
         $this->request = $request;
-        $this->session = $session;
+        $this->checkoutHelper = $checkoutHelper;
+        $this->transactionRepository = $transactionRepository;
 
-        // Init PayEx Environment
         $accountnumber = $this->getConfigData('accountnumber');
         $encryptionkey = $this->getConfigData('encryptionkey');
         $debug = (bool)$this->getConfigData('debug');
         $this->payexHelper->getPx()->setEnvironment($accountnumber, $encryptionkey, $debug);
-    }
-
-    /**
-     * Post request to gateway and return response
-     *
-     * @param DataObject $request
-     * @param ConfigInterface $config
-     *
-     * @return DataObject
-     *
-     * @throws \Exception
-     */
-    public function postRequest(DataObject $request, ConfigInterface $config)
-    {
-        // Implement postRequest() method.
     }
 
     /**
@@ -133,6 +122,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
      * @param string $transactionId
      * @return mixed
      * @throws \Magento\Framework\Exception\LocalizedException
+     * @api
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function fetchTransactionInfo(\Magento\Payment\Model\InfoInterface $payment, $transactionId)
@@ -170,7 +160,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
             throw new LocalizedException(__('Invalid amount for capture.'));
         }
 
-        /** @var \Magento\Sales\Model\Order\Payment\Transaction $transaction */
+        /** @var Transaction $transaction */
         $transaction = $payment->getAuthorizationTransaction();
         if (!$transaction) {
             throw new LocalizedException(__('Can\'t load last transaction.'));
@@ -180,12 +170,12 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
 
         // Load transaction Data
         $transactionId = $transaction->getTxnId();
-        $details = $transaction->getAdditionalInformation(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS);
+        $details = $transaction->getAdditionalInformation(Transaction::RAW_DETAILS);
 
         // Get Transaction Details
         if (!is_array($details) || count($details) === 0) {
             $details = $this->fetchTransactionInfo($payment, $transactionId);
-            $transaction->setAdditionalInformation(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS, $details);
+            $transaction->setAdditionalInformation(Transaction::RAW_DETAILS, $details);
             $transaction->save();
         }
 
@@ -217,7 +207,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
             $payment->setStatus(self::STATUS_APPROVED)
                 ->setTransactionId($result['transactionNumber'])
                 ->setIsTransactionClosed(0)
-                ->setAdditionalInformation(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS, $result);
+                ->setAdditionalInformation(Transaction::RAW_DETAILS, $result);
 
             return $this;
         }
@@ -236,7 +226,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
      */
     public function cancel(\Magento\Payment\Model\InfoInterface $payment)
     {
-        /** @var \Magento\Sales\Model\Order\Payment\Transaction $transaction */
+        /** @var Transaction $transaction */
         $transaction = $payment->getAuthorizationTransaction();
         if (!$transaction) {
             throw new LocalizedException(__('Can\'t load last transaction.'));
@@ -244,12 +234,12 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
 
         // Load transaction Data
         $transactionId = $transaction->getTxnId();
-        $details = $transaction->getAdditionalInformation(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS);
+        $details = $transaction->getAdditionalInformation(Transaction::RAW_DETAILS);
 
         // Get Transaction Details
         if (!is_array($details) || count($details) === 0) {
             $details = $this->fetchTransactionInfo($payment, $transactionId);
-            $transaction->setAdditionalInformation(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS, $details);
+            $transaction->setAdditionalInformation(Transaction::RAW_DETAILS, $details);
             $transaction->save();
         }
 
@@ -271,7 +261,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
                 ->setIsTransactionClosed(1); // Closed
 
             // Add Transaction fields
-            $payment->setAdditionalInformation(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS, $result);
+            $payment->setAdditionalInformation(Transaction::RAW_DETAILS, $result);
             return $this;
         }
 
@@ -302,10 +292,9 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
 
         // Load transaction Data
         $transactionId = $payment->getLastTransId();
-        $transactionRepository = \Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Sales\Model\Order\Payment\Transaction\Repository');
 
-        /** @var \Magento\Sales\Model\Order\Payment\Transaction $transaction */
-        $transaction = $transactionRepository->getByTransactionId(
+        /** @var Transaction $transaction */
+        $transaction = $this->transactionRepository->getByTransactionId(
             $transactionId,
             $payment->getId(),
             $payment->getOrder()->getId()
@@ -315,12 +304,12 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
             throw new LocalizedException(__('Can\'t load last transaction.'));
         }
 
-        $details = $transaction->getAdditionalInformation(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS);
+        $details = $transaction->getAdditionalInformation(Transaction::RAW_DETAILS);
 
         // Get Transaction Details
         if (!is_array($details) || count($details) === 0) {
             $details = $this->fetchTransactionInfo($payment, $transactionId);
-            $transaction->setAdditionalInformation(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS, $details);
+            $transaction->setAdditionalInformation(Transaction::RAW_DETAILS, $details);
             $transaction->save();
         }
 
@@ -341,7 +330,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
         $result = $this->payexHelper->getPx()->Credit5($params);
         if ($result['code'] === 'OK' && $result['errorCode'] === 'OK' && $result['description'] === 'OK') {
             // Add Credit Transaction
-            $payment->setAnetTransType(\Magento\Sales\Model\Order\Payment\Transaction::TYPE_REFUND);
+            $payment->setAnetTransType(Transaction::TYPE_REFUND);
             $payment->setAmount($amount);
 
             $payment->setStatus(self::STATUS_APPROVED)
@@ -349,7 +338,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
                 ->setIsTransactionClosed(0);
 
             // Add Transaction fields
-            $payment->setAdditionalInformation(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS, $result);
+            $payment->setAdditionalInformation(Transaction::RAW_DETAILS, $result);
             return $this;
         }
 

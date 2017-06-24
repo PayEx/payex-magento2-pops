@@ -11,12 +11,12 @@ class TermsOfService extends Action
     /**
      * @var JsonFactory
      */
-    protected $resultJsonFactory;
+    private $resultJsonFactory;
 
     /**
      * @var PageFactory
      */
-    protected $resultPageFactory;
+    private $resultPageFactory;
 
     /**
      * Constructor
@@ -28,8 +28,8 @@ class TermsOfService extends Action
         \Magento\Framework\App\Action\Context $context,
         JsonFactory $resultJsonFactory,
         PageFactory $resultPageFactory
-    )
-    {
+    ) {
+    
         $this->resultJsonFactory = $resultJsonFactory;
         $this->resultPageFactory = $resultPageFactory;
 

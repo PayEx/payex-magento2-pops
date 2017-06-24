@@ -7,60 +7,76 @@ use Magento\Sales\Model\Order\Payment\Transaction;
 class Success extends \Magento\Framework\App\Action\Action
 {
     /**
-     * @var \Magento\Framework\UrlInterface
+     * @var \Psr\Log\LoggerInterface
      */
-    protected $urlBuilder;
+    private $logger;
 
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var \Magento\Framework\UrlInterface
      */
-    protected $session;
+    private $urlBuilder;
+
+    /**
+     * @var \Magento\Checkout\Helper\Data
+     */
+    private $checkoutHelper;
 
     /**
      * @var \PayEx\Payments\Helper\Data
      */
-    protected $payexHelper;
+    private $payexHelper;
 
     /**
      * @var \PayEx\Payments\Logger\Logger
      */
-    protected $payexLogger;
+    private $payexLogger;
 
     /**
      * @var \Magento\Sales\Api\TransactionRepositoryInterface
      */
-    protected $transactionRepository;
+    private $transactionRepository;
 
     /**
      * @var \Magento\Sales\Model\Order\Email\Sender\OrderSender
      */
-    protected $orderSender;
+    private $orderSender;
+
+    /**
+     * @var \Magento\Sales\Model\OrderFactory
+     */
+    private $orderFactory;
 
     /**
      * Success constructor.
+     * @param \Psr\Log\LoggerInterface $logger
      * @param \Magento\Framework\App\Action\Context $context
-     * @param \Magento\Checkout\Model\Session $session
+     * @param \Magento\Checkout\Helper\Data $checkoutHelper
      * @param \PayEx\Payments\Helper\Data $payexHelper
      * @param \PayEx\Payments\Logger\Logger $payexLogger
      * @param \Magento\Sales\Api\TransactionRepositoryInterface $transactionRepository
+     * @param \Magento\Sales\Model\OrderFactory $orderFactory
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
-        \Magento\Checkout\Model\Session $session,
+        \Psr\Log\LoggerInterface $logger,
+        \Magento\Checkout\Helper\Data $checkoutHelper,
         \PayEx\Payments\Helper\Data $payexHelper,
         \PayEx\Payments\Logger\Logger $payexLogger,
         \Magento\Sales\Api\TransactionRepositoryInterface $transactionRepository,
-        \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender
-    )
-    {
+        \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender,
+        \Magento\Sales\Model\OrderFactory $orderFactory
+    ) {
+    
         parent::__construct($context);
 
+        $this->logger = $logger;
         $this->urlBuilder = $context->getUrl();
-        $this->session = $session;
+        $this->checkoutHelper = $checkoutHelper;
         $this->payexHelper = $payexHelper;
         $this->payexLogger = $payexLogger;
         $this->transactionRepository = $transactionRepository;
         $this->orderSender = $orderSender;
+        $this->orderFactory = $orderFactory;
     }
 
     /**
@@ -74,7 +90,7 @@ class Success extends \Magento\Framework\App\Action\Action
         // Check OrderRef
         $orderRef = $this->getRequest()->getParam('orderRef');
         if (empty($orderRef)) {
-            $this->session->restoreQuote();
+            $this->checkoutHelper->getCheckout()->restoreQuote();
             $this->messageManager->addError(__('Order reference is empty'));
             $this->_redirect('checkout/cart');
             return;
@@ -83,14 +99,14 @@ class Success extends \Magento\Framework\App\Action\Action
         // Load Order
         $order = $this->getOrder();
         if (!$order->getId()) {
-            $this->session->restoreQuote();
+            $this->checkoutHelper->getCheckout()->restoreQuote();
             $this->messageManager->addError(__('No order for processing found'));
             $this->_redirect('checkout/cart');
             return;
         }
 
         // Remove Redirect Url from Session
-        $this->session->unsPayexRedirectUrl();
+        $this->checkoutHelper->getCheckout()->unsPayexRedirectUrl();
 
         $order_id = $order->getIncrementId();
 
@@ -117,7 +133,7 @@ class Success extends \Magento\Framework\App\Action\Action
             $order->save();
 
             // Restore the quote
-            $this->session->restoreQuote();
+            $this->checkoutHelper->getCheckout()->restoreQuote();
 
             $message = $this->payexHelper->getVerboseErrorMessage($details);
             $this->messageManager->addError($message);
@@ -140,13 +156,13 @@ class Success extends \Magento\Framework\App\Action\Action
             if (is_array($raw_details_info) && in_array($transaction_status, [0, 3, 6])) {
                 // Redirect to Success Page
                 $this->payexLogger->info('Transaction already paid: Redirect to success page', [$order_id]);
-                $this->session->getQuote()->setIsActive(false)->save();
+                $this->checkoutHelper->getCheckout()->getQuote()->setIsActive(false)->save();
                 $this->_redirect('checkout/onepage/success');
                 return;
             }
 
             // Restore the quote
-            $this->session->restoreQuote();
+            $this->checkoutHelper->getCheckout()->restoreQuote();
 
             $this->messageManager->addError(__('Payment failed'));
             $this->_redirect('checkout/cart');
@@ -183,11 +199,11 @@ class Success extends \Magento\Framework\App\Action\Action
                 try {
                     $this->orderSender->send($order);
                 } catch (\Exception $e) {
-                    $this->_objectManager->get('Psr\Log\LoggerInterface')->critical($e);
+                    $this->logger->critical($e);
                 }
 
                 // Redirect to Success page
-                $this->session->getQuote()->setIsActive(false)->save();
+                $this->checkoutHelper->getCheckout()->getQuote()->setIsActive(false)->save();
                 $this->_redirect('checkout/onepage/success');
                 break;
             case 0:
@@ -209,23 +225,31 @@ class Success extends \Magento\Framework\App\Action\Action
                 try {
                     $this->orderSender->send($order);
                 } catch (\Exception $e) {
-                    $this->_objectManager->get('Psr\Log\LoggerInterface')->critical($e);
+                    $this->logger->critical($e);
                 }
 
                 // Create Invoice for Sale Transaction
-                $invoice = $this->payexHelper->makeInvoice($order, [], false, $message);
+                $invoice = $this->payexHelper->makeInvoice(
+                    $order,
+                    [],
+                    false,
+                    $message
+                );
                 $invoice->setTransactionId($details['transactionNumber']);
                 $invoice->save();
 
                 // Redirect to Success page
-                $this->session->getQuote()->setIsActive(false)->save();
+                $this->checkoutHelper->getCheckout()->getQuote()->setIsActive(false)->save();
                 $this->_redirect('checkout/onepage/success');
                 break;
             case 2:
             case 4:
             case 5:
                 if ($transaction_status === 2) {
-                    $message = __('Detected an abnormal payment process (Transaction Status: %1).', $transaction_status);
+                    $message = __(
+                        'Detected an abnormal payment process (Transaction Status: %1).',
+                        $transaction_status
+                    );
                 } elseif ($transaction_status === 4) {
                     $message = __('Order automatically canceled.');
                 } else {
@@ -237,7 +261,7 @@ class Success extends \Magento\Framework\App\Action\Action
                 $order->save();
 
                 // Restore the quote
-                $this->session->restoreQuote();
+                $this->checkoutHelper->getCheckout()->restoreQuote();
 
                 $this->messageManager->addError($message);
                 $this->_redirect('checkout/cart');
@@ -247,7 +271,7 @@ class Success extends \Magento\Framework\App\Action\Action
                 $message = __('Invalid transaction status.');
 
                 // Restore the quote
-                $this->session->restoreQuote();
+                $this->checkoutHelper->getCheckout()->restoreQuote();
 
                 $this->messageManager->addError($message);
                 $this->_redirect('checkout/cart');
@@ -261,17 +285,7 @@ class Success extends \Magento\Framework\App\Action\Action
      */
     protected function getOrder()
     {
-        $incrementId = $this->getCheckout()->getLastRealOrderId();
-        $orderFactory = $this->_objectManager->get('Magento\Sales\Model\OrderFactory');
-        return $orderFactory->create()->loadByIncrementId($incrementId);
-    }
-
-    /**
-     * Get Checkout Session
-     * @return \Magento\Checkout\Model\Session
-     */
-    protected function getCheckout()
-    {
-        return $this->_objectManager->get('Magento\Checkout\Model\Session');
+        $incrementId = $this->checkoutHelper->getCheckout()->getLastRealOrderId();
+        return $this->orderFactory->create()->loadByIncrementId($incrementId);
     }
 }

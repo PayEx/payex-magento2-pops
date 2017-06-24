@@ -51,8 +51,8 @@ class Success extends \Magento\Framework\App\Action\Action
         \PayEx\Payments\Logger\Logger $payexLogger,
         \Magento\Sales\Api\TransactionRepositoryInterface $transactionRepository,
         \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender
-    )
-    {
+    ) {
+    
         parent::__construct($context);
 
         $this->urlBuilder = $context->getUrl();
@@ -231,9 +231,10 @@ class Success extends \Magento\Framework\App\Action\Action
             case 4:
             case 5:
                 if ($transaction_status === 2) {
-                    $message = __('Detected an abnormal payment process (Transaction Status: %1).',
-                        $transaction_status)
-                    ;
+                    $message = __(
+                        'Detected an abnormal payment process (Transaction Status: %1).',
+                        $transaction_status
+                    );
                 } elseif ($transaction_status === 4) {
                     $message = __('Order automatically canceled.');
                 } else {

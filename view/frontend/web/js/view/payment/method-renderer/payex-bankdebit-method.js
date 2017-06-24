@@ -25,7 +25,7 @@ define(
                     }
                 };
             },
-            availableBanks: function() {
+            availableBanks: function () {
                 return window.checkoutConfig.payment.payex_bankdebit.banks;
             }
         });

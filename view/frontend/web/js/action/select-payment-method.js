@@ -7,7 +7,7 @@ define(
         'jquery',
         'Magento_Checkout/js/action/get-totals'
     ],
-    function(quote, fullScreenLoader, jQuery, getTotalsAction) {
+    function (quote, fullScreenLoader, jQuery, getTotalsAction) {
         'use strict';
         return function (paymentMethod) {
 

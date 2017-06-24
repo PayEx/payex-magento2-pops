@@ -2,16 +2,19 @@
 
 namespace PayEx\Payments\Block\Bankdebit;
 
-use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\AbstractBlock;
+use Magento\Widget\Block\BlockInterface;
+use Magento\Framework\App\ObjectManager;
+use Magento\Store\Model\ScopeInterface;
 
-class Banks extends \Magento\Framework\View\Element\AbstractBlock implements \Magento\Widget\Block\BlockInterface
+class Banks extends AbstractBlock implements BlockInterface
 {
     /**
      * Options
      *
      * @var array
      */
-    protected $_options = [];
+    private $options = [];
 
     /**
      * Render block HTML
@@ -43,7 +46,7 @@ class Banks extends \Magento\Framework\View\Element\AbstractBlock implements \Ma
      */
     public function setOptions($options)
     {
-        $this->_options = $options;
+        $this->options = $options;
     }
 
     /**
@@ -52,10 +55,10 @@ class Banks extends \Magento\Framework\View\Element\AbstractBlock implements \Ma
      */
     public function getOptions()
     {
-        if (count($this->_options) === 0) {
+        if (count($this->options) === 0) {
             return $this->getAvailableBanks();
         }
-        return $this->_options;
+        return $this->options;
     }
 
     /**
@@ -66,15 +69,17 @@ class Banks extends \Magento\Framework\View\Element\AbstractBlock implements \Ma
     {
         $selected_banks = $this->_scopeConfig->getValue(
             'payment/payex_bankdebit/banks',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            ScopeInterface::SCOPE_STORE
         );
         $selected_banks = explode(',', $selected_banks);
 
+	    // @codingStandardsIgnoreStart
         /** @var \Magento\Framework\ObjectManagerInterface $om */
-        $om = \Magento\Framework\App\ObjectManager::getInstance();
+        $om = ObjectManager::getInstance();
 
         /** @var \PayEx\Payments\Model\Config\Source\Banks $banks_source */
         $banks_source = $om->get('PayEx\Payments\Model\Config\Source\Banks');
+	    // @codingStandardsIgnoreEnd
 
         // Get Banks
         $banks = $banks_source->toOptionArray();

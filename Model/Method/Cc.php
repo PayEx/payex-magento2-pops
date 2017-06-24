@@ -2,8 +2,8 @@
 
 namespace PayEx\Payments\Model\Method;
 
-use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Sales\Model\Order;
 
 /**
  * Class Cc
@@ -43,73 +43,6 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
     protected $_canVoid = true;
     protected $_canUseInternal = false;
     protected $_canFetchTransactionInfo = true;
-
-    /**
-     * Constructor
-     * @param \Magento\Framework\App\RequestInterface $request
-     * @param \Magento\Framework\UrlInterface $urlBuilder
-     * @param \PayEx\Payments\Helper\Data $payexHelper
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Framework\Locale\ResolverInterface $resolver
-     * @param \Magento\Framework\Model\Context $context
-     * @param \Magento\Framework\Registry $registry
-     * @param \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory
-     * @param \Magento\Framework\Api\AttributeValueFactory $customAttributeFactory
-     * @param \Magento\Payment\Helper\Data $paymentData
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Magento\Payment\Model\Method\Logger $logger
-     * @param \Magento\Checkout\Model\Session $session
-     * @param \PayEx\Payments\Logger\Logger $payexLogger
-     * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
-     * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
-     * @param array $data
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     */
-    public function __construct(
-        \Magento\Framework\App\RequestInterface $request,
-        \Magento\Framework\UrlInterface $urlBuilder,
-        \PayEx\Payments\Helper\Data $payexHelper,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\Locale\ResolverInterface $resolver,
-        \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory,
-        \Magento\Framework\Api\AttributeValueFactory $customAttributeFactory,
-        \Magento\Payment\Helper\Data $paymentData,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Payment\Model\Method\Logger $logger,
-        \Magento\Checkout\Model\Session $session,
-        \PayEx\Payments\Logger\Logger $payexLogger,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
-        array $data = []
-    ) {
-        parent::__construct(
-            $request,
-            $urlBuilder,
-            $payexHelper,
-            $storeManager,
-            $resolver,
-            $context,
-            $registry,
-            $extensionFactory,
-            $customAttributeFactory,
-            $paymentData,
-            $scopeConfig,
-            $logger,
-            $session,
-            $payexLogger,
-            $resource,
-            $resourceCollection,
-            $data
-        );
-
-        // Init PayEx Environment
-        $accountnumber = $this->getConfigData('accountnumber');
-        $encryptionkey = $this->getConfigData('encryptionkey');
-        $debug = (bool)$this->getConfigData('debug');
-        $this->payexHelper->getPx()->setEnvironment($accountnumber, $encryptionkey, $debug);
-    }
 
     /**
      * Method that will be executed instead of authorize or capture
@@ -248,18 +181,18 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
 
         // Set Pending Payment status
         $order->setCanSendNewEmailFlag(false);
-        $order->addStatusHistoryComment(__('The customer was redirected to PayEx.'), \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
+        $order->addStatusHistoryComment(__('The customer was redirected to PayEx.'), Order::STATE_PENDING_PAYMENT);
         $order->save();
 
         // Set state object
         /** @var \Magento\Sales\Model\Order\Status $status */
-        $status = $this->payexHelper->getAssignedState(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
+        $status = $this->payexHelper->getAssignedState(Order::STATE_PENDING_PAYMENT);
         $stateObject->setState($status->getState());
         $stateObject->setStatus($status->getStatus());
         $stateObject->setIsNotified(false);
 
         // Save Redirect URL in Session
-        $this->session->setPayexRedirectUrl($redirectUrl);
+        $this->checkoutHelper->getCheckout()->setPayexRedirectUrl($redirectUrl);
 
         return $this;
     }

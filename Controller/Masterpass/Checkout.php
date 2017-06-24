@@ -53,8 +53,8 @@ class Checkout extends \Magento\Framework\App\Action\Action
         \PayEx\Payments\Logger\Logger $payexLogger,
         \Magento\Sales\Api\TransactionRepositoryInterface $transactionRepository,
         \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender
-    )
-    {
+    ) {
+    
         parent::__construct($context);
 
         $this->urlBuilder = $context->getUrl();

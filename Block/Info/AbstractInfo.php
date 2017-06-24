@@ -3,6 +3,7 @@
 namespace PayEx\Payments\Block\Info;
 
 use Magento\Framework\View\Element\Template;
+use Magento\Sales\Model\Order\Payment\Transaction;
 
 abstract class AbstractInfo extends \Magento\Payment\Block\Info
 {
@@ -37,8 +38,8 @@ abstract class AbstractInfo extends \Magento\Payment\Block\Info
         \Magento\Sales\Api\TransactionRepositoryInterface $transactionRepository,
         Template\Context $context,
         array $data = []
-    )
-    {
+    ) {
+    
         parent::__construct($context, $data);
         $this->payexHelper = $payexHelper;
         $this->transactionRepository = $transactionRepository;
@@ -54,40 +55,36 @@ abstract class AbstractInfo extends \Magento\Payment\Block\Info
         // Get Payment Info
         /** @var \Magento\Payment\Model\Info $_info */
         $_info = $this->getInfo();
-        if ($_info) {
-            $transactionId = $_info->getLastTransId();
+        if ($_info && $transactionId = $_info->getLastTransId()) {
+            // Load transaction
+            $transaction = $this->transactionRepository->getByTransactionId(
+                $transactionId,
+                $_info->getOrder()->getPayment()->getId(),
+                $_info->getOrder()->getId()
+            );
 
-            if ($transactionId) {
-                // Load transaction
-                $transaction = $this->transactionRepository->getByTransactionId(
-                    $transactionId,
-                    $_info->getOrder()->getPayment()->getId(),
-                    $_info->getOrder()->getId()
-                );
+            if ($transaction) {
+                $transaction_data = $transaction->getAdditionalInformation(Transaction::RAW_DETAILS);
+                if (!$transaction_data) {
+                    $payment = $_info->getOrder()->getPayment();
+                    $transaction_data = $payment->getMethodInstance()->fetchTransactionInfo($payment, $transactionId);
+                    $transaction->setAdditionalInformation(Transaction::RAW_DETAILS, $transaction_data);
+                    $transaction->save();
+                }
 
-                if ($transaction) {
-                    $transaction_data = $transaction->getAdditionalInformation(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS);
-                    if (!$transaction_data) {
-                        $payment = $_info->getOrder()->getPayment();
-                        $transaction_data = $payment->getMethodInstance()->fetchTransactionInfo($payment, $transactionId);
-                        $transaction->setAdditionalInformation(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS, $transaction_data);
-                        $transaction->save();
-                    }
+                // Filter empty values
+                $transaction_data = array_filter($transaction_data, 'strlen');
 
-                    // Filter empty values
-                    $transaction_data = array_filter($transaction_data, 'strlen');
-
-                    $result = [];
-                    foreach ($this->transactionFields as $description => $list) {
-                        foreach ($list as $key => $value) {
-                            if (isset($transaction_data[$value])) {
-                                $result[$description] = $transaction_data[$value];
-                            }
+                $result = [];
+                foreach ($this->transactionFields as $description => $list) {
+                    foreach ($list as $key => $value) {
+                        if (isset($transaction_data[$value])) {
+                            $result[$description] = $transaction_data[$value];
                         }
                     }
-
-                    return $result;
                 }
+
+                return $result;
             }
         }
 
@@ -100,7 +97,8 @@ abstract class AbstractInfo extends \Magento\Payment\Block\Info
      *
      * @return \Magento\Framework\Phrase
      */
-    public function getTransactionStatusLabel($code) {
+    public function getTransactionStatusLabel($code)
+    {
         switch ($code) {
             case '0':
                 return __('Sale');

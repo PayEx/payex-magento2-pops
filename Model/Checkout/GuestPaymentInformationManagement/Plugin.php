@@ -7,25 +7,25 @@ use Magento\Framework\Exception\CouldNotSaveException;
 class Plugin
 {
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var \Magento\Checkout\Helper\Data
      */
-    protected $session;
+    private $checkoutHelper;
 
     /**
-     * @var \Magento\Quote\Api\GuestCartManagementInterface
+     * @var \Magento\Quote\Api\CartManagementInterface
      */
-    protected $cartManagement;
+    private $cartManagement;
 
     /**
-     * @param \Magento\Checkout\Model\Session $session
-     * @param \Magento\Quote\Api\GuestCartManagementInterface $cartManagement
+     * @param \Magento\Checkout\Helper\Data $checkoutHelper
+     * @param \Magento\Quote\Api\CartManagementInterface $cartManagement
      */
     public function __construct(
-        \Magento\Checkout\Model\Session $session,
-        \Magento\Quote\Api\GuestCartManagementInterface $cartManagement
-    )
-    {
-        $this->session = $session;
+        \Magento\Checkout\Helper\Data $checkoutHelper,
+        \Magento\Quote\Api\CartManagementInterface $cartManagement
+    ) {
+
+        $this->checkoutHelper = $checkoutHelper;
         $this->cartManagement = $cartManagement;
     }
 
@@ -45,11 +45,13 @@ class Plugin
         $email,
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress
-    )
-    {
+    ) {
+    
         if ($paymentMethod->getMethod() === \PayEx\Payments\Model\Method\PartPayment::METHOD_CODE) {
             $additionalData = $paymentMethod->getAdditionalData();
-            $this->session->setPayexSSN(isset($additionalData['social_security_number']) ? $additionalData['social_security_number'] : null);
+            $this->checkoutHelper->getCheckout()->setPayexSSN(
+                isset($additionalData['social_security_number']) ? $additionalData['social_security_number'] : null
+            );
         }
     }
 
@@ -75,8 +77,8 @@ class Plugin
         $email,
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress
-    )
-    {
+    ) {
+    
         $subject->savePaymentInformation($cartId, $email, $paymentMethod, $billingAddress);
         try {
             $orderId = $this->cartManagement->placeOrder($cartId);

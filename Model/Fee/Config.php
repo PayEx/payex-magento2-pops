@@ -3,6 +3,7 @@
 namespace PayEx\Payments\Model\Fee;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 
 /**
  * @SuppressWarnings(PHPMD.LongVariable)
@@ -22,7 +23,7 @@ class Config extends \Magento\Tax\Model\Config
     /**
      * @var ScopeConfigInterface
      */
-    protected $scopeConfig;
+    private $scopeConfig;
 
     /**
      * @param ScopeConfigInterface $scopeConfig
@@ -30,8 +31,8 @@ class Config extends \Magento\Tax\Model\Config
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig
-    )
-    {
+    ) {
+    
         parent::__construct($scopeConfig);
         $this->scopeConfig = $scopeConfig;
     }
@@ -45,7 +46,7 @@ class Config extends \Magento\Tax\Model\Config
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_DISPLAY_CART_PAYEX_FEE,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_STORE,
             $store
         ) == self::DISPLAY_TYPE_INCLUDING_TAX;
     }
@@ -59,7 +60,7 @@ class Config extends \Magento\Tax\Model\Config
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_DISPLAY_CART_PAYEX_FEE,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_STORE,
             $store
         ) == self::DISPLAY_TYPE_EXCLUDING_TAX;
     }
@@ -73,7 +74,7 @@ class Config extends \Magento\Tax\Model\Config
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_DISPLAY_CART_PAYEX_FEE,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_STORE,
             $store
         ) == self::DISPLAY_TYPE_BOTH;
     }
@@ -87,7 +88,7 @@ class Config extends \Magento\Tax\Model\Config
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_DISPLAY_SALES_PAYEX_FEE,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_STORE,
             $store
         ) == self::DISPLAY_TYPE_INCLUDING_TAX;
     }
@@ -101,7 +102,7 @@ class Config extends \Magento\Tax\Model\Config
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_DISPLAY_SALES_PAYEX_FEE,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_STORE,
             $store
         ) == self::DISPLAY_TYPE_EXCLUDING_TAX;
     }
@@ -115,7 +116,7 @@ class Config extends \Magento\Tax\Model\Config
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_DISPLAY_SALES_PAYEX_FEE,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_STORE,
             $store
         ) == self::DISPLAY_TYPE_BOTH;
     }

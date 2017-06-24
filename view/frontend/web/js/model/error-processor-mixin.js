@@ -8,7 +8,7 @@ define(
 
         return function (target) {
             // Override "process" function
-            target.process = function(response, messageContainer) {
+            target.process = function (response, messageContainer) {
                 /**
                  * Convert MessageObj to Message
                  * @param messageObj
@@ -44,5 +44,6 @@ define(
             };
             return target;
         };
-    });
+    }
+);
 

@@ -4,6 +4,7 @@ namespace PayEx\Payments\Model\Method;
 
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Sales\Model\Order;
 
 /**
  * Class Swish
@@ -165,18 +166,21 @@ class Swish extends \PayEx\Payments\Model\Method\Cc
 
         // Set Pending Payment status
         $order->setCanSendNewEmailFlag(false);
-        $order->addStatusHistoryComment(__('The customer was redirected to PayEx.'), \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
+        $order->addStatusHistoryComment(
+            __('The customer was redirected to PayEx.'),
+            Order::STATE_PENDING_PAYMENT
+        );
         $order->save();
 
         // Set state object
         /** @var \Magento\Sales\Model\Order\Status $status */
-        $status = $this->payexHelper->getAssignedState(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
+        $status = $this->payexHelper->getAssignedState(Order::STATE_PENDING_PAYMENT);
         $stateObject->setState($status->getState());
         $stateObject->setStatus($status->getStatus());
         $stateObject->setIsNotified(false);
 
         // Save Redirect URL in Session
-        $this->session->setPayexRedirectUrl($redirectUrl);
+        $this->checkoutHelper->getCheckout()->setPayexRedirectUrl($redirectUrl);
 
         return $this;
     }
