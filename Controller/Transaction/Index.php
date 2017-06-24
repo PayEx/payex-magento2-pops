@@ -3,6 +3,7 @@ namespace PayEx\Payments\Controller\Transaction;
 
 use Zend\Log\Logger;
 use Zend\Log\Writer\Stream;
+use Magento\Framework\App\Action\Action;
 
 /**
  * Class Index
@@ -10,10 +11,10 @@ use Zend\Log\Writer\Stream;
  * @see http://www.payexpim.com/quick-guide/9-transaction-callback/
  * @package PayEx\Payments\Controller\Transaction
  */
-class Index extends \Magento\Framework\App\Action\Action
+class Index extends Action
 {
     /** @var array PayEx TC Spider IPs */
-    static protected $_allowed_ips = [
+    static private $allowed_ips = [
         '82.115.146.170', // Production
         '82.115.146.10' // Test
     ];
@@ -21,12 +22,12 @@ class Index extends \Magento\Framework\App\Action\Action
     /**
      * @var \PayEx\Payments\Helper\Data
      */
-    protected $payexHelper;
+    private $payexHelper;
 
     /**
      * @var \Magento\Framework\Controller\Result\RawFactory
      */
-    protected $rawResultFactory;
+    private $rawResultFactory;
 
     /**
      * Constructor
@@ -50,6 +51,10 @@ class Index extends \Magento\Framework\App\Action\Action
      *
      * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
      * @throws \Magento\Framework\Exception\NotFoundException
+     * @SuppressWarnings(Generic.Metrics.CyclomaticComplexity.MaxExceeded)
+     * @SuppressWarnings(MEQP2.Classes.ObjectInstantiation.FoundDirectInstantiation)
+     * @SuppressWarnings(MEQP2.Classes.ObjectManager.ObjectManagerFound)
+     * @SuppressWarnings(Generic.Files.LineLength.TooLong)
      */
     public function execute()
     {
@@ -65,7 +70,7 @@ class Index extends \Magento\Framework\App\Action\Action
         $result = $this->rawResultFactory->create();
 
         // Check is PayEx Request
-        if (!in_array($remote_addr, self::$_allowed_ips)) {
+        if (!in_array($remote_addr, self::$allowed_ips)) {
             $logger->err('Access denied for this request. It\'s not PayEx Spider.', [$remote_addr]);
             $result->setStatusHeader('403', '1.1', 'Access denied. Accept PayEx Transaction Callback only.');
             $result->setContents('Error: Access denied. Accept PayEx Transaction Callback only.');
