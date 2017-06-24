@@ -164,8 +164,14 @@ class Success extends \Magento\Framework\App\Action\Action
             // Restore the quote
             $this->checkoutHelper->getCheckout()->restoreQuote();
 
-            $this->messageManager->addError(__('Payment failed'));
+            $message = __('Payment failed');
+            if (is_array($raw_details_info) && isset($raw_details_info['code'])) {
+                $message = $this->payexHelper->getVerboseErrorMessage($raw_details_info);
+            }
+
+            $this->messageManager->addError($message);
             $this->_redirect('checkout/cart');
+            return;
         }
 
         // Register Transaction
