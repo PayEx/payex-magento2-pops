@@ -67,8 +67,8 @@ class Order extends \Magento\Framework\App\Action\Action
         \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender,
         \Magento\Quote\Api\CartManagementInterface $quoteManagement,
         \Magento\Customer\Model\Session $customerSession
-    )
-    {
+    ) {
+    
         parent::__construct($context);
 
         $this->urlBuilder = $context->getUrl();

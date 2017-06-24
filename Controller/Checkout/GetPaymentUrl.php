@@ -10,27 +10,27 @@ class GetPaymentUrl extends Action
     /**
      * @var JsonFactory
      */
-    protected $resultJsonFactory;
+    private $resultJsonFactory;
 
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var \Magento\Checkout\Helper\Data
      */
-    protected $session;
+    private $checkoutHelper;
 
     /**
      * Constructor
      * @param \Magento\Framework\App\Action\Context $context
      * @param JsonFactory $resultJsonFactory
-     * @param \Magento\Checkout\Model\Session $session
+     * @param \Magento\Checkout\Helper\Data $checkoutHelper
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         JsonFactory $resultJsonFactory,
-        \Magento\Checkout\Model\Session $session
-    )
-    {
+        \Magento\Checkout\Helper\Data $checkoutHelper
+    ) {
+    
         $this->resultJsonFactory = $resultJsonFactory;
-        $this->session = $session;
+        $this->checkoutHelper = $checkoutHelper;
 
         parent::__construct($context);
     }
@@ -42,7 +42,7 @@ class GetPaymentUrl extends Action
      */
     public function execute()
     {
-        $redirectUrl = $this->session->getPayexRedirectUrl();
+        $redirectUrl = $this->checkoutHelper->getCheckout()->getPayexRedirectUrl();
         if (!empty($redirectUrl)) {
             $data = [
                 'redirect_url' => $redirectUrl

@@ -5,6 +5,7 @@ namespace PayEx\Payments\Model;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Tax\Helper\Data as TaxHelper;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\Store;
 
 class FeeConfigProvider implements ConfigProviderInterface
@@ -24,7 +25,7 @@ class FeeConfigProvider implements ConfigProviderInterface
      *
      * @var array
      */
-    protected static $allowed_methods = [
+    private static $allowed_methods = [
         'payex_financing',
         'payex_partpayment'
     ];
@@ -32,12 +33,12 @@ class FeeConfigProvider implements ConfigProviderInterface
     /**
      * @var TaxHelper
      */
-    protected $taxHelper;
+    private $taxHelper;
 
     /**
      * @var ScopeConfigInterface
      */
-    protected $scopeConfig;
+    private $scopeConfig;
 
     /**
      * @param TaxHelper $taxHelper
@@ -46,8 +47,8 @@ class FeeConfigProvider implements ConfigProviderInterface
     public function __construct(
         TaxHelper $taxHelper,
         ScopeConfigInterface $scopeConfig
-    )
-    {
+    ) {
+    
         $this->taxHelper = $taxHelper;
         $this->scopeConfig = $scopeConfig;
     }
@@ -79,13 +80,13 @@ class FeeConfigProvider implements ConfigProviderInterface
         foreach (self::$allowed_methods as $method) {
             $active = $this->scopeConfig->getValue(
                 'payment/' . $method . '/active',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+                ScopeInterface::SCOPE_STORE,
                 $store
             );
 
             $price = $this->scopeConfig->getValue(
                 'payment/' . $method . '/paymentfee',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+                ScopeInterface::SCOPE_STORE,
                 $store
             );
 
@@ -141,7 +142,7 @@ class FeeConfigProvider implements ConfigProviderInterface
     {
         return $this->scopeConfig->getValue(
             self::CONFIG_XML_PATH_CART_FEE_DISPLAY_MODE,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_STORE,
             $store
         ) == self::DISPLAY_TYPE_INCLUDING_TAX;
     }
@@ -155,7 +156,7 @@ class FeeConfigProvider implements ConfigProviderInterface
     {
         return $this->scopeConfig->getValue(
             self::CONFIG_XML_PATH_CART_FEE_DISPLAY_MODE,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_STORE,
             $store
         ) == self::DISPLAY_TYPE_EXCLUDING_TAX;
     }
@@ -169,7 +170,7 @@ class FeeConfigProvider implements ConfigProviderInterface
     {
         return $this->scopeConfig->getValue(
             self::CONFIG_XML_PATH_CART_FEE_DISPLAY_MODE,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_STORE,
             $store
         ) == self::DISPLAY_TYPE_BOTH;
     }
@@ -183,7 +184,7 @@ class FeeConfigProvider implements ConfigProviderInterface
     {
         return $this->scopeConfig->getValue(
             self::CONFIG_XML_PATH_SALES_FEE_DISPLAY_MODE,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_STORE,
             $store
         ) == self::DISPLAY_TYPE_INCLUDING_TAX;
     }
@@ -197,7 +198,7 @@ class FeeConfigProvider implements ConfigProviderInterface
     {
         return $this->scopeConfig->getValue(
             self::CONFIG_XML_PATH_SALES_FEE_DISPLAY_MODE,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_STORE,
             $store
         ) == self::DISPLAY_TYPE_EXCLUDING_TAX;
     }
@@ -211,7 +212,7 @@ class FeeConfigProvider implements ConfigProviderInterface
     {
         return $this->scopeConfig->getValue(
             self::CONFIG_XML_PATH_SALES_FEE_DISPLAY_MODE,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_STORE,
             $store
         ) == self::DISPLAY_TYPE_BOTH;
     }

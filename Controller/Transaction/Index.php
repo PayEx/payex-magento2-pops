@@ -38,8 +38,8 @@ class Index extends \Magento\Framework\App\Action\Action
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\Controller\Result\RawFactory $rawResultFactory,
         \PayEx\Payments\Helper\Data $payexHelper
-    )
-    {
+    ) {
+    
         parent::__construct($context);
         $this->rawResultFactory = $rawResultFactory;
         $this->payexHelper = $payexHelper;

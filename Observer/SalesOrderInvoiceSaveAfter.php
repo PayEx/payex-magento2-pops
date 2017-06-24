@@ -7,7 +7,7 @@ use Magento\Framework\Event\ObserverInterface;
 class SalesOrderInvoiceSaveAfter implements ObserverInterface
 {
     /** @var \PayEx\Payments\Helper\Data */
-    protected $payexHelper;
+    private $payexHelper;
 
     /**
      * @param \PayEx\Payments\Helper\Data $payexHelper

@@ -36,15 +36,14 @@ class Redirect extends \Magento\Framework\App\Action\Action
         \Magento\Checkout\Model\Session $session,
         \PayEx\Payments\Helper\Data $payexHelper,
         \PayEx\Payments\Logger\Logger $payexLogger
-    )
-    {
+    ) {
+    
         parent::__construct($context);
 
         $this->urlBuilder = $context->getUrl();
         $this->session = $session;
         $this->payexHelper = $payexHelper;
         $this->payexLogger = $payexLogger;
-
     }
 
     /**

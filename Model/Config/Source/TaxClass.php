@@ -2,19 +2,31 @@
 
 namespace PayEx\Payments\Model\Config\Source;
 
-class TaxClass implements \Magento\Framework\Option\ArrayInterface
+use Magento\Framework\Option\ArrayInterface;
+use Magento\Tax\Model\TaxClass\Source\Product;
+
+class TaxClass implements ArrayInterface
 {
+    /**
+     * @var Product
+     */
+    private $tax_class;
+
+    /**
+     * Constructor
+     * @param Product $tax_class
+     */
+    public function __construct(
+        Product $tax_class
+    ) {
+        $this->tax_class = $tax_class;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function toOptionArray()
     {
-        /** @var \Magento\Framework\ObjectManagerInterface $om */
-        $om = \Magento\Framework\App\ObjectManager::getInstance();
-
-        /** @var \Magento\Tax\Model\TaxClass\Source\Product $ra */
-        $tax_class = $om->get('Magento\Tax\Model\TaxClass\Source\Product');
-
-        return $tax_class->getAllOptions(true);
+        return $this->tax_class->getAllOptions(true);
     }
 }

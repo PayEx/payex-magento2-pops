@@ -6,18 +6,20 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use PayEx\Payments\Model\Fee\Config;
 use Magento\Framework\DataObject;
+use PayEx\Payments\Model\Method\Financing;
+use PayEx\Payments\Model\Method\PartPayment;
 
 class Fee extends Template
 {
     /**
      * @var ScopeConfigInterface
      */
-    protected $scopeConfig;
+    private $scopeConfig;
 
     /**
      * @var Config
      */
-    protected $feeConfig;
+    private $feeConfig;
 
     /**
      * Fee constructor.
@@ -29,8 +31,8 @@ class Fee extends Template
         Template\Context $context,
         array $data,
         Config $feeConfig
-    )
-    {
+    ) {
+    
         parent::__construct($context, $data);
 
         $this->scopeConfig = $context->getScopeConfig();
@@ -47,8 +49,8 @@ class Fee extends Template
 
         // Check is fee allowed for payment method
         if (!in_array($source->getOrder()->getPayment()->getMethod(), [
-            \PayEx\Payments\Model\Method\Financing::METHOD_CODE,
-            \PayEx\Payments\Model\Method\PartPayment::METHOD_CODE
+            Financing::METHOD_CODE,
+            PartPayment::METHOD_CODE
         ])) {
             return $this;
         }
@@ -99,7 +101,6 @@ class Fee extends Template
 
         return $this;
     }
-
 
     /**
      * Check if display sales prices fee included and excluded tax

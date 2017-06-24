@@ -10,12 +10,12 @@ class Plugin
     /**
      * @var ScopeConfigInterface
      */
-    protected $scopeConfig;
+    private $scopeConfig;
 
     /**
      * @var StoreManagerInterface
      */
-    protected $storeManager;
+    private $storeManager;
 
     /**
      * Constructor
@@ -25,8 +25,8 @@ class Plugin
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         StoreManagerInterface $storeManager
-    )
-    {
+    ) {
+    
         $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
     }
@@ -42,8 +42,8 @@ class Plugin
     public function beforeProcess(
         \Magento\Checkout\Block\Checkout\LayoutProcessor $subject,
         $jsLayout
-    )
-    {
+    ) {
+    
         $configuration = &$jsLayout['components']['checkout']['children']['steps']['children']['billing-step']
             ['children']['payment']['children']['renders']['children'];
         if (!isset($configuration)) {
@@ -69,7 +69,6 @@ class Plugin
                     }
                 }
             }
-
         }
         return [$jsLayout];
     }

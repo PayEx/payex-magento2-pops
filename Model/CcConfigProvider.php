@@ -4,8 +4,10 @@ namespace PayEx\Payments\Model;
 
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Payment\Helper\Data as PaymentHelper;
-use Magento\Directory\Helper\Data;
 use Magento\Framework\UrlInterface;
+use Magento\Framework\App\ObjectManager;
+use PayEx\Payments\Model\Method\Bankdebit;
+use PayEx\Payments\Model\Method\MasterPass;
 
 class CcConfigProvider implements ConfigProviderInterface
 {
@@ -13,77 +15,50 @@ class CcConfigProvider implements ConfigProviderInterface
     /**
      * @var \Magento\Framework\App\State
      */
-    protected $_appState;
+    private $appState;
 
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var \Magento\Checkout\Helper\Data
      */
-    protected $_session;
-
-    /**
-     * @var \Magento\Store\Model\StoreManagerInterface
-     */
-    protected $_storeManager;
+    private $checkoutHelper;
 
     /**
      * @var PaymentHelper
      */
-    protected $_paymentHelper;
-
-    /**
-     * @var \Magento\Framework\Locale\ResolverInterface
-     */
-    protected $_localeResolver;
-
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface $config
-     */
-    protected $_config;
+    private $paymentHelper;
 
     /**
      * @var UrlInterface
      */
-    protected $urlBuilder;
-
-    /**
-     * @var \Magento\Payment\Model\Method\AbstractMethod[]
-     */
-    protected $methods = [];
+    private $urlBuilder;
 
     /**
      * @param \Magento\Framework\Model\Context $context
-     * @param \Magento\Checkout\Model\Session $session
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Checkout\Helper\Data $checkoutHelper
      * @param PaymentHelper $paymentHelper
-     * @param \Magento\Framework\Locale\ResolverInterface $localeResolver
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $config
      * @param UrlInterface $urlBuilder
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
-        \Magento\Checkout\Model\Session $session,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Checkout\Helper\Data $checkoutHelper,
         PaymentHelper $paymentHelper,
-        \Magento\Framework\Locale\ResolverInterface $localeResolver,
-        \Magento\Framework\App\Config\ScopeConfigInterface $config,
         UrlInterface $urlBuilder
     ) {
-        $this->_appState = $context->getAppState();
-        $this->_session = $session;
-        $this->_storeManager = $storeManager;
-        $this->_paymentHelper = $paymentHelper;
-        $this->_localeResolver = $localeResolver;
-        $this->_config = $config;
+        $this->appState = $context->getAppState();
+        $this->checkoutHelper = $checkoutHelper;
+        $this->paymentHelper = $paymentHelper;
         $this->urlBuilder = $urlBuilder;
     }
 
-
+    /**
+     * {@inheritdoc}
+     */
     public function getConfig()
     {
         $config = [
             'payment' => [
-                \PayEx\Payments\Model\Method\Bankdebit::METHOD_CODE => [],
-                \PayEx\Payments\Model\Method\MasterPass::METHOD_CODE => []
+                Bankdebit::METHOD_CODE => [],
+                MasterPass::METHOD_CODE => []
             ],
             'payex' => [
                 'payment_url' => $this->urlBuilder->getUrl('payex/checkout/getPaymentUrl'),
@@ -91,17 +66,17 @@ class CcConfigProvider implements ConfigProviderInterface
             ]
         ];
 
-        /** @var \PayEx\Payments\Model\Method\Bankdebit $method */
-        $method = $this->_paymentHelper->getMethodInstance(\PayEx\Payments\Model\Method\Bankdebit::METHOD_CODE);
+        /** @var Bankdebit $method */
+        $method = $this->paymentHelper->getMethodInstance(Bankdebit::METHOD_CODE);
         if ($method->isAvailable()) {
-            $banks = \Magento\Framework\App\ObjectManager::getInstance()->get('PayEx\Payments\Block\Bankdebit\Banks')->getAvailableBanks();
-            $config['payment'] [\PayEx\Payments\Model\Method\Bankdebit::METHOD_CODE]['banks'] = $banks;
+            $banks = ObjectManager::getInstance()->get('PayEx\Payments\Block\Bankdebit\Banks')->getAvailableBanks();
+            $config['payment'][Bankdebit::METHOD_CODE]['banks'] = $banks;
         }
 
         /** @var \PayEx\Payments\Model\Method\MasterPass $method */
-        $method = $this->_paymentHelper->getMethodInstance(\PayEx\Payments\Model\Method\MasterPass::METHOD_CODE);
+        $method = $this->paymentHelper->getMethodInstance(MasterPass::METHOD_CODE);
         if ($method->isAvailable()) {
-            $config['payment'] [\PayEx\Payments\Model\Method\MasterPass::METHOD_CODE]['redirectUrl'] = $method->getCheckoutRedirectUrl();
+            $config['payment'][MasterPass::METHOD_CODE]['redirectUrl'] = $method->getCheckoutRedirectUrl();
         }
 
         return $config;

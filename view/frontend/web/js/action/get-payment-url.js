@@ -5,7 +5,7 @@ define(
         'jquery',
         'Magento_Checkout/js/model/full-screen-loader'
     ],
-    function(jQuery, fullScreenLoader) {
+    function (jQuery, fullScreenLoader) {
         'use strict';
         return function () {
             fullScreenLoader.startLoader();

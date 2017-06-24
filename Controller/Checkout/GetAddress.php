@@ -4,6 +4,7 @@ namespace PayEx\Payments\Controller\Checkout;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Model\ScopeInterface;
 
 class GetAddress extends \Magento\Framework\App\Action\Action
 {
@@ -14,39 +15,39 @@ class GetAddress extends \Magento\Framework\App\Action\Action
     /**
      * @var ScopeConfigInterface
      */
-    protected $scopeConfig;
+    private $scopeConfig;
 
     /**
      * @var StoreManagerInterface
      */
-    protected $storeManager;
+    private $storeManager;
 
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var \Magento\Checkout\Helper\Data
      */
-    protected $session;
+    private $checkoutHelper;
 
     /**
      * @var \Magento\Framework\Controller\Result\JsonFactory
      */
-    protected $resultJsonFactory;
+    private $resultJsonFactory;
 
     /**
      * @var \PayEx\Payments\Helper\Data
      */
-    protected $payexHelper;
+    private $payexHelper;
 
     /**
      * @var \PayEx\Payments\Logger\Logger
      */
-    protected $payexLogger;
+    private $payexLogger;
 
     /**
      * Constructor
      * @param \Magento\Framework\App\Action\Context $context
      * @param ScopeConfigInterface $scopeConfig
      * @param StoreManagerInterface $storeManager
-     * @param \Magento\Checkout\Model\Session $session
+     * @param \Magento\Checkout\Helper\Data $checkoutHelper
      * @param \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
      * @param \PayEx\Payments\Helper\Data $payexHelper
      * @param \PayEx\Payments\Logger\Logger $payexLogger
@@ -55,17 +56,17 @@ class GetAddress extends \Magento\Framework\App\Action\Action
         \Magento\Framework\App\Action\Context $context,
         ScopeConfigInterface $scopeConfig,
         StoreManagerInterface $storeManager,
-        \Magento\Checkout\Model\Session $session,
+        \Magento\Checkout\Helper\Data $checkoutHelper,
         \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
         \PayEx\Payments\Helper\Data $payexHelper,
         \PayEx\Payments\Logger\Logger $payexLogger
-    )
-    {
+    ) {
+    
         parent::__construct($context);
 
         $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
-        $this->session = $session;
+        $this->checkoutHelper = $checkoutHelper;
         $this->resultJsonFactory = $resultJsonFactory;
         $this->payexHelper = $payexHelper;
         $this->payexLogger = $payexLogger;
@@ -124,19 +125,19 @@ class GetAddress extends \Magento\Framework\App\Action\Action
         // Init PayEx Environment
         $accountnumber = $this->scopeConfig->getValue(
             self::XML_PATH_MODULE_ACCOUNTNUMBER,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_STORE,
             $store
         );
 
         $encryptionkey = $this->scopeConfig->getValue(
             self::XML_PATH_MODULE_ENCRYPTIONKEY,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_STORE,
             $store
         );
 
         $debug = $this->scopeConfig->getValue(
             self::XML_PATH_MODULE_DEBUG,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_STORE,
             $store
         );
 
@@ -178,8 +179,8 @@ class GetAddress extends \Magento\Framework\App\Action\Action
         ];
 
         // Save data in Session
-        $this->session->setPayexSSN($ssn);
-        $this->session->setPayexSSNData($data);
+        $this->checkoutHelper->getCheckout()->setPayexSSN($ssn);
+        $this->checkoutHelper->getCheckout()->setPayexSSNData($data);
 
         /** @var \Magento\Framework\Controller\Result\Json $json */
         $json = $this->resultJsonFactory->create();

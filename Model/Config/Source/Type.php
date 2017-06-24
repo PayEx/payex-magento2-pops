@@ -2,7 +2,9 @@
 
 namespace PayEx\Payments\Model\Config\Source;
 
-class Type implements \Magento\Framework\Option\ArrayInterface
+use Magento\Framework\Option\ArrayInterface;
+
+class Type implements ArrayInterface
 {
     /**
      * {@inheritdoc}

@@ -3,8 +3,10 @@
 namespace PayEx\Payments\Model\Method;
 
 use Magento\Framework\DataObject;
-use \Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Quote\Api\Data\PaymentInterface;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Payment\Transaction;
 
 /**
  * Class Financing
@@ -44,73 +46,6 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
     protected $_canVoid = true;
     protected $_canUseInternal = false;
     protected $_canFetchTransactionInfo = true;
-
-    /**
-     * Constructor
-     * @param \Magento\Framework\App\RequestInterface $request
-     * @param \Magento\Framework\UrlInterface $urlBuilder
-     * @param \PayEx\Payments\Helper\Data $payexHelper
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Framework\Locale\ResolverInterface $resolver
-     * @param \Magento\Framework\Model\Context $context
-     * @param \Magento\Framework\Registry $registry
-     * @param \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory
-     * @param \Magento\Framework\Api\AttributeValueFactory $customAttributeFactory
-     * @param \Magento\Payment\Helper\Data $paymentData
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Magento\Payment\Model\Method\Logger $logger
-     * @param \Magento\Checkout\Model\Session $session
-     * @param \PayEx\Payments\Logger\Logger $payexLogger
-     * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
-     * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
-     * @param array $data
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     */
-    public function __construct(
-        \Magento\Framework\App\RequestInterface $request,
-        \Magento\Framework\UrlInterface $urlBuilder,
-        \PayEx\Payments\Helper\Data $payexHelper,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\Locale\ResolverInterface $resolver,
-        \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory,
-        \Magento\Framework\Api\AttributeValueFactory $customAttributeFactory,
-        \Magento\Payment\Helper\Data $paymentData,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Payment\Model\Method\Logger $logger,
-        \Magento\Checkout\Model\Session $session,
-        \PayEx\Payments\Logger\Logger $payexLogger,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
-        array $data = []
-    ) {
-        parent::__construct(
-            $request,
-            $urlBuilder,
-            $payexHelper,
-            $storeManager,
-            $resolver,
-            $context,
-            $registry,
-            $extensionFactory,
-            $customAttributeFactory,
-            $paymentData,
-            $scopeConfig,
-            $logger,
-            $session,
-            $payexLogger,
-            $resource,
-            $resourceCollection,
-            $data
-        );
-
-        // Init PayEx Environment
-        $accountnumber = $this->getConfigData('accountnumber');
-        $encryptionkey = $this->getConfigData('encryptionkey');
-        $debug = (bool)$this->getConfigData('debug');
-        $this->payexHelper->getPx()->setEnvironment($accountnumber, $encryptionkey, $debug);
-    }
 
     /**
      * Assign data to info model instance
@@ -171,7 +106,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
         }
 
         // Check SSN is saved in session
-        $ssn = $this->session->getPayexSSN();
+        $ssn = $this->checkoutHelper->getCheckout()->getPayexSSN();
         if (!empty($ssn)) {
             $info->setAdditionalInformation('social_security_number', $ssn);
             return $this;
@@ -201,7 +136,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
 
         // Validate country phone code
         if (in_array($country_code, ['SE', 'NO'])) {
-            $phone_code = mb_substr(ltrim($phone,'+'), 0, 2, 'UTF-8');
+            $phone_code = mb_substr(ltrim($phone, '+'), 0, 2, 'UTF-8');
             if (!in_array($phone_code, ['46', '47'])) {
                 throw new LocalizedException(__('Invalid phone number. Phone code must include country phone code.'));
             }
@@ -318,7 +253,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
             'countryCode' => $order->getBillingAddress()->getCountryId(),
             'paymentMethod' => 'PXFINANCINGINVOICE' . $order->getBillingAddress()->getCountryId(),
             'email' => $order->getBillingAddress()->getEmail(),
-            'msisdn' => (mb_substr($order->getBillingAddress()->getTelephone(), 0, 1) === '+') ? $order->getBillingAddress()->getTelephone() : '+' . $order->getBillingAddress()->getTelephone(),
+            'msisdn' => '+' . ltrim('+', $order->getBillingAddress()->getTelephone()),
             'ipAddress' => $this->payexHelper->getRemoteAddr()
         ];
         $result = $this->payexHelper->getPx()->PurchaseFinancingInvoice($params);
@@ -374,7 +309,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
                 $stateObject->setIsNotified(true);
 
                 // Unset SSN
-                $this->session->unsPayexSSN();
+                $this->checkoutHelper->getCheckout()->unsPayexSSN();
                 break;
             case 0:
             case 6:
@@ -402,7 +337,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
                 $invoice->save();
 
                 // Unset SSN
-                $this->session->unsPayexSSN();
+                $this->checkoutHelper->getCheckout()->unsPayexSSN();
                 break;
             case 2:
             case 4:
@@ -422,7 +357,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
 
                 // Set state object
                 /** @var \Magento\Sales\Model\Order\Status $status */
-                $status = $this->payexHelper->getAssignedState(\Magento\Sales\Model\Order::STATE_CANCELED);
+                $status = $this->payexHelper->getAssignedState(Order::STATE_CANCELED);
                 $stateObject->setState($status->getState());
                 $stateObject->setStatus($status->getStatus());
                 $stateObject->setIsNotified(true);
@@ -440,7 +375,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
 
                 // Set state object
                 /** @var \Magento\Sales\Model\Order\Status $status */
-                $status = $this->payexHelper->getAssignedState(\Magento\Sales\Model\Order::STATE_CANCELED);
+                $status = $this->payexHelper->getAssignedState(Order::STATE_CANCELED);
                 $stateObject->setState($status->getState());
                 $stateObject->setStatus($status->getStatus());
                 $stateObject->setIsNotified(true);
@@ -476,12 +411,12 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
 
         // Load transaction Data
         $transactionId = $transaction->getTxnId();
-        $details = $transaction->getAdditionalInformation(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS);
+        $details = $transaction->getAdditionalInformation(Transaction::RAW_DETAILS);
 
         // Get Transaction Details
         if (!is_array($details) || count($details) === 0) {
             $details = $this->fetchTransactionInfo($payment, $transactionId);
-            $transaction->setAdditionalInformation(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS, $details);
+            $transaction->setAdditionalInformation(Transaction::RAW_DETAILS, $details);
             $transaction->save();
         }
 
@@ -517,7 +452,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
             $payment->setStatus(self::STATUS_APPROVED)
                 ->setTransactionId($result['transactionNumber'])
                 ->setIsTransactionClosed(0)
-                ->setAdditionalInformation(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS, $result);
+                ->setAdditionalInformation(Transaction::RAW_DETAILS, $result);
 
             return $this;
         }

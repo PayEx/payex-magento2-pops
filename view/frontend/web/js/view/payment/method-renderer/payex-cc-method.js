@@ -45,9 +45,9 @@ define(
                         //this.selectPaymentMethod();
                         //var method = this.getCode();
                         placeOrderAction(self.getData(), self.messageContainer).done(function () {
-                            getPaymentUrlAction().always(function() {
+                            getPaymentUrlAction().always(function () {
                                 fullScreenLoader.stopLoader();
-                            }).done(function(response) {
+                            }).done(function (response) {
                                 if (response.hasOwnProperty('error')) {
                                     globalMessageList.addErrorMessage({
                                         message: response['error']
@@ -59,7 +59,7 @@ define(
                                     customerData.invalidate(['cart']);
                                     $.mage.redirect(response['redirect_url']);
                                 }
-                            }).error(function() {
+                            }).error(function () {
                                 globalMessageList.addErrorMessage({
                                     message: $t('An error occurred on the server. Please try to place the order again.')
                                 });

@@ -7,42 +7,50 @@ class Cancel extends \Magento\Framework\App\Action\Action
     /**
      * @var \Magento\Framework\UrlInterface
      */
-    protected $urlBuilder;
+    private $urlBuilder;
 
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var \Magento\Checkout\Helper\Data
      */
-    protected $session;
+    private $checkoutHelper;
 
     /**
      * @var \PayEx\Payments\Helper\Data
      */
-    protected $payexHelper;
+    private $payexHelper;
 
     /**
      * @var \PayEx\Payments\Logger\Logger
      */
-    protected $payexLogger;
+    private $payexLogger;
+
+    /**
+     * @var \Magento\Sales\Model\OrderFactory
+     */
+    private $orderFactory;
 
     /**
      * Cancel constructor.
      * @param \Magento\Framework\App\Action\Context $context
-     * @param \Magento\Checkout\Model\Session $session
+     * @param \Magento\Checkout\Helper\Data $checkoutHelper
      * @param \PayEx\Payments\Helper\Data $payexHelper
      * @param \PayEx\Payments\Logger\Logger $payexLogger
+     * @param \Magento\Sales\Model\OrderFactory $orderFactory
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
-        \Magento\Checkout\Model\Session $session,
+        \Magento\Checkout\Helper\Data $checkoutHelper,
         \PayEx\Payments\Helper\Data $payexHelper,
-        \PayEx\Payments\Logger\Logger $payexLogger
+        \PayEx\Payments\Logger\Logger $payexLogger,
+        \Magento\Sales\Model\OrderFactory $orderFactory
     ) {
         parent::__construct($context);
 
         $this->urlBuilder = $context->getUrl();
-        $this->session = $session;
+        $this->checkoutHelper = $checkoutHelper;
         $this->payexHelper = $payexHelper;
         $this->payexLogger = $payexLogger;
+        $this->orderFactory = $orderFactory;
     }
 
     /**
@@ -62,7 +70,7 @@ class Cancel extends \Magento\Framework\App\Action\Action
         }
 
         // Restore the quote
-        $this->session->restoreQuote();
+        $this->checkoutHelper->getCheckout()->restoreQuote();
         $this->messageManager->addError($message);
         $this->_redirect('checkout/cart');
     }
@@ -73,17 +81,7 @@ class Cancel extends \Magento\Framework\App\Action\Action
      */
     protected function getOrder()
     {
-        $incrementId = $this->getCheckout()->getLastRealOrderId();
-        $orderFactory = $this->_objectManager->get('Magento\Sales\Model\OrderFactory');
-        return $orderFactory->create()->loadByIncrementId($incrementId);
-    }
-
-    /**
-     * Get Checkout Session
-     * @return \Magento\Checkout\Model\Session
-     */
-    protected function getCheckout()
-    {
-        return $this->_objectManager->get('Magento\Checkout\Model\Session');
+        $incrementId = $this->checkoutHelper->getCheckout()->getLastRealOrderId();
+        return $this->orderFactory->create()->loadByIncrementId($incrementId);
     }
 }

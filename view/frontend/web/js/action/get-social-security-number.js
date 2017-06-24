@@ -8,7 +8,7 @@ define(
         'Magento_Ui/js/modal/alert',
         'mage/validation'
     ],
-    function($, fullScreenLoader, $t, alert) {
+    function ($, fullScreenLoader, $t, alert) {
         'use strict';
         return function () {
             var form = $('#shipping, #shipping-new-address-form');
@@ -22,18 +22,18 @@ define(
                     country_code: country_code,
                     postcode: postcode
                 },
-                beforeSend: function() {
+                beforeSend: function () {
                     fullScreenLoader.startLoader();
                 }
-            }).always(function() {
+            }).always(function () {
                 fullScreenLoader.stopLoader();
-            }).done(function(response) {
+            }).done(function (response) {
                 if (!response.success) {
                     alert({
                         title: $t('Social Security Number Error'),
                         content: response.message,
                         actions: {
-                            always: function(){}
+                            always: function (){}
                         }
                     });
                     return;

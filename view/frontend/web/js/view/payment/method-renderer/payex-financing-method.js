@@ -34,14 +34,14 @@ define(
             /**
              * Is Applied SSN
              */
-            isAppliedSSN: function() {
+            isAppliedSSN: function () {
                 return !!appliedSSN;
             },
 
             /**
              * Get Applied SSN
              */
-            getAppliedSSN: function() {
+            getAppliedSSN: function () {
                 return appliedSSN;
             },
 
@@ -49,22 +49,22 @@ define(
              * Show Terms Of Service Window
              * @returns {boolean}
              */
-            showTOS: function() {
+            showTOS: function () {
                 $.ajax('/payex/checkout/termsOfService', {
                     data: {
                         method: this.getCode()
                     },
-                    beforeSend: function() {
+                    beforeSend: function () {
                         fullScreenLoader.startLoader();
                     }
-                }).always(function() {
+                }).always(function () {
                     fullScreenLoader.stopLoader();
-                }).done(function(response) {
+                }).done(function (response) {
                     alert({
                         title: response.title,
                         content: response.content,
                         actions: {
-                            always: function(){}
+                            always: function (){}
                         }
                     });
                 });
