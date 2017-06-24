@@ -1,3 +1,20 @@
+Version 1.0.11
+* Fixed module dependency
+* Rounding issue workaround
+* Financing Invoice: require country phone code
+* Implemented "Require Billing Address on Checkout page" option
+* Set "Pending Payment" status for orders that awaiting for payment
+* Updated Swedish translation
+* Fixed checkout problems when magento installed in subdirectory
+* Fixed: Order confirmation emails are being sent twice
+* Improved transaction status view
+* Transaction Callback fixes
+* Updated Finnish Bank names
+* Fixed warnings of marketplace-eqp
+* Fixed bug with failed transactions
+* Fixed problem with financing invoice capture
+* Improved Payment fee on PDF printouts
+
 Version 1.0.10
 * Use native placeOrderAction to fix checkout agreements error
 
