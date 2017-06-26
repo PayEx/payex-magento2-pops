@@ -253,7 +253,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
             'countryCode' => $order->getBillingAddress()->getCountryId(),
             'paymentMethod' => 'PXFINANCINGINVOICE' . $order->getBillingAddress()->getCountryId(),
             'email' => $order->getBillingAddress()->getEmail(),
-            'msisdn' => '+' . ltrim('+', $order->getBillingAddress()->getTelephone()),
+            'msisdn' => '+' . ltrim($order->getBillingAddress()->getTelephone(), '+'),
             'ipAddress' => $this->payexHelper->getRemoteAddr()
         ];
         $result = $this->payexHelper->getPx()->PurchaseFinancingInvoice($params);

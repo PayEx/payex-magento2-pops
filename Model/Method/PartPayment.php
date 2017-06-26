@@ -128,7 +128,7 @@ class PartPayment extends \PayEx\Payments\Model\Method\Financing
             'countryCode' => $order->getBillingAddress()->getCountryId(),
             'paymentMethod' => 'PXCREDITACCOUNT' . $order->getBillingAddress()->getCountryId(),
             'email' => $order->getBillingAddress()->getEmail(),
-            'msisdn' => '+' . ltrim('+', $order->getBillingAddress()->getTelephone()),
+            'msisdn' => '+' . ltrim($order->getBillingAddress()->getTelephone(), '+'),
             'ipAddress' => $this->payexHelper->getRemoteAddr()
         ];
         $result = $this->payexHelper->getPx()->PurchaseCreditAccount($params);
