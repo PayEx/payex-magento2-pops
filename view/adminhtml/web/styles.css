@@ -60,3 +60,11 @@
     background-size: 81px 43px;
     line-height: 47px;
 }
+
+.payex-method-payex-checkout > .entry-edit-head > .config-heading .heading strong {
+    padding-left: 90px;
+    background: url(images/payex-checkout-logo.png) no-repeat 0 5px;
+    background-size: 150px 55px;
+    line-height: 55px;
+    text-indent: 80px;
+}

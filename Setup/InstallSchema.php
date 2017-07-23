@@ -269,6 +269,47 @@ class InstallSchema implements InstallSchemaInterface
             $connection->addColumn($sales_order, $name, $definition);
         }
 
+        // PayEx Checkout Session
+        $table = $installer->getTable('quote');
+        $installer->getConnection()->addColumn(
+            $table,
+            'payex_payment_session',
+            [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'length'   => '64k',
+                'unsigned' => true,
+                'nullable' => true,
+                'comment'  => 'PayEx Checkout Session'
+            ]
+        );
+
+        // PayEx Checkout Payment Id
+        $installer->getConnection()->addColumn(
+            $table,
+            'payex_payment_id',
+            [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'length'   => '64k',
+                'unsigned' => true,
+                'nullable' => true,
+                'comment'  => 'PayEx Checkout Payment Id'
+            ]
+        );
+
+        // PayEx Checkout Operations
+        $table = $installer->getTable('sales_order');
+        $installer->getConnection()->addColumn(
+            $table,
+            'payex_checkout',
+            [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'length'   => '64k',
+                'unsigned' => true,
+                'nullable' => true,
+                'comment'  => 'PayEx Checkout Response'
+            ]
+        );
+
         $installer->endSetup();
     }
 }

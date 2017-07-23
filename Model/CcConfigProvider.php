@@ -8,9 +8,13 @@ use Magento\Framework\UrlInterface;
 use Magento\Framework\App\ObjectManager;
 use PayEx\Payments\Model\Method\Bankdebit;
 use PayEx\Payments\Model\Method\MasterPass;
+use PayEx\Payments\Model\Method\Checkout as PxCheckout;
 
 class CcConfigProvider implements ConfigProviderInterface
 {
+
+    const FRONTEND_URL_PROD = 'https://checkout.payex.com/js/payex-checkout.min.js';
+    const FRONTEND_URL_TEST = 'https://checkout.externalintegration.payex.com/js/payex-checkout.min';
 
     /**
      * @var \Magento\Framework\App\State
@@ -58,7 +62,8 @@ class CcConfigProvider implements ConfigProviderInterface
         $config = [
             'payment' => [
                 Bankdebit::METHOD_CODE => [],
-                MasterPass::METHOD_CODE => []
+                MasterPass::METHOD_CODE => [],
+                PxCheckout::METHOD_CODE => []
             ],
             'payex' => [
                 'payment_url' => $this->urlBuilder->getUrl('payex/checkout/getPaymentUrl'),
@@ -79,6 +84,16 @@ class CcConfigProvider implements ConfigProviderInterface
         $method = $this->paymentHelper->getMethodInstance(MasterPass::METHOD_CODE);
         if ($method->isAvailable()) {
             $config['payment'][MasterPass::METHOD_CODE]['redirectUrl'] = $method->getCheckoutRedirectUrl();
+        }
+
+        /** @var \PayEx\Payments\Model\Method\Checkout $method */
+        $method = $this->paymentHelper->getMethodInstance(PxCheckout::METHOD_CODE);
+        if ($method->isAvailable()) {
+            $script = $method->getConfigData('debug') ? self::FRONTEND_URL_TEST : self::FRONTEND_URL_PROD;
+            $config['payment'][PxCheckout::METHOD_CODE]['frontend_script'] = $script;
+
+            $payment_id = $this->checkoutHelper->getQuote()->getPayexPaymentId();
+            $config['payment'][PxCheckout::METHOD_CODE]['payment_id'] = $payment_id;
         }
 
         return $config;

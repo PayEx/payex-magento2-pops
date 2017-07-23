@@ -44,6 +44,10 @@ define(
             {
                 type: 'payex_mobilepay',
                 component: 'PayEx_Payments/js/view/payment/method-renderer/payex-mobilepay-method'
+            },
+            {
+                type: 'payex_checkout',
+                component: 'PayEx_Payments/js/view/payment/method-renderer/payex-checkout-method'
             }
         );
         /** Add view logic here if needed */

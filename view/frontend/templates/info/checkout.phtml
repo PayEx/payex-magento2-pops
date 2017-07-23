@@ -1,0 +1,13 @@
+<?php
+// @codingStandardsIgnoreFile
+/**
+ * @var $block \PayEx\Payments\Block\Info\Checkout
+ */
+?>
+<?php
+$_info = $block->getInfo();
+?>
+
+<dl class="payment-method payex_checkout">
+        <?php echo $block->escapeHtml($block->getMethod()->getTitle()) ?><br/>
+</dl>

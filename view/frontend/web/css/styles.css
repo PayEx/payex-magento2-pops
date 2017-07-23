@@ -51,3 +51,10 @@
     height: 61px;
     background-position-x: right;
 }
+
+.checkout-payment-method .payment-method-title label div.payex-logo.payex_checkout  {
+    display: inline-block;
+    background: url(../images/payex-checkout-logo.png) no-repeat;
+    width: 150px;
+    height: 55px;
+}
