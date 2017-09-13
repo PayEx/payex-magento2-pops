@@ -1,3 +1,7 @@
+Version 1.0.12
+* Fixed Fee tax calc issues
+* Fixed msisdn bug
+
 Version 1.0.11
 * Fixed module dependency
 * Rounding issue workaround
