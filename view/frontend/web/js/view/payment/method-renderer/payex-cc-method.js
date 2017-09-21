@@ -45,20 +45,12 @@ define(
                         //this.selectPaymentMethod();
                         //var method = this.getCode();
                         placeOrderAction(self.getData(), self.messageContainer).done(function () {
-                            getPaymentUrlAction().always(function () {
+                            getPaymentUrlAction(self.messageContainer).always(function () {
                                 fullScreenLoader.stopLoader();
-                            }).done(function (response) {
-                                if (response.hasOwnProperty('error')) {
-                                    globalMessageList.addErrorMessage({
-                                        message: response['error']
-                                    });
-                                }
-
-                                if (response.hasOwnProperty('redirect_url')) {
-                                    fullScreenLoader.startLoader();
-                                    customerData.invalidate(['cart']);
-                                    $.mage.redirect(response['redirect_url']);
-                                }
+                            }).done(function (redirect_url) {
+                                fullScreenLoader.startLoader();
+                                customerData.invalidate(['cart']);
+                                $.mage.redirect(redirect_url);
                             }).error(function () {
                                 globalMessageList.addErrorMessage({
                                     message: $t('An error occurred on the server. Please try to place the order again.')

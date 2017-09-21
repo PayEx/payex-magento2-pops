@@ -60,12 +60,6 @@ class CcConfigProvider implements ConfigProviderInterface
                 Bankdebit::METHOD_CODE => [],
                 MasterPass::METHOD_CODE => []
             ],
-            'payex' => [
-                'payment_url' => $this->urlBuilder->getUrl('payex/checkout/getPaymentUrl'),
-                'address_url' => $this->urlBuilder->getUrl('payex/checkout/getAddress'),
-                'apply_pm_url' => $this->urlBuilder->getUrl('payex/checkout/applyPaymentMethod'),
-                'tos_url' => $this->urlBuilder->getUrl('payex/checkout/termsOfService')
-            ]
         ];
 
         /** @var Bankdebit $method */

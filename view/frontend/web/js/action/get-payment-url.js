@@ -3,18 +3,28 @@
 define(
     [
         'jquery',
+        'Magento_Checkout/js/model/url-builder',
+        'mage/storage',
+        'Magento_Checkout/js/model/error-processor',
         'Magento_Checkout/js/model/full-screen-loader'
     ],
-    function (jQuery, fullScreenLoader) {
+    function (jQuery, urlBuilder, storage, errorProcessor, fullScreenLoader) {
         'use strict';
-        return function () {
+        return function (messageContainer) {
+            var serviceUrl = urlBuilder.createUrl('/payex/payments/redirect_url', {});
+
             fullScreenLoader.startLoader();
-            return jQuery.ajax(window.checkoutConfig.payex.payment_url, {
-                cache: false,
-                complete: function () {
+
+            return storage.get(
+                serviceUrl
+            ).always(function () {
+                fullScreenLoader.stopLoader();
+            }).fail(
+                function (response) {
+                    errorProcessor.process(response, messageContainer);
                     fullScreenLoader.stopLoader();
                 }
-            });
+            );
         }
     }
 );

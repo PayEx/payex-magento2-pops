@@ -7,9 +7,9 @@ define(
         'Magento_Checkout/js/view/payment/default',
         'mage/translate',
         'Magento_Checkout/js/model/full-screen-loader',
-        'Magento_Ui/js/modal/alert'
+        'PayEx_Payments/js/action/get-terms-of-service'
     ],
-    function (ko, $, Component, $t, fullScreenLoader, alert) {
+    function (ko, $, Component, $t, fullScreenLoader, getTermsAction) {
         'use strict';
         var appliedSSN = window.checkoutConfig.payexSSN.appliedSSN;
 
@@ -50,24 +50,7 @@ define(
              * @returns {boolean}
              */
             showTOS: function () {
-                $.ajax(window.checkoutConfig.payex.tos_url, {
-                    data: {
-                        method: this.getCode()
-                    },
-                    beforeSend: function () {
-                        fullScreenLoader.startLoader();
-                    }
-                }).always(function () {
-                    fullScreenLoader.stopLoader();
-                }).done(function (response) {
-                    alert({
-                        title: response.title,
-                        content: response.content,
-                        actions: {
-                            always: function (){}
-                        }
-                    });
-                });
+                getTermsAction(this.getCode());
 
                 return false;
             }

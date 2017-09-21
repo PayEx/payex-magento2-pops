@@ -3,12 +3,14 @@
 define(
     [
         'jquery',
+        'Magento_Checkout/js/model/url-builder',
+        'mage/storage',
         'Magento_Checkout/js/model/full-screen-loader',
         'mage/translate',
         'Magento_Ui/js/modal/alert',
         'mage/validation'
     ],
-    function ($, fullScreenLoader, $t, alert) {
+    function ($, urlBuilder, storage, fullScreenLoader, $t, alert) {
         'use strict';
         return function () {
             var form = $('#shipping, #shipping-new-address-form');
@@ -16,28 +18,22 @@ define(
             var country_code = $('[name="country_id"]', form).val();
             var postcode = $('[name="postcode"]', form).val();
 
-            $.ajax(window.checkoutConfig.payex.address_url, {
-                data: {
-                    ssn: ssn,
-                    country_code: country_code,
-                    postcode: postcode
-                },
-                beforeSend: function () {
-                    fullScreenLoader.startLoader();
-                }
-            }).always(function () {
+            var serviceUrl = urlBuilder.createUrl('/payex/payments/get_address/country_code/countryCode/postcode/postCode/ssn/SSN/lookup', {
+                'countryCode': country_code,
+                'postCode': postcode,
+                'SSN': ssn
+            });
+
+            fullScreenLoader.startLoader();
+
+            return storage.get(
+                serviceUrl
+            ).always(function () {
                 fullScreenLoader.stopLoader();
             }).done(function (response) {
-                if (!response.success) {
-                    alert({
-                        title: $t('Social Security Number Error'),
-                        content: response.message,
-                        actions: {
-                            always: function (){}
-                        }
-                    });
-                    return;
-                }
+                fullScreenLoader.stopLoader();
+
+                response = $.parseJSON(response);
 
                 $('[name="firstname"]', form).val(response.first_name).keyup();
                 $('[name="lastname"]', form).val(response.last_name).keyup();
@@ -53,6 +49,16 @@ define(
                 if (window.checkoutConfig.hasOwnProperty('payexSSN')) {
                     window.checkoutConfig.payexSSN.appliedSSN = ssn;
                 }
+            }).error(function (xhr) {
+                fullScreenLoader.stopLoader();
+
+                alert({
+                    title: $t('Social Security Number Error'),
+                    content: xhr.responseJSON.message,
+                    actions: {
+                        always: function (){}
+                    }
+                });
             });
         }
     }

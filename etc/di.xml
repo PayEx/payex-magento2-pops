@@ -19,4 +19,5 @@
     <type name="Magento\Checkout\Model\GuestPaymentInformationManagement">
         <plugin name="beforeSavePaymentInformationAndPlaceOrderGuest" type="PayEx\Payments\Plugin\GuestPaymentInformationManagement" />
     </type>
+    <preference for="PayEx\Payments\Api\ServiceInterface" type="PayEx\Payments\Model\Service" />
 </config>

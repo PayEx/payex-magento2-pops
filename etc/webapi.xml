@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/payex/payments/apply_payment_method" method="POST">
+        <service class="PayEx\Payments\Api\ServiceInterface" method="apply_payment_method"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/payex/payments/redirect_url" method="GET">
+        <service class="PayEx\Payments\Api\ServiceInterface" method="redirect_url"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/payex/payments/get_service_terms" method="POST">
+        <service class="PayEx\Payments\Api\ServiceInterface" method="get_service_terms"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/payex/payments/get_address/country_code/:country_code/postcode/:postcode/ssn/:ssn/lookup" method="GET">
+        <service class="PayEx\Payments\Api\ServiceInterface" method="get_address"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+</routes>
