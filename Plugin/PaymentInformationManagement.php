@@ -1,10 +1,10 @@
 <?php
 
-namespace PayEx\Payments\Model\Checkout\PaymentInformationManagement;
+namespace PayEx\Payments\Plugin;
 
 use Magento\Framework\Exception\CouldNotSaveException;
 
-class Plugin
+class PaymentInformationManagement
 {
     /**
      * @var \Magento\Checkout\Helper\Data

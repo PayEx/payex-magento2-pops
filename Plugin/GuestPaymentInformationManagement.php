@@ -1,10 +1,10 @@
 <?php
 
-namespace PayEx\Payments\Model\Checkout\GuestPaymentInformationManagement;
+namespace PayEx\Payments\Plugin;
 
 use Magento\Framework\Exception\CouldNotSaveException;
 
-class Plugin
+class GuestPaymentInformationManagement
 {
     /**
      * @var \Magento\Checkout\Helper\Data
@@ -12,17 +12,17 @@ class Plugin
     private $checkoutHelper;
 
     /**
-     * @var \Magento\Quote\Api\CartManagementInterface
+     * @var \Magento\Quote\Api\GuestCartManagementInterface
      */
     private $cartManagement;
 
     /**
      * @param \Magento\Checkout\Helper\Data $checkoutHelper
-     * @param \Magento\Quote\Api\CartManagementInterface $cartManagement
+     * @param \Magento\Quote\Api\GuestCartManagementInterface $cartManagement
      */
     public function __construct(
         \Magento\Checkout\Helper\Data $checkoutHelper,
-        \Magento\Quote\Api\CartManagementInterface $cartManagement
+        \Magento\Quote\Api\GuestCartManagementInterface $cartManagement
     ) {
 
         $this->checkoutHelper = $checkoutHelper;
