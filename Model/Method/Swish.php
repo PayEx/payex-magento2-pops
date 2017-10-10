@@ -75,6 +75,15 @@ class Swish extends \PayEx\Payments\Model\Method\Cc
         // Get Additional Values
         $additional = '';
 
+        // Also send mobile number if available
+        $telephone = str_replace([' ', '-'], '', $order->getBillingAddress()->getTelephone());
+        $mobile_prefixes = ['070', '072', '073', '076', '079'];
+        if (mb_strlen($telephone, 'UTF-8') == 10 &&
+            in_array(mb_substr($telephone, 0, 3, 'UTF-8'), $mobile_prefixes)
+        ) {
+            $additional = 'MSISDN=46' . mb_substr($telephone, 1, null, 'UTF-8');
+        }
+
         // Responsive Skinning
         if ($this->getConfigData('responsive') === '1') {
             $separator = (!empty($additional) && mb_substr($additional, -1) !== '&') ? '&' : '';

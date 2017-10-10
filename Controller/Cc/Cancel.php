@@ -64,9 +64,7 @@ class Cancel extends \Magento\Framework\App\Action\Action
         $message = __('Order canceled by user');
         $order = $this->getOrder();
         if ($order->getId()) {
-            $order->cancel();
-            $order->addStatusHistoryComment($message);
-            $order->save();
+            $this->payexHelper->cancelOrder($order, $message);
         }
 
         // Restore the quote

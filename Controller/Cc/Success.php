@@ -128,8 +128,7 @@ class Success extends \Magento\Framework\App\Action\Action
         $this->payexLogger->info('PxOrder.Complete', $details);
         if ($details['errorCodeSimple'] !== 'OK') {
             // Cancel order
-            $order->cancel();
-            $order->addStatusHistoryComment(__('Order automatically canceled. Failed to complete payment.'));
+            $this->payexHelper->cancelOrder($order, __('Order automatically canceled. Failed to complete payment.'));
             $order->save();
 
             // Restore the quote
@@ -262,7 +261,7 @@ class Success extends \Magento\Framework\App\Action\Action
                     $message = $this->payexHelper->getVerboseErrorMessage($details);
                 }
 
-                $order->cancel();
+                $this->payexHelper->cancelOrder($order, $message);
                 $order->addStatusHistoryComment($message);
                 $order->save();
 

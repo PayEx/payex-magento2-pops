@@ -940,4 +940,40 @@ class Data extends AbstractHelper
     {
         return $this->productMetadata->getVersion();
     }
+
+    /**
+     * Set Order as Cancelled
+     * @see \Magento\Sales\Model\Order::registerCancellation()
+     * @param \Magento\Sales\Model\Order $order
+     * @param string                     $comment
+     */
+    public function cancelOrder(\Magento\Sales\Model\Order $order, $comment = '')
+    {
+        if ($order->canCancel()) {
+            $state = \Magento\Sales\Model\Order::STATE_CANCELED;
+
+            $order->setSubtotalCanceled($order->getSubtotal() - $order->getSubtotalInvoiced());
+            $order->setBaseSubtotalCanceled($order->getBaseSubtotal() - $order->getBaseSubtotalInvoiced());
+
+            $order->setTaxCanceled($order->getTaxAmount() - $order->getTaxInvoiced());
+            $order->setBaseTaxCanceled($order->getBaseTaxAmount() - $order->getBaseTaxInvoiced());
+
+            $order->setShippingCanceled($order->getShippingAmount() - $order->getShippingInvoiced());
+            $order->setBaseShippingCanceled($order->getBaseShippingAmount() - $order->getBaseShippingInvoiced());
+
+            $order->setDiscountCanceled(abs($order->getDiscountAmount()) - $order->getDiscountInvoiced());
+            $order->setBaseDiscountCanceled(abs($order->getBaseDiscountAmount()) - $order->getBaseDiscountInvoiced());
+
+            $order->setTotalCanceled($order->getGrandTotal() - $order->getTotalPaid());
+            $order->setBaseTotalCanceled($order->getBaseGrandTotal() - $order->getBaseTotalPaid());
+
+            $order->setState($state)
+                 ->setStatus($this->orderConfig->getStateDefaultStatus($state));
+            if (!empty($comment)) {
+                $order->addStatusHistoryComment($comment, false);
+            }
+
+            $order->save();
+        }
+    }
 }
