@@ -71,6 +71,7 @@
                 <replace_illegal>1</replace_illegal>
                 <replacement_char>-</replacement_char>
                 <billing_address_required>1</billing_address_required>
+                <checkout_field>0</checkout_field>
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_financing>
@@ -172,14 +173,5 @@
                 <payex_fee>3</payex_fee>
             </sales_display>
         </tax>
-
-        <payex>
-            <ssn>
-                <enable>0</enable>
-                <debug>1</debug>
-                <accountnumber>payex account number</accountnumber>
-                <encryptionkey>payex encryption key</encryptionkey>
-            </ssn>
-        </payex>
     </default>
 </config>

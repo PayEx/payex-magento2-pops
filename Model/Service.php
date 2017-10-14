@@ -11,9 +11,9 @@ use Magento\Framework\Exception\CouldNotSaveException;
 
 class Service implements ServiceInterface
 {
-    const XML_PATH_MODULE_DEBUG = 'payex/ssn/debug';
-    const XML_PATH_MODULE_ACCOUNTNUMBER = 'payex/ssn/accountnumber';
-    const XML_PATH_MODULE_ENCRYPTIONKEY = 'payex/ssn/encryptionkey';
+    const XML_PATH_MODULE_DEBUG = 'payment/payex_financing/debug';
+    const XML_PATH_MODULE_ACCOUNTNUMBER = 'payment/payex_financing/accountnumber';
+    const XML_PATH_MODULE_ENCRYPTIONKEY = 'payment/payex_financing/encryptionkey';
 
     /**
      * @var ScopeConfigInterface
