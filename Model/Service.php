@@ -163,8 +163,8 @@ class Service implements ServiceInterface
                 throw new LocalizedException(__('Social security number is empty'));
             }
 
-            if (!in_array($country_code, ['SE', 'NO'])) {
-                throw new LocalizedException(__('Your country don\'t supported'));
+            if (!in_array($country_code, ['SE', 'NO', 'FI'])) {
+                throw new LocalizedException(__('This country is not supported by the payment system'));
             }
 
             $store = $this->storeManager->getStore();

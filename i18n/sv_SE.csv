@@ -93,6 +93,7 @@
 "Social Security number have wrong format.","Personnumret har fel format."
 "Please select country.","Välj land."
 "Please enter postcode.","Fyll i postnummer."
+"This country is not supported by the payment system","This country is not supported by the payment system"
 "Invalid phone number. Phone code must include country phone code.","Ogiltigt telefonnummer. Telefonkoden måste innehålla landskodskod."
 "Product name ""%1"" contains invalid characters.","Produktens namn ""%1"" innehåller ogiltiga tecken."
 "PayEx Financing Credit Account","PayEx Delbetala"
