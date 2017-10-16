@@ -89,6 +89,13 @@
             <config_path>payment/payex_financing/billing_address_required</config_path>
         </field>
 
+        <field id="checkout_field" translate="label" type="select" sortOrder="19" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enable SSN Field for address filling</label>
+            <comment>Activate Social Security Number extension on Checkout page.</comment>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/payex_financing/checkout_field</config_path>
+        </field>
+
         <group id="payex_financing_country_specific" translate="label" showInDefault="1" showInWebsite="1" sortOrder="20">
             <label>Country Specific Settings</label>
             <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>

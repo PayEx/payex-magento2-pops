@@ -40,33 +40,5 @@
                 </field>
             </group>
         </section>
-
-        <section id="payex" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>Social Security Number</label>
-            <tab>payex</tab>
-            <resource>PayEx_Payments::payex_settings</resource>
-            <group id="ssn" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
-                <label>PayEx Settings</label>
-                <field id="enable" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <config_path>payex/ssn/enable</config_path>
-                    <comment>Activate Social Security Number extension on Checkout page.</comment>
-                </field>
-                <field id="debug" translate="label comment" type="select" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Test mode</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <config_path>payex/ssn/debug</config_path>
-                </field>
-                <field id="accountnumber" translate="label comment" type="text" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Account Number</label>
-                    <config_path>payex/ssn/accountnumber</config_path>
-                </field>
-                <field id="encryptionkey" translate="label comment" type="text" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Encryption Key</label>
-                    <config_path>payex/ssn/encryptionkey</config_path>
-                </field>
-            </group>
-        </section>
     </system>
 </config>

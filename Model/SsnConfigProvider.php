@@ -51,7 +51,7 @@ class SsnConfigProvider implements ConfigProviderInterface
         return [
             'payexSSN' => [
                 'isEnabled' => (bool)$this->scopeConfig->getValue(
-                    'payex/ssn/enable',
+                    'payment/payex_financing/checkout_field',
                     ScopeInterface::SCOPE_STORE,
                     $this->storeManager->getStore()->getCode()
                 ),
