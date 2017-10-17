@@ -1,3 +1,11 @@
+Version 1.0.13
+* Added Finland support for SSN field addon
+* Moved ssn field settings to "Financing Invoice" section
+* Swish: Use MSISDN for Swedish phones
+* Fixed problem with catalog-inventory on declined payments
+* Use WebApi instead frontend Controllers
+* Fixed PaymentInformationManagement Plugin
+
 Version 1.0.12
 * Fixed Fee tax calc issues
 * Fixed msisdn bug
