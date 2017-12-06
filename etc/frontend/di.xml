@@ -10,6 +10,13 @@
     <type name="Magento\Checkout\Model\CompositeConfigProvider">
         <arguments>
             <argument name="configProviders" xsi:type="array">
+                <item name="payex_psp_config_provider" xsi:type="object">PayEx\Payments\Model\PspConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
                 <item name="payex_fee_config_provider" xsi:type="object">PayEx\Payments\Model\FeeConfigProvider</item>
             </argument>
         </arguments>

@@ -44,6 +44,18 @@ define(
             {
                 type: 'payex_mobilepay',
                 component: 'PayEx_Payments/js/view/payment/method-renderer/payex-mobilepay-method'
+            },
+            {
+                type: 'payex_psp_cc',
+                component: 'PayEx_Payments/js/view/payment/method-renderer/payex-psp-cc'
+            },
+            {
+                type: 'payex_psp_vipps',
+                component: 'PayEx_Payments/js/view/payment/method-renderer/payex-psp-vipps'
+            },
+            {
+                type: 'payex_psp_invoice',
+                component: 'PayEx_Payments/js/view/payment/method-renderer/payex-psp-invoice'
             }
         );
         /** Add view logic here if needed */

@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="payex_psp_cc" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label><![CDATA[PayEx Credit Card]]></label>
+        <frontend_model>Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Payment</frontend_model>
+        <fieldset_css>payex-method-payex-psp-cc</fieldset_css>
+        <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enabled</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/payex_psp_cc/active</config_path>
+        </field>
+        <field id="title" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Title</label>
+            <config_path>payment/payex_psp_cc/title</config_path>
+        </field>
+
+        <field id="sort_order" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Sort Order</label>
+            <frontend_class>validate-number</frontend_class>
+            <config_path>payment/payex_psp_cc/sort_order</config_path>
+        </field>
+
+        <field id="debug" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enable test mode</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/payex_psp_cc/debug</config_path>
+        </field>
+
+        <field id="merchant_token" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Merchant Token</label>
+            <config_path>payment/payex_psp_cc/merchant_token</config_path>
+        </field>
+
+        <field id="payee_id" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Payee Id</label>
+            <config_path>payment/payex_psp_cc/payee_id</config_path>
+        </field>
+
+        <field id="culture" translate="label" type="select" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Language</label>
+            <source_model>PayEx\Payments\Model\Config\Source\Culture</source_model>
+            <config_path>payment/payex_psp_cc/culture</config_path>
+        </field>
+
+        <field id="order_status_authorize" translate="label" type="select" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Order status (for authorize)</label>
+            <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+            <config_path>payment/payex_psp_cc/order_status_authorize</config_path>
+        </field>
+
+        <field id="order_status_capture" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Order status (for capture)</label>
+            <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+            <config_path>payment/payex_psp_cc/order_status_capture</config_path>
+        </field>
+
+        <group id="payex_psp_cc_country_specific" translate="label" showInDefault="1" showInWebsite="1" sortOrder="20">
+            <label>Country Specific Settings</label>
+            <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+            <field id="allowspecific" translate="label" type="allowspecific" sortOrder="21" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Payment from Applicable Countries</label>
+                <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                <config_path>payment/payex_psp_cc/allowspecific</config_path>
+            </field>
+            <field id="specificcountry" translate="label" type="multiselect" sortOrder="22" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Payment from Specific Countries</label>
+                <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                <can_be_empty>1</can_be_empty>
+                <config_path>payment/payex_psp_cc/specificcountry</config_path>
+            </field>
+        </group>
+    </group>
+</include>

@@ -1,0 +1,20 @@
+<?php
+// @codingStandardsIgnoreFile
+/**
+ * @var $block \PayEx\Payments\Block\Info\Psp
+ */
+?>
+<?php echo $block->escapeHtml($block->getMethod()->getTitle()) ?>
+<br />
+<?php $trans_id = $block->getInfo()->getLastTransId(); ?>
+<?php if (!empty($trans_id)): ?>
+    <?php $_specificInfo = $block->getSpecificInformation(); ?>
+    <table class="data-table admin__table-secondary">
+        <?php foreach ($_specificInfo as $_label => $_value):?>
+            <tr>
+                <th><?php echo __($block->escapeHtml($_label))?>:</th>
+                <td><?php echo nl2br(implode("\n", $block->getValueAsArray($_value, true)))?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+<?php endif; ?>

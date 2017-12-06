@@ -1,0 +1,23 @@
+<?php
+// @codingStandardsIgnoreFile
+/**
+ * @var $block \PayEx\Payments\Block\Form\Psp\Invoice
+ */
+$code = $block->escapeHtml($block->getMethodCode());
+$social_security_number = $block->getInfoData('social_security_number');
+?>
+<fieldset class="fieldset payment items ssn <?php /* @noEscape */ echo $code; ?>"
+          id="payment_form_<?php /* @noEscape */ echo $code; ?>" style="display: none;">
+    <div class="field required">
+        <label for="<?php /* @noEscape */ echo $code; ?>_social_security_number" class="label">
+            <span><?php echo $block->escapeHtml(__('Social Security Number')); ?></span>
+        </label>
+        <div class="control">
+            <input type="text" id="<?php /* @noEscape */ echo $code; ?>_social_security_number" name="payment[social_security_number]"
+                   title="<?php echo $block->escapeHtml(__('Social Security Number')); ?>" class="input-text"
+                   value="<?php /* @noEscape */ echo $social_security_number; ?>"
+                   data-validate='{required:true}'/>
+        </div>
+    </div>
+    <?php //echo $block->getChildHtml() ?>
+</fieldset>

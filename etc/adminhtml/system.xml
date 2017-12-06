@@ -21,6 +21,9 @@
                 <include path="PayEx_Payments::system/payex_gc.xml"/>
                 <include path="PayEx_Payments::system/payex_evc.xml"/>
                 <include path="PayEx_Payments::system/payex_mobilepay.xml"/>
+                <include path="PayEx_Payments::system/payex_psp_cc.xml"/>
+                <include path="PayEx_Payments::system/payex_psp_vipps.xml"/>
+                <include path="PayEx_Payments::system/payex_psp_invoice.xml"/>
             </group>
         </section>
 

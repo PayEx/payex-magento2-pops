@@ -5,6 +5,8 @@ namespace PayEx\Payments\Helper;
 use PayEx\Px;
 use FullNameParser;
 use DOMDocument;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Framework\DataObject;
@@ -123,6 +125,11 @@ class Data extends AbstractHelper
     private $country;
 
     /**
+     * @var \Magento\Quote\Model\QuoteFactory
+     */
+    private $quoteFactory;
+
+    /**
      * Data constructor.
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Psr\Log\LoggerInterface $logger
@@ -146,6 +153,7 @@ class Data extends AbstractHelper
      * @param \Magento\Checkout\Helper\Data $checkoutHelper
      * @param \Magento\Tax\Model\Calculation $calculationTool
      * @param \Magento\Directory\Model\Country $country
+     * @param \Magento\Quote\Model\QuoteFactory $quoteFactory
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
@@ -169,7 +177,8 @@ class Data extends AbstractHelper
         \Magento\Catalog\Helper\Image $imageHelper,
         \Magento\Checkout\Helper\Data $checkoutHelper,
         \Magento\Tax\Model\Calculation $calculationTool,
-        \Magento\Directory\Model\Country $country
+        \Magento\Directory\Model\Country $country,
+        \Magento\Quote\Model\QuoteFactory $quoteFactory
     ) {
 
         parent::__construct($context);
@@ -196,6 +205,7 @@ class Data extends AbstractHelper
         $this->checkoutHelper = $checkoutHelper;
         $this->calculationTool = $calculationTool;
         $this->country = $country;
+        $this->quoteFactory = $quoteFactory;
     }
 
     /**
@@ -369,10 +379,22 @@ class Data extends AbstractHelper
     /**
      * Get Order Items
      * @param \Magento\Sales\Model\Order $order
+     * @param string $currency Order Currency
      * @return array
      */
-    public function getOrderItems(\Magento\Sales\Model\Order $order)
+    public function getOrderItems(\Magento\Sales\Model\Order $order, $currency = '')
     {
+        if (empty($currency)) {
+            $currency = $order->getBaseCurrencyCode();
+        }
+
+        // Currency rate
+        $currencyRate = 1;
+        if ($order->getBaseCurrencyCode() != $currency) {
+            // @todo Currency rate calc
+            $currencyRate = $order->getBaseToOrderRate();
+        }
+
         $lines = [];
         $items = $order->getAllVisibleItems();
         foreach ($items as $item) {
@@ -385,8 +407,8 @@ class Data extends AbstractHelper
             }
 
             $itemQty = (int)$item->getQtyOrdered();
-            $priceWithTax = $item->getRowTotalInclTax();
-            $priceWithoutTax = $item->getRowTotal();
+            $priceWithTax = $item->getRowTotalInclTax() * $currencyRate;
+            $priceWithoutTax = $item->getRowTotal() * $currencyRate;
             $taxPercent = $priceWithoutTax > 0 ? (($priceWithTax / $priceWithoutTax) - 1) * 100 : 0;
             $taxPrice = $priceWithTax - $priceWithoutTax;
 
@@ -403,8 +425,8 @@ class Data extends AbstractHelper
 
         // add Shipping
         if (!$order->getIsVirtual()) {
-            $shippingExclTax = $order->getShippingAmount();
-            $shippingIncTax = $order->getShippingInclTax();
+            $shippingExclTax = $order->getShippingAmount() * $currencyRate;
+            $shippingIncTax = $order->getShippingInclTax() * $currencyRate;
             $shippingTax = $shippingIncTax - $shippingExclTax;
 
             // find out tax-rate for the shipping
@@ -428,8 +450,8 @@ class Data extends AbstractHelper
         // add Discount
         if (abs($order->getDiscountAmount()) > 0) {
             $discountData = $this->getOrderDiscountData($order);
-            $discountInclTax = $discountData->getDiscountInclTax();
-            $discountExclTax = $discountData->getDiscountExclTax();
+            $discountInclTax = $discountData->getDiscountInclTax() * $currencyRate;
+            $discountExclTax = $discountData->getDiscountExclTax() * $currencyRate;
             $discountVatAmount = $discountInclTax - $discountExclTax;
             $discountVatPercent = $discountExclTax > 0 ? (($discountInclTax / $discountExclTax) - 1) * 100 : 0;
 
@@ -451,8 +473,8 @@ class Data extends AbstractHelper
                 \PayEx\Payments\Model\Method\PartPayment::METHOD_CODE
             ])
         ) {
-            $feeExclTax = $order->getPayexPaymentFee();
-            $feeTax = $order->getPayexPaymentFeeTax();
+            $feeExclTax = $order->getPayexPaymentFee() * $currencyRate;
+            $feeTax = $order->getPayexPaymentFeeTax() * $currencyRate;
             $feeIncTax = $feeExclTax + $feeTax;
             $feeTaxRate = $feeExclTax > 0 ? (($feeIncTax / $feeExclTax) - 1) * 100 : 0;
 
@@ -974,6 +996,34 @@ class Data extends AbstractHelper
             }
 
             $order->save();
+        }
+    }
+
+    /**
+     * Get Quote By Id
+     * @param $quote_id
+     *
+     * @return mixed
+     */
+    public function getQuoteById($quote_id)
+    {
+        return $this->quoteFactory->create()->load($quote_id);
+    }
+
+    /**
+     * Make UUIDv5
+     * @param string $name
+     *
+     * @return bool|string
+     */
+    public function uuid($name)
+    {
+        try {
+            $uuid5 = Uuid::uuid5(Uuid::NAMESPACE_OID, $name);
+            return $uuid5->toString();
+        } catch (UnsatisfiedDependencyException $e) {
+            $this->_logger->critical($e);
+            return false;
         }
     }
 }
