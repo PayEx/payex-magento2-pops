@@ -125,7 +125,6 @@ class Data extends AbstractHelper
     /**
      * Data constructor.
      * @param \Magento\Framework\App\Helper\Context $context
-     * @param \Psr\Log\LoggerInterface $logger
      * @param \Magento\Framework\Encryption\EncryptorInterface $encryptor
      * @param \Magento\Payment\Model\Config $config
      * @param \Magento\Framework\Module\ModuleListInterface $moduleList
@@ -138,7 +137,6 @@ class Data extends AbstractHelper
      * @param \Magento\Tax\Helper\Data $taxHelper
      * @param \Magento\Framework\App\ProductMetadata $productMetadata
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress
      * @param Px $px
      * @param FullNameParser $nameParser
      * @param \PayEx\Payments\Model\Config\Source\Language $language
@@ -149,7 +147,6 @@ class Data extends AbstractHelper
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
-        \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\Encryption\EncryptorInterface $encryptor,
         \Magento\Payment\Model\Config $config,
         \Magento\Framework\Module\ModuleListInterface $moduleList,
@@ -162,7 +159,6 @@ class Data extends AbstractHelper
         \Magento\Tax\Helper\Data $taxHelper,
         \Magento\Framework\App\ProductMetadata $productMetadata,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress,
         Px $px,
         FullNameParser $nameParser,
         \PayEx\Payments\Model\Config\Source\Language $language,
@@ -173,7 +169,7 @@ class Data extends AbstractHelper
     ) {
 
         parent::__construct($context);
-        $this->logger = $logger;
+        $this->logger = $context->getLogger();
         $this->encryptor = $encryptor;
         $this->config = $config;
         $this->moduleList = $moduleList;
@@ -188,7 +184,7 @@ class Data extends AbstractHelper
         $this->taxHelper = $taxHelper;
         $this->productMetadata = $productMetadata;
         $this->storeManager = $storeManager;
-        $this->remoteAddress = $remoteAddress;
+        $this->remoteAddress = $context->getRemoteAddress();
         $this->px = $px;
         $this->nameParser = $nameParser;
         $this->language = $language;
