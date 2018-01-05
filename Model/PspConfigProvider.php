@@ -8,7 +8,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Checkout\Model\Session;
-use PayEx\Payments\Model\Method\Vipps;
+use PayEx\Payments\Model\Psp\Vipps;
 
 class PspConfigProvider implements ConfigProviderInterface
 {

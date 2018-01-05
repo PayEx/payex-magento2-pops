@@ -3,7 +3,8 @@
 
 define(
     [
-        'jquery'
+        'jquery',
+        'Magento_Checkout/js/view/payment/default'
     ],
     function (
         $,
