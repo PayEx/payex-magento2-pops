@@ -245,6 +245,8 @@ class Cc extends \PayEx\Payments\Model\Method\AbstractMethod
             $this->payexLogger->info('PxOrder.AddOrderAddress2', $result);
         }
 
+        // Save order reference in payment
+        $order->getPayment()->setPoNumber($order_ref);
         // Set Pending Payment status
         $order->addStatusHistoryComment(__('The customer was redirected to PayEx.'), \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
         $order->save();

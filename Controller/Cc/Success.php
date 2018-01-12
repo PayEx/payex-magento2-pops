@@ -81,7 +81,7 @@ class Success extends \Magento\Framework\App\Action\Action
         }
 
         // Load Order
-        $order = $this->getOrder();
+        $order = $this->getOrder($orderRef);
         if (!$order->getId()) {
             $this->session->restoreQuote();
             $this->messageManager->addError(__('No order for processing found'));
@@ -256,22 +256,19 @@ class Success extends \Magento\Framework\App\Action\Action
     }
 
     /**
-     * Get order object
+     * Get order object by external reference saved in payment
+     * @param string $orderRef
      * @return \Magento\Sales\Model\Order
      */
-    protected function getOrder()
+    protected function getOrder($orderRef)
     {
-        $incrementId = $this->getCheckout()->getLastRealOrderId();
-        $orderFactory = $this->_objectManager->get('Magento\Sales\Model\OrderFactory');
-        return $orderFactory->create()->loadByIncrementId($incrementId);
-    }
-
-    /**
-     * Get Checkout Session
-     * @return \Magento\Checkout\Model\Session
-     */
-    protected function getCheckout()
-    {
-        return $this->_objectManager->get('Magento\Checkout\Model\Session');
+        $searchCriteriaBuilder = $this->_objectManager->create('Magento\Framework\Api\SearchCriteriaBuilder');
+        $searchCriteria = $searchCriteriaBuilder->addFilter(
+            'po_number',
+            $orderRef,
+            'eq'
+        )->create();
+        $payment = $this->_objectManager->get('Magento\Sales\Model\Order\Payment\Repository')->getList($searchCriteria)->getFirstItem();
+        return $payment->getOrder();
     }
 }
