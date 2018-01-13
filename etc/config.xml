@@ -209,6 +209,18 @@
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_psp_invoice>
+            <payex_psp_checkout>
+                <active>1</active>
+                <model>PayEx\Payments\Model\Psp\Checkout</model>
+                <title>PayEx Checkout</title>
+                <payment_action>authorize_capture</payment_action>
+                <debug>1</debug>
+                <merchant_token>payex merchant token</merchant_token>
+                <culture>en-US</culture>
+                <billing_address_required>1</billing_address_required>
+                <allowspecific>0</allowspecific>
+                <group>payex</group>
+            </payex_psp_checkout>
         </payment>
 
         <tax>

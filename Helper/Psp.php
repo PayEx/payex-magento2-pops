@@ -230,4 +230,20 @@ class Psp extends AbstractHelper
 
         return $single ? array_shift($data) : $data;
     }
+
+    /**
+     * Init PayEx Checkout Session
+     * @return mixed
+     * @throws \Exception
+     */
+    public function init_payment_session()
+    {
+        // Init Session
+        $session = $this->request('GET', '/psp/checkout');
+        if (!$session['authorized']) {
+            throw new \Exception( 'Unauthorized' );
+        }
+
+        return $session['paymentSession'];
+    }
 }
