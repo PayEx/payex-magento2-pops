@@ -40,7 +40,7 @@ Nordics!
 The recommended way of installing is through Magento Marketplace, where you can
 find [The Official PayEx Payment Gateway Extension][marketplace].
 
-### Manually
+### Composer
 
 1. Go to Magento2 root folder
 
@@ -62,6 +62,39 @@ find [The Official PayEx Payment Gateway Extension][marketplace].
 
 4. Enable and configure PayEx Payments in Magento Admin under *Stores* >
    *Configuration* > *Sales* > *Payment Methods* > *PayEx Payments*.
+   
+   ### Manually
+   
+   1. Clone repository with extension:
+         ```bash
+         git clone https://github.com/PayEx/PayEx.Magento2
+         ```
+
+   2. Move extension files to {magento_root}/app/code/PayEx/Payments directory:
+         ```bash
+         mkdir -p /app/code/PayEx/Payments
+         mv PayEx.Magento2/* /app/code/PayEx/Payments/
+         ```   
+   
+   2. Go to Magento2 root folder and enter following commands to install dependencies:
+   
+      ```bash
+      composer require payex/php-api
+      composer require aait/php-name-parser
+      composer require guzzlehttp/guzzle
+      composer require ramsey/uuid
+      ```
+
+   3. Enter following commands to enable module:
+   
+      ```bash
+      php bin/magento module:enable PayEx_Payments --clear-static-content
+      php bin/magento setup:upgrade
+      php bin/magento cache:clean
+      ```
+
+   4. Enable and configure PayEx Payments in Magento Admin under *Stores* >
+      *Configuration* > *Sales* > *Payment Methods* > *PayEx Payments*.
 
 [payex]: http://payex.com/
 [marketplace]: https://marketplace.magento.com/payex-magento2-payments.html
