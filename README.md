@@ -63,7 +63,7 @@ find [The Official PayEx Payment Gateway Extension][marketplace].
 4. Enable and configure PayEx Payments in Magento Admin under *Stores* >
    *Configuration* > *Sales* > *Payment Methods* > *PayEx Payments*.
    
-   ### Manually
+### Manually
    
 1. Clone repository with extension:
    ```bash
