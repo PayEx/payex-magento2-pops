@@ -301,7 +301,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
         }
 
         // Load transaction Data
-        $transactionId = $payment->getLastTransId();
+        $transactionId = $payment->getData('refund_transaction_id');
         $transactionRepository = \Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Sales\Model\Order\Payment\Transaction\Repository');
 
         /** @var \Magento\Sales\Model\Order\Payment\Transaction $transaction */
