@@ -44,21 +44,18 @@ class Psp extends AbstractHelper
      * Psp constructor.
      *
      * @param \Magento\Framework\App\Helper\Context $context
-     * @param GuzzleHttp\Client                     $client
      */
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        GuzzleHttp\Client $client
+        \Magento\Framework\App\Helper\Context $context
     ) {
 
         parent::__construct($context);
-        $this->client = $client;
+        $this->client = new \GuzzleHttp\Client();
         $this->logger = $context->getLogger();
         $this->remoteAddress = $context->getRemoteAddress();
 
         // Configure Logger
-        $writer = new Stream(BP . '/var/log/payex_psp.log');
-        $this->logger->addWriter($writer);
+        $this->logger->pushHandler(new \Monolog\Handler\StreamHandler(BP . '/var/log/payex_psp.log'));
     }
 
     /**
