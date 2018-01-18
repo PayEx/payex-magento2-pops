@@ -91,7 +91,7 @@ class CheckoutCartSaveAfter implements ObserverInterface
                     );
 
                     $quote->getPayment()->setAdditionalInformation('payex_payment_session', $payment_session_url);
-                    $quote->getPayment()->setAdditionalInformation('payex_payment_id', isset($result['id']) ? $result['id'] : null);
+                    $quote->getPayment()->setAdditionalInformation('payex_payment_session_id', isset($result['id']) ? $result['id'] : null);
                     $quote->getPayment()->save();
                 }
             }

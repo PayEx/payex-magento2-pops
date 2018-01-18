@@ -85,7 +85,7 @@ class Checkout extends \PayEx\Payments\Model\Psp\AbstractPsp
         }
 
         $payment_session_url = $quote->getPayment()->getAdditionalInformation('payex_payment_session');
-        $payment_id          = $quote->getPayment()->getAdditionalInformation('payex_payment_id');
+        $payment_session_id = $quote->getPayment()->getAdditionalInformation('payex_payment_session_id');
 
         try {
             // Get Payment Session
@@ -104,7 +104,7 @@ class Checkout extends \PayEx\Payments\Model\Psp\AbstractPsp
             }
 
             // Get Payment Url
-            $result = $this->psp->request('GET', $payment_id);
+            $result = $this->psp->request('GET', $payment_session_id);
             if (!isset($result['payment'])) {
                 throw new \Exception('Invalid payment response');
             }

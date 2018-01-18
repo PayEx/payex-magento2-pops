@@ -86,7 +86,7 @@ class CcConfigProvider implements ConfigProviderInterface
             $config['payment'][PxCheckout::METHOD_CODE]['frontend_script'] = $script;
 
             try {
-                $payment_id = $this->checkoutHelper->getQuote()->getPayment()->getAdditionalInformation('payex_payment_id');
+                $payment_id = $this->checkoutHelper->getQuote()->getPayment()->getAdditionalInformation('payex_payment_session_id');
                 $config['payment'][PxCheckout::METHOD_CODE]['payment_id'] = $payment_id;
             } catch (\Exception $e) {
                 //

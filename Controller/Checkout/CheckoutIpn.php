@@ -137,10 +137,6 @@ class CheckoutIpn extends Action
      */
     public function execute()
     {
-
-        /** @var \Magento\Framework\Controller\Result\Raw $result */
-        $result = $this->rawResultFactory->create();
-
         // Init Logger
         $writer = new Stream(BP . '/var/log/payex_psp_checkout.log');
         $logger = new Logger();
@@ -176,10 +172,18 @@ class CheckoutIpn extends Action
                 \PayEx\Payments\Model\Psp\AbstractPsp::BACKEND_API_URL_TEST
                 : \PayEx\Payments\Model\Psp\AbstractPsp::BACKEND_API_URL_PROD);
 
-            $payment_id = $quote->getPayment()->getAdditionalInformation('payex_payment_id');
-            if (empty($payment_id)) {
-                throw new \Exception('Error: No payment ID');
+            $payment_session_id = $quote->getPayment()->getAdditionalInformation('payex_payment_session_id');
+            if (empty($payment_session_id)) {
+                throw new \Exception('Error: No payment session ID');
             }
+
+            // Get Payment Id
+            $result = $this->psp->request('GET', $payment_session_id);
+            if (!isset($result['payment'])) {
+                throw new \Exception('Invalid payment response');
+            }
+
+            $payment_id = $result['payment'];
 
             // Fetch transactions list
             $result = $this->psp->request('GET', $payment_id . '/transactions');
@@ -238,6 +242,9 @@ class CheckoutIpn extends Action
                         throw $e;
                     }
                 }
+
+                // Save payment ID
+                $order->getPayment()->setAdditionalInformation('payex_payment_id', $payment_id);
             }
 
             // Get Increment Id
@@ -370,12 +377,16 @@ class CheckoutIpn extends Action
         } catch (\Exception $e) {
             $logger->crit(sprintf('IPN: %s', $e->getMessage()));
 
+            /** @var \Magento\Framework\Controller\Result\Raw $result */
+            $result = $this->rawResultFactory->create();
             $result->setStatusHeader('400', '1.1', sprintf('IPN: %s', $e->getMessage()));
             $result->setContents(sprintf('IPN: %s', $e->getMessage()));
 
             return $result;
         }
 
+        /** @var \Magento\Framework\Controller\Result\Raw $result */
+        $result = $this->rawResultFactory->create();
         $result->setStatusHeader('200', '1.1', 'OK');
         $result->setContents('OK');
 
