@@ -23,12 +23,20 @@ With PayEx, your customers can pay by:
 * Bank Debit
 * Credit and Debit Cards (Visa, MasterCard, Visa Electron, Maestro)
 * One-Click Credit Card
-* Financing Credit Account
+* Financing Credit Account (PayEx Delbetala)
 * Financing Invoice
 * Invoice Ledger Service
-* Factoring Service (currently Sweden Only)
+* Electronic value codes
+* Gift Cards (Generic Cards)
 * [MasterPass][masterpass]
 * [WyWallet][wywallet]
+* [MobilePay Online][mobilepay]
+* [Swish][swish]
+
+eCom Payment methods:
+* Credit and Debit Cards
+* Invoice
+* Vipps
 
 Settle your orders with the largest and most complete payment provider in the
 Nordics!
@@ -100,3 +108,5 @@ find [The Official PayEx Payment Gateway Extension][marketplace].
 [marketplace]: https://marketplace.magento.com/payex-magento2-payments.html
 [masterpass]: https://www.mastercard.se/sv-se/konsument/tjaenster-och-innovation/innovation/masterpass.html
 [wywallet]: http://wywallet.se/
+[mobilepay]: https://mobilepay.dk/da-dk/Erhverv/Pages/mobilepay-online.aspx
+[swish]: https://www.getswish.se/
