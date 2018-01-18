@@ -36,7 +36,7 @@ With PayEx, your customers can pay by:
 eCom Payment methods:
 * Credit and Debit Cards
 * Invoice
-* Vipps
+* [Vipps][vipps]
 
 Settle your orders with the largest and most complete payment provider in the
 Nordics!
@@ -110,3 +110,4 @@ find [The Official PayEx Payment Gateway Extension][marketplace].
 [wywallet]: http://wywallet.se/
 [mobilepay]: https://mobilepay.dk/da-dk/Erhverv/Pages/mobilepay-online.aspx
 [swish]: https://www.getswish.se/
+[vipps]: https://www.vipps.no/
