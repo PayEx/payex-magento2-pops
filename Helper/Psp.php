@@ -44,25 +44,18 @@ class Psp extends AbstractHelper
      * Psp constructor.
      *
      * @param \Magento\Framework\App\Helper\Context $context
-     * @param GuzzleHttp\Client                     $client
-     * @param Logger                                $logger
-     * @param RemoteAddress                         $remoteAddress
      */
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        GuzzleHttp\Client $client,
-        Logger $logger,
-        RemoteAddress $remoteAddress
+        \Magento\Framework\App\Helper\Context $context
     ) {
 
         parent::__construct($context);
-        $this->client = $client;
-        $this->logger = $logger;
-        $this->remoteAddress = $remoteAddress;
+        $this->client = new \GuzzleHttp\Client();
+        $this->logger = $context->getLogger();
+        $this->remoteAddress = $context->getRemoteAddress();
 
         // Configure Logger
-        $writer = new Stream(BP . '/var/log/payex_psp.log');
-        $this->logger->addWriter($writer);
+        $this->logger->pushHandler(new \Monolog\Handler\StreamHandler(BP . '/var/log/payex_psp.log'));
     }
 
     /**
@@ -229,5 +222,21 @@ class Psp extends AbstractHelper
         }
 
         return $single ? array_shift($data) : $data;
+    }
+
+    /**
+     * Init PayEx Checkout Session
+     * @return mixed
+     * @throws \Exception
+     */
+    public function init_payment_session()
+    {
+        // Init Session
+        $session = $this->request('GET', '/psp/checkout');
+        if (!$session['authorized']) {
+            throw new \Exception( 'Unauthorized' );
+        }
+
+        return $session['paymentSession'];
     }
 }

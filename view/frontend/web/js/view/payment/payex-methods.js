@@ -56,6 +56,10 @@ define(
             {
                 type: 'payex_psp_invoice',
                 component: 'PayEx_Payments/js/view/payment/method-renderer/payex-psp-invoice'
+            },
+            {
+                type: 'payex_psp_checkout',
+                component: 'PayEx_Payments/js/view/payment/method-renderer/payex-psp-checkout'
             }
         );
         /** Add view logic here if needed */
