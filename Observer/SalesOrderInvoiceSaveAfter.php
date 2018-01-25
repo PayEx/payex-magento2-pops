@@ -44,22 +44,44 @@ class SalesOrderInvoiceSaveAfter implements ObserverInterface
             $transactionId = $invoice->getTransactionId();
             $details = $method->fetchTransactionInfo($order->getPayment(), $transactionId);
 
-            if (!isset($details['transactionStatus'])) {
-                return $this;
-            }
+            if (strpos($method->getCode(), 'payex_psp_') === false) {
+                if (!isset($details['transactionStatus'])) {
+                    return $this;
+                }
 
-            // Get Order Status
-            if (in_array((int)$details['transactionStatus'], [0, 6])) {
-                // For Capture
-                $new_status = $method->getConfigData('order_status_capture');
-                $message = __('Payment has been captured');
-            } elseif ((int)$details['transactionStatus'] === 3) {
-                // For Authorize
-                $new_status = $method->getConfigData('order_status_authorize');
-                $message = __('Payment has been authorized');
+                // Get Order Status
+                if (in_array((int)$details['transactionStatus'], [0, 6])) {
+                    // For Capture
+                    $new_status = $method->getConfigData('order_status_capture');
+                    $message = __('Payment has been captured');
+                } elseif ((int)$details['transactionStatus'] === 3) {
+                    // For Authorize
+                    $new_status = $method->getConfigData('order_status_authorize');
+                    $message = __('Payment has been authorized');
+                } else {
+                    $new_status = $order->getStatus();
+                    $message = '';
+                }
             } else {
-                $new_status = $order->getStatus();
-                $message = '';
+                // PayEx Payment Services Provider
+                if (!isset($details['type'])) {
+                    return $this;
+                }
+
+                switch ($details['type']) {
+                    case 'Authorization':
+                        // For Authorize
+                        $new_status = $method->getConfigData('order_status_authorize');
+                        $message = __('Payment has been authorized');
+                        break;
+                    case 'Capture':
+                        // For Capture
+                        $new_status = $method->getConfigData('order_status_capture');
+                        $message = __('Payment has been captured');
+                        break;
+                    default:
+                        return $this;
+                }
             }
 
             // Change order status

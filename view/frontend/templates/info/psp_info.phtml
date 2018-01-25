@@ -1,0 +1,13 @@
+<?php
+// @codingStandardsIgnoreFile
+/**
+ * @var $block \PayEx\Payments\Block\Info\Psp
+ */
+?>
+<?php
+$_info = $block->getInfo();
+?>
+
+<dl class="payment-method <?php echo $block->escapeHtml($block->getMethod()->getCode()) ?>">
+        <?php echo $block->escapeHtml($block->getMethod()->getTitle()) ?><br/>
+</dl>

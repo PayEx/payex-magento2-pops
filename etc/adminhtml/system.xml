@@ -22,6 +22,24 @@
                 <include path="PayEx_Payments::system/payex_evc.xml"/>
                 <include path="PayEx_Payments::system/payex_mobilepay.xml"/>
             </group>
+            <group id="payex_psp" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>PayEx Payment Services</label>
+                <comment><![CDATA[PayEx Payment Services]]></comment>
+                <attribute type="expanded">1</attribute>
+                <fieldset_css>complex</fieldset_css>
+                <frontend_model>Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Group</frontend_model>
+                <include path="PayEx_Payments::system/payex_psp_cc.xml"/>
+                <include path="PayEx_Payments::system/payex_psp_vipps.xml"/>
+                <include path="PayEx_Payments::system/payex_psp_invoice.xml"/>
+            </group>
+            <group id="payex_checkout" translate="label" type="text" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>PayEx Checkout</label>
+                <comment><![CDATA[PayEx Checkout]]></comment>
+                <attribute type="expanded">1</attribute>
+                <fieldset_css>complex</fieldset_css>
+                <frontend_model>Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Group</frontend_model>
+                <include path="PayEx_Payments::system/payex_psp_checkout.xml"/>
+            </group>
         </section>
 
         <section id="tax" translate="label" showInDefault="1" showInWebsite="1" showInStore="1">
