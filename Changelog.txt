@@ -1,3 +1,8 @@
+Version 1.1.0
+* Implemented eCom Payment methods
+* Implemented PayEx Checkout method
+* Fixes compilation issues
+
 Version 1.0.13
 * Added Finland support for SSN field addon
 * Moved ssn field settings to "Financing Invoice" section
