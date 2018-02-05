@@ -15,8 +15,10 @@ define(
         return function () {
             var form = $('#shipping, #shipping-new-address-form');
             var ssn = $('#customer-ssn').val();
-            var country_code = $('[name="country_id"]', form).val();
-            var postcode = $('[name="postcode"]', form).val();
+            //var country_code = $('[name="country_id"]', form).val();
+            //var postcode = $('[name="postcode"]', form).val();
+            var country_code = $('#customer-country').val();
+            var postcode = $('#customer-postcode').val();
 
             var serviceUrl = urlBuilder.createUrl('/payex/payments/get_address/country_code/countryCode/postcode/postCode/ssn/SSN/lookup', {
                 'countryCode': country_code,

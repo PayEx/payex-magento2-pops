@@ -230,6 +230,8 @@ class Service implements ServiceInterface
 
             // Save data in Session
             $this->checkoutHelper->getCheckout()->setPayexSSN($ssn);
+            $this->checkoutHelper->getCheckout()->setPayexPostalCode($postcode);
+            $this->checkoutHelper->getCheckout()->setPayexCountryCode($country_code);
             $this->checkoutHelper->getCheckout()->setPayexSSNData($data);
 
             return json_encode($data, true);

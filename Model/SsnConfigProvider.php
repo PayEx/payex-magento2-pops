@@ -7,6 +7,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Checkout\Model\Session;
+use Magento\Framework\App\ObjectManager;
 
 class SsnConfigProvider implements ConfigProviderInterface
 {
@@ -48,6 +49,16 @@ class SsnConfigProvider implements ConfigProviderInterface
      */
     public function getConfig()
     {
+        // @codingStandardsIgnoreStart
+        /** @var \Magento\Framework\ObjectManagerInterface $om */
+        $om = ObjectManager::getInstance();
+
+        /** @var \PayEx\Payments\Model\Config\Source\Countries $countries */
+        $countries = $om->get('PayEx\Payments\Model\Config\Source\Countries');
+        // @codingStandardsIgnoreEnd
+
+        $countryCode = $this->session->getPayexCountryCode();
+
         return [
             'payexSSN' => [
                 'isEnabled' => (bool)$this->scopeConfig->getValue(
@@ -55,7 +66,10 @@ class SsnConfigProvider implements ConfigProviderInterface
                     ScopeInterface::SCOPE_STORE,
                     $this->storeManager->getStore()->getCode()
                 ),
-                'appliedSSN' => $this->session->getPayexSSN()
+                'countries' => $countries->toOptionArray(),
+                'appliedSSN' => $this->session->getPayexSSN(),
+                'appliedPostalCode' => $this->session->getPayexPostalCode(),
+                'appliedCountryCode' => !empty($countryCode) ? $countryCode : 'SE',
             ]
         ];
     }

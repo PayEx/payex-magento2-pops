@@ -8,10 +8,50 @@
                type="text"
                name="customer-ssn"
                id="customer-ssn"
-               data-bind="value: getAppliedSSN()" />
+               data-bind="hasFocus: showFields(), value: getAppliedSSN()" />
         <!-- ko template: 'ui/form/element/helper/tooltip' --><!-- /ko -->
     </div>
 </div>
+<div id="customer-ssn-fields" class="field" data-bind="visible: false">
+    <strong><!-- ko i18n: 'Please enter additional fields:'--><!-- /ko --></strong>
+    <div class="control">
+        <div class="fields group group-2">
+            <div class="field">
+                <div class="control">
+                    <label class="label" for="customer-country">
+                        <span data-bind="i18n: 'Country'"></span>
+                    </label>
+                    <div class="control">
+                        <select name="payment[customer-country]"
+                                class="select"
+                                id="customer-country"
+                                data-bind="options: getCountries(),
+                                           optionsValue: 'value',
+                                           optionsText: 'label',
+                                           value: getAppliedCountryCode()">
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <label class="label" for="customer-postcode">
+                        <span data-bind="i18n: 'Postal Code'"></span>
+                    </label>
+                    <div class="control">
+                        <input class="input-text"
+                               type="text"
+                               name="customer-postcode"
+                               id="customer-postcode"
+                               data-bind="value: getAppliedPostalCode()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="field">
     <button class="action primary checkout"
             type="submit"
