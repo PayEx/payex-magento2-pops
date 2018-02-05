@@ -71,6 +71,32 @@
                 <replace_illegal>1</replace_illegal>
                 <replacement_char>-</replacement_char>
                 <billing_address_required>1</billing_address_required>
+                <content_tos>
+                    <![CDATA[
+<p><strong><u>Information om personuppgifter och kreditprövning</u></strong></p>
+<p>Insamling av personuppgifter och kreditprövning är en förutsättning för vi ska kunna behandla önskemål om
+    betalning på kredit. Vid köptillfället görs en kreditprövning som i vissa fall innebär att en kreditupplysning
+    tas. Tas en kreditupplysning kommer en kopia att skickas till dig per post. Personuppgifter hanteras i enlighet
+    med gällande lagstiftning. Vi kommer att lämna de personuppgifter som inhämtas i samband med köp till PayEx, 621
+    88 Visby, som behandlar personuppgifter i syfte att utföra identifikation och kreditkontroll, för fakturering
+    och annan hantering som är knuten till fordran, samt för statistik- och analysändamål exempelvis för att undvika
+    bedrägerier, för att utveckla nya produkter och för beslutsstöd vid inkasso. Uppgifterna kan lämnas ut till
+    underleverantörer och till myndigheter och annan som har rätt till uppgifterna enligt lag. Uppgifterna kan också
+    användas för marknadsföring av PayEx produkter, via brev, e-post eller på annat sätt, om du inte skriftligen
+    anmäler till PayEx att du inte samtycker till detta på den adress som PayEx anvisar.</p>
+<p><strong><u>Information om överlåtelse</u></strong></p>
+<p>”Fordran kommer att överlåtas till PayEx Credit AB, 556735- 5671, S:t Hansplan 1, 621 88 Visby. Betalning med
+    befriande verkan kan därför bara ske till PayEx på det konto som PayEx anvisar”.</p>
+<p><strong><u>Leveransvillkor</u></strong></p>
+<p>Leverans sker till din folkbokföringsadress.</p>
+<p><strong><u>Betalningsvillkor</u></strong></p>
+<p>Faktureringsavgift tas ut med följande belopp: [Kund anger den faktureringsavgift kund tillämpar]. Faktura ska
+    betalas så att den är mottagaren till handa senast 14 dagar efter fakturadatum. Vid försenad eller utebliven
+    betalning tillkommer dröjsmålsränta med gällande reporänta + 19,00%, dock lägst 20 % samt ersättning för
+    skriftlig betalningspåminnelse med det belopp som anges i lag (1981:739) om ersättning för inkassokostnader mm
+    eller motsvarande lag som ersätter denna”.</p>
+                    ]]>
+                </content_tos>
                 <checkout_field>0</checkout_field>
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
@@ -91,6 +117,32 @@
                 <replace_illegal>1</replace_illegal>
                 <replacement_char>-</replacement_char>
                 <billing_address_required>1</billing_address_required>
+                <content_tos>
+                    <![CDATA[
+<p><strong><u>Information om personuppgifter och kreditprövning</u></strong></p>
+<p>Insamling av personuppgifter och kreditprövning är en förutsättning för vi ska kunna behandla önskemål om
+    betalning på kredit. Vid köptillfället görs en kreditprövning som i vissa fall innebär att en kreditupplysning
+    tas. Tas en kreditupplysning kommer en kopia att skickas till dig per post. Personuppgifter hanteras i enlighet
+    med gällande lagstiftning. Vi kommer att lämna de personuppgifter som inhämtas i samband med köp till PayEx, 621
+    88 Visby, som behandlar personuppgifter i syfte att utföra identifikation och kreditkontroll, för fakturering
+    och annan hantering som är knuten till fordran, samt för statistik- och analysändamål exempelvis för att undvika
+    bedrägerier, för att utveckla nya produkter och för beslutsstöd vid inkasso. Uppgifterna kan lämnas ut till
+    underleverantörer och till myndigheter och annan som har rätt till uppgifterna enligt lag. Uppgifterna kan också
+    användas för marknadsföring av PayEx produkter, via brev, e-post eller på annat sätt, om du inte skriftligen
+    anmäler till PayEx att du inte samtycker till detta på den adress som PayEx anvisar.</p>
+<p><strong><u>Information om överlåtelse</u></strong></p>
+<p>”Fordran kommer att överlåtas till PayEx Credit AB, 556735- 5671, S:t Hansplan 1, 621 88 Visby. Betalning med
+    befriande verkan kan därför bara ske till PayEx på det konto som PayEx anvisar”.</p>
+<p><strong><u>Leveransvillkor</u></strong></p>
+<p>Leverans sker till din folkbokföringsadress.</p>
+<p><strong><u>Betalningsvillkor</u></strong></p>
+<p>Faktureringsavgift tas ut med följande belopp: [Kund anger den faktureringsavgift kund tillämpar]. Faktura ska
+    betalas så att den är mottagaren till handa senast 14 dagar efter fakturadatum. Vid försenad eller utebliven
+    betalning tillkommer dröjsmålsränta med gällande reporänta + 19,00%, dock lägst 20 % samt ersättning för
+    skriftlig betalningspåminnelse med det belopp som anges i lag (1981:739) om ersättning för inkassokostnader mm
+    eller motsvarande lag som ersätter denna”.</p>
+                    ]]>
+                </content_tos>
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_partpayment>

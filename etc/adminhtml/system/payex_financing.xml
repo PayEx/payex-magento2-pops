@@ -96,6 +96,11 @@
             <config_path>payment/payex_financing/checkout_field</config_path>
         </field>
 
+        <field id="content_tos" translate="label" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Content Terms of Service. HTML allowed.</label>
+            <config_path>payment/payex_financing/content_tos</config_path>
+        </field>
+
         <group id="payex_financing_country_specific" translate="label" showInDefault="1" showInWebsite="1" sortOrder="20">
             <label>Country Specific Settings</label>
             <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
