@@ -638,7 +638,7 @@ class Data extends AbstractHelper
         $discountExcl = 0;
 
         // find discount on the items
-        foreach ($order->getItemsCollection() as $item) {
+        foreach ($order->getItems() as $item) {
             /** @var \Magento\Sales\Model\Order\Item $item */
             if (!$this->taxHelper->priceIncludesTax()) {
                 $discountExcl += $item->getDiscountAmount();
