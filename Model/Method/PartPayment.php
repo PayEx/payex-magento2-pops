@@ -90,7 +90,7 @@ class PartPayment extends \PayEx\Payments\Model\Method\Financing
         $params = [
             'accountNumber' => '',
             'purchaseOperation' => 'AUTHORIZATION',
-            'price' => round($amount * 100),
+            'price' => bcmul(100, $amount),
             'priceArgList' => '',
             'currency' => $currency_code,
             'vat' => 0,
