@@ -194,7 +194,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
         $params = [
             'accountNumber' => '',
             'transactionNumber' => $transactionNumber,
-            'amount' => round(100 * $amount),
+            'amount' => bcmul(100, $amount),
             'orderId' => $order_id,
             'vatAmount' => 0,
             'additionalValues' => ''
@@ -322,7 +322,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
         $params = [
             'accountNumber' => '',
             'transactionNumber' => $details['transactionNumber'],
-            'amount' => round(100 * $amount),
+            'amount' => bcmul(100, $amount),
             'orderId' => $details['orderId'],
             'vatAmount' => 0,
             'additionalValues' => ''

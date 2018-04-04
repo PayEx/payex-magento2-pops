@@ -163,7 +163,7 @@ class Bankdebit extends \PayEx\Payments\Model\Method\AbstractMethod
             'accountNumber' => '',
             'purchaseOperation' => 'SALE',
             'price' => 0,
-            'priceArgList' => $bank_id . '=' . round($amount * 100),
+            'priceArgList' => $bank_id . '=' . bcmul(100, $amount),
             'currency' => $currency_code,
             'vat' => 0,
             'orderID' => $order_id,
@@ -207,9 +207,9 @@ class Bankdebit extends \PayEx\Payments\Model\Method\AbstractMethod
                     'itemDescription4' => '',
                     'itemDescription5' => '',
                     'quantity' => $item['qty'],
-                    'amount' => (int)(100 * $item['price_with_tax']), //must include tax
-                    'vatPrice' => (int)(100 * $item['tax_price']),
-                    'vatPercent' => (int)(100 * $item['tax_percent'])
+                    'amount' => bcmul(100, $item['price_with_tax']), //must include tax
+                    'vatPrice' => bcmul(100, $item['tax_price']),
+                    'vatPercent' => bcmul(100, $item['tax_percent'])
                 ];
 
                 $result = $this->payexHelper->getPx()->AddSingleOrderLine2($params);

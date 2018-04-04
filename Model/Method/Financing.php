@@ -215,7 +215,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
         $params = [
             'accountNumber' => '',
             'purchaseOperation' => $operation,
-            'price' => round($amount * 100),
+            'price' => bcmul(100, $amount),
             'priceArgList' => '',
             'currency' => $currency_code,
             'vat' => 0,
@@ -439,7 +439,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
         $params = [
             'accountNumber' => '',
             'transactionNumber' => $transactionNumber,
-            'amount' => round(100 * $amount),
+            'amount' => bcmul(100, $amount),
             'orderId' => $order_id,
             'vatAmount' => 0,
             'additionalValues' => $additional
