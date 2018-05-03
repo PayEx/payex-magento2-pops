@@ -6,6 +6,7 @@ use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Payment\Helper\Data as PaymentHelper;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\App\ObjectManager;
+use Magento\Setup\Exception;
 use PayEx\Payments\Model\Method\Bankdebit;
 use PayEx\Payments\Model\Method\MasterPass;
 use PayEx\Payments\Model\Psp\Checkout as PxCheckout;
@@ -65,32 +66,39 @@ class CcConfigProvider implements ConfigProviderInterface
             ],
         ];
 
-        /** @var Bankdebit $method */
-        $method = $this->paymentHelper->getMethodInstance(Bankdebit::METHOD_CODE);
-        if ($method->isAvailable()) {
-            $banks = ObjectManager::getInstance()->get('PayEx\Payments\Block\Bankdebit\Banks')->getAvailableBanks();
-            $config['payment'][Bankdebit::METHOD_CODE]['banks'] = $banks;
+        try {
+            /** @var Bankdebit $method */
+            $method = $this->paymentHelper->getMethodInstance(Bankdebit::METHOD_CODE);
+            if ($method->isAvailable()) {
+                $banks = ObjectManager::getInstance()->get('PayEx\Payments\Block\Bankdebit\Banks')->getAvailableBanks();
+                $config['payment'][Bankdebit::METHOD_CODE]['banks'] = $banks;
+            }
+        } catch (\Exception $e) {
+            //
         }
 
-        /** @var \PayEx\Payments\Model\Method\MasterPass $method */
-        $method = $this->paymentHelper->getMethodInstance(MasterPass::METHOD_CODE);
-        if ($method->isAvailable()) {
-            $config['payment'][MasterPass::METHOD_CODE]['redirectUrl'] = $method->getCheckoutRedirectUrl();
+        try {
+            /** @var \PayEx\Payments\Model\Method\MasterPass $method */
+            $method = $this->paymentHelper->getMethodInstance(MasterPass::METHOD_CODE);
+            if ($method->isAvailable()) {
+                $config['payment'][MasterPass::METHOD_CODE]['redirectUrl'] = $method->getCheckoutRedirectUrl();
+            }
+        } catch (\Exception $e) {
+            //
         }
 
-        /** @var \PayEx\Payments\Model\Method\Checkout $method */
-        $method = $this->paymentHelper->getMethodInstance(PxCheckout::METHOD_CODE);
-        if ($method->isAvailable()) {
-            // @todo Add Store Id
-            $script = $method->getConfigData('debug') ? self::FRONTEND_URL_TEST : self::FRONTEND_URL_PROD;
-            $config['payment'][PxCheckout::METHOD_CODE]['frontend_script'] = $script;
-
-            try {
+        try {
+            /** @var \PayEx\Payments\Model\Method\Checkout $method */
+            $method = $this->paymentHelper->getMethodInstance(PxCheckout::METHOD_CODE);
+            if ($method->isAvailable()) {
+                // @todo Add Store Id
+                $script = $method->getConfigData('debug') ? self::FRONTEND_URL_TEST : self::FRONTEND_URL_PROD;
+                $config['payment'][PxCheckout::METHOD_CODE]['frontend_script'] = $script;
                 $payment_id = $this->checkoutHelper->getQuote()->getPayment()->getAdditionalInformation('payex_payment_session_id');
                 $config['payment'][PxCheckout::METHOD_CODE]['payment_id'] = $payment_id;
-            } catch (\Exception $e) {
-                //
             }
+        } catch (\Exception $e) {
+            //
         }
 
         return $config;
