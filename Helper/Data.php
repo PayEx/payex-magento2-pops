@@ -1022,4 +1022,37 @@ class Data extends AbstractHelper
             return false;
         }
     }
+
+	/**
+	 * Get MSISDN
+	 * @param string $phone
+	 * @param string $countryCode
+	 *
+	 * @return string
+	 */
+    public function getMsisdn($phone, $countryCode)
+    {
+	    $msisdn = ltrim($phone, '+');
+	    switch ($countryCode) {
+		    case 'SE':
+			    if (strpos($msisdn, '46') === 0) {
+				    $msisdn = substr($msisdn, 2);
+			    }
+			    $msisdn = ltrim($msisdn, '0');
+			    $msisdn = '+46' . $msisdn;
+			    break;
+		    case 'NO':
+			    if (strpos($msisdn, '47') === 0) {
+				    $msisdn = substr($msisdn, 2);
+			    }
+			    $msisdn = ltrim($msisdn, '0');
+			    $msisdn = '+47' . $msisdn;
+			    break;
+		    default:
+			    $msisdn = '+' . $msisdn;
+			    break;
+	    }
+
+	    return $msisdn;
+    }
 }

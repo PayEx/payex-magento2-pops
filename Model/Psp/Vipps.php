@@ -86,30 +86,11 @@ class Vipps extends \PayEx\Payments\Model\Psp\Cc
 
         $currency = $order->getOrderCurrencyCode();
         $amount = $order->getGrandTotal();
-        $phone = $order->getBillingAddress()->getTelephone();
 
-        // Process msisdn
+        // Get msisdn
+	    $phone = $order->getBillingAddress()->getTelephone();
         $countryCode = $order->getBillingAddress()->getCountryId();
-        $msisdn = ltrim($phone, '+');
-        switch ($countryCode) {
-            case 'SE':
-                if (strpos($msisdn, '46') === 0) {
-                    $msisdn = substr($msisdn, 2);
-                }
-                $msisdn = ltrim($msisdn, '0');
-                $msisdn = '+46' . $msisdn;
-                break;
-            case 'NO':
-                if (strpos($msisdn, '47') === 0) {
-                    $msisdn = substr($msisdn, 2);
-                }
-                $msisdn = ltrim($msisdn, '0');
-                $msisdn = '+47' . $msisdn;
-                break;
-            default:
-                $msisdn = '+' . $msisdn;
-                break;
-        }
+	    $msisdn = $this->payexHelper->getMsisdn($phone, $countryCode);
 
         try {
             $params = [
