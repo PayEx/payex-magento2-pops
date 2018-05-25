@@ -13,7 +13,7 @@ use PayEx\Payments\Model\Psp\Checkout as PxCheckout;
 
 class CcConfigProvider implements ConfigProviderInterface
 {
-    const FRONTEND_URL_PROD = 'https://checkout.payex.com/js/payex-checkout.min.js';
+    const FRONTEND_URL_PROD = 'https://checkout.payex.com/js/payex-checkout.min';
     const FRONTEND_URL_TEST = 'https://checkout.externalintegration.payex.com/js/payex-checkout.min';
 
     /**
