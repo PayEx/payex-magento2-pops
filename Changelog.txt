@@ -1,3 +1,13 @@
+Version 1.1.1
+* PayEx Checkout: Fixed production frontend url
+* Financing Invoice: msisdn fix
+* Fixed: Payment model name is not provided in config!
+* Vipps: number phone fix
+* Use bcmath to avoid a problem with round
+* Fixed discount bug
+* Postcode and country fields for SSN retrieving
+* Editable option for Terms of Service
+
 Version 1.1.0
 * Implemented eCom Payment methods
 * Implemented PayEx Checkout method
