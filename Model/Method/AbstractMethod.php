@@ -38,6 +38,11 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
      */
     protected $payexLogger;
 
+	/**
+	 * @var \Magento\Sales\Model\OrderFactory
+	 */
+	private $orderFactory;
+
     /**
      * @var \Magento\Checkout\Helper\Data
      */
@@ -64,6 +69,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
      * @param \Magento\Checkout\Helper\Data $checkoutHelper
      * @param Transaction\Repository $transactionRepository
      * @param \PayEx\Payments\Logger\Logger $payexLogger
+     * @param \Magento\Sales\Model\OrderFactory $orderFactory
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
@@ -84,6 +90,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
         \Magento\Checkout\Helper\Data $checkoutHelper,
         Transaction\Repository $transactionRepository,
         \PayEx\Payments\Logger\Logger $payexLogger,
+	    \Magento\Sales\Model\OrderFactory $orderFactory,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -109,10 +116,23 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
         $this->request = $request;
         $this->checkoutHelper = $checkoutHelper;
         $this->transactionRepository = $transactionRepository;
+	    $this->orderFactory = $orderFactory;
 
-        $accountnumber = $this->getConfigData('accountnumber');
-        $encryptionkey = $this->getConfigData('encryptionkey');
-        $debug = (bool)$this->getConfigData('debug');
+	    $storeId = $storeManager->getStore()->getId();
+
+	    // Get correct Store Id for admin area
+	    if ($context->getAppState()->getAreaCode() === \Magento\Framework\App\Area::AREA_ADMINHTML) {
+		    $order_id = (int) $request->getParam('order_id');
+		    if ($order_id) {
+			    $order = $this->orderFactory->create()->load($order_id);
+			    $storeId = $order->getStore()->getStoreId();
+			    unset($order);
+		    }
+	    }
+
+        $accountnumber = $this->getConfigData('accountnumber', $storeId);
+        $encryptionkey = $this->getConfigData('encryptionkey', $storeId);
+        $debug = (bool)$this->getConfigData('debug', $storeId);
         $this->payexHelper->getPx()->setEnvironment($accountnumber, $encryptionkey, $debug);
     }
 
