@@ -147,7 +147,7 @@ class CheckoutIpn extends Action
         $logger->info('IPN: Initialized', [$remote_addr, $_SERVER['REQUEST_URI']]);
 
         $raw_body = $this->iofile->read('php://input');
-        $data = json_decode($raw_body,true);
+        $data = json_decode($raw_body, true);
         $logger->info('IPN: Body', [$raw_body]);
 
         $reference = $this->getRequest()->getParam('reference');

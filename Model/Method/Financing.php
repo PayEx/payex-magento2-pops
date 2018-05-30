@@ -211,10 +211,10 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
         // Get SSN
         $ssn = $info->getAdditionalInformation('social_security_number');
 
-	    // Get msisdn
-	    $phone = $order->getBillingAddress()->getTelephone();
-	    $countryCode = $order->getBillingAddress()->getCountryId();
-	    $msisdn = $this->payexHelper->getMsisdn($phone, $countryCode);
+        // Get msisdn
+        $phone = $order->getBillingAddress()->getTelephone();
+        $countryCode = $order->getBillingAddress()->getCountryId();
+        $msisdn = $this->payexHelper->getMsisdn($phone, $countryCode);
 
         // Call PxOrder.Initialize8
         $params = [

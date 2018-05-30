@@ -88,9 +88,9 @@ class Vipps extends \PayEx\Payments\Model\Psp\Cc
         $amount = $order->getGrandTotal();
 
         // Get msisdn
-	    $phone = $order->getBillingAddress()->getTelephone();
+        $phone = $order->getBillingAddress()->getTelephone();
         $countryCode = $order->getBillingAddress()->getCountryId();
-	    $msisdn = $this->payexHelper->getMsisdn($phone, $countryCode);
+        $msisdn = $this->payexHelper->getMsisdn($phone, $countryCode);
 
         try {
             $params = [
@@ -160,7 +160,7 @@ class Vipps extends \PayEx\Payments\Model\Psp\Cc
                     ];
 
                     $result = $this->psp->request('POST', $authorization, $params);
-                } catch ( \Exception $e ) {
+                } catch (\Exception $e) {
                     throw new LocalizedException(__($e->getMessage()));
                 }
 

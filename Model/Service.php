@@ -154,7 +154,8 @@ class Service implements ServiceInterface
      * @return string
      * @throws CouldNotSaveException
      */
-    public function get_address($country_code, $postcode, $ssn) {
+    public function get_address($country_code, $postcode, $ssn)
+    {
         // Strip whitespaces from postcode to pass validation
         $postcode = preg_replace('/\s+/', '', $postcode);
 

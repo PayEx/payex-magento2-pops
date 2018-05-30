@@ -38,10 +38,10 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
      */
     protected $payexLogger;
 
-	/**
-	 * @var \Magento\Sales\Model\OrderFactory
-	 */
-	private $orderFactory;
+    /**
+     * @var \Magento\Sales\Model\OrderFactory
+     */
+    private $orderFactory;
 
     /**
      * @var \Magento\Checkout\Helper\Data
@@ -90,7 +90,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
         \Magento\Checkout\Helper\Data $checkoutHelper,
         Transaction\Repository $transactionRepository,
         \PayEx\Payments\Logger\Logger $payexLogger,
-	    \Magento\Sales\Model\OrderFactory $orderFactory,
+        \Magento\Sales\Model\OrderFactory $orderFactory,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -116,19 +116,19 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
         $this->request = $request;
         $this->checkoutHelper = $checkoutHelper;
         $this->transactionRepository = $transactionRepository;
-	    $this->orderFactory = $orderFactory;
+        $this->orderFactory = $orderFactory;
 
-	    $storeId = $storeManager->getStore()->getId();
+        $storeId = $storeManager->getStore()->getId();
 
-	    // Get correct Store Id for admin area
-	    if ($context->getAppState()->getAreaCode() === \Magento\Framework\App\Area::AREA_ADMINHTML) {
-		    $order_id = (int) $request->getParam('order_id');
-		    if ($order_id) {
-			    $order = $this->orderFactory->create()->load($order_id);
-			    $storeId = $order->getStore()->getStoreId();
-			    unset($order);
-		    }
-	    }
+        // Get correct Store Id for admin area
+        if ($context->getAppState()->getAreaCode() === \Magento\Framework\App\Area::AREA_ADMINHTML) {
+            $order_id = (int) $request->getParam('order_id');
+            if ($order_id) {
+                $order = $this->orderFactory->create()->load($order_id);
+                $storeId = $order->getStore()->getStoreId();
+                unset($order);
+            }
+        }
 
         $accountnumber = $this->getConfigData('accountnumber', $storeId);
         $encryptionkey = $this->getConfigData('encryptionkey', $storeId);

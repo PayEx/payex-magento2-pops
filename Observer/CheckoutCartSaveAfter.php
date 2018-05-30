@@ -76,7 +76,9 @@ class CheckoutCartSaveAfter implements ObserverInterface
                     $payment_session_url = $this->psp->init_payment_session();
 
                     // Init Payment
-                    $result = $this->psp->request('POST', $payment_session_url,
+                    $result = $this->psp->request(
+                        'POST',
+                        $payment_session_url,
                         [
                             'amount'      => round($amount, 2),
                             'vatAmount'   => 0,

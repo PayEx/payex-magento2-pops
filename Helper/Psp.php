@@ -133,10 +133,10 @@ class Psp extends AbstractHelper
                 'Authorization' => 'Bearer ' . $this->merchantToken
             ];
 
-            $response = $this->client->request($method, $url, count($params) > 0 ? array(
+            $response = $this->client->request($method, $url, count($params) > 0 ? [
                 'json'    => $params,
                 'headers' => $headers
-            ) : array('headers' => $headers));
+            ] : ['headers' => $headers]);
             $responseBodyAsString = $response->getBody()->getContents();
             $this->log('Response', [$response->getStatusCode(), $responseBodyAsString]);
             if (floor($response->getStatusCode() / 100) != 2) {
@@ -208,7 +208,7 @@ class Psp extends AbstractHelper
         $data = array_filter($source, function ($data, $key) use ($conditionals) {
             $status = true;
             foreach ($conditionals as $ckey => $cvalue) {
-                if ( ! isset($data[$ckey]) || $data[$ckey] != $cvalue) {
+                if (! isset($data[$ckey]) || $data[$ckey] != $cvalue) {
                     $status = false;
                     break;
                 }
@@ -218,7 +218,7 @@ class Psp extends AbstractHelper
         }, ARRAY_FILTER_USE_BOTH);
 
         if (count($data) === 0) {
-            return $single ? false : array();
+            return $single ? false : [];
         }
 
         return $single ? array_shift($data) : $data;
@@ -234,7 +234,7 @@ class Psp extends AbstractHelper
         // Init Session
         $session = $this->request('GET', '/psp/checkout');
         if (!$session['authorized']) {
-            throw new \Exception( 'Unauthorized' );
+            throw new \Exception('Unauthorized');
         }
 
         return $session['paymentSession'];

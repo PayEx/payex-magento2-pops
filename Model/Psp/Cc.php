@@ -191,7 +191,7 @@ class Cc extends \PayEx\Payments\Model\Psp\AbstractPsp
             $result = $this->psp->request('GET', $payment_id);
             $capture_href = $this->psp->get_operation($result['operations'], 'create-capture');
             if (empty($capture_href)) {
-                throw new LocalizedException(__( 'Capture unavailable.'));
+                throw new LocalizedException(__('Capture unavailable.'));
             }
 
             $params = [
@@ -204,7 +204,7 @@ class Cc extends \PayEx\Payments\Model\Psp\AbstractPsp
             ];
             $result = $this->psp->request('POST', $capture_href, $params);
         } catch (\Exception $e) {
-            throw new LocalizedException(__( 'Error: %1', $e->getMessage()));
+            throw new LocalizedException(__('Error: %1', $e->getMessage()));
         }
 
         // Save transaction
@@ -255,7 +255,7 @@ class Cc extends \PayEx\Payments\Model\Psp\AbstractPsp
             $result = $this->psp->request('GET', $payment_id);
             $cancel_href = $this->psp->get_operation($result['operations'], 'create-cancellation');
             if (empty($cancel_href)) {
-                throw new LocalizedException(__( 'Cancel unavailable.'));
+                throw new LocalizedException(__('Cancel unavailable.'));
             }
 
             $params = [
@@ -266,7 +266,7 @@ class Cc extends \PayEx\Payments\Model\Psp\AbstractPsp
             ];
             $result = $this->psp->request('POST', $cancel_href, $params);
         } catch (\Exception $e) {
-            throw new LocalizedException(__( 'Error: %1', $e->getMessage()));
+            throw new LocalizedException(__('Error: %1', $e->getMessage()));
         }
 
         // Save transaction
@@ -349,7 +349,7 @@ class Cc extends \PayEx\Payments\Model\Psp\AbstractPsp
             $result = $this->psp->request('GET', $payment_id);
             $reversal_href = $this->psp->get_operation($result['operations'], 'create-reversal');
             if (empty($reversal_href)) {
-                throw new LocalizedException(__( 'Refund unavailable.'));
+                throw new LocalizedException(__('Refund unavailable.'));
             }
 
             $params = [
@@ -362,7 +362,7 @@ class Cc extends \PayEx\Payments\Model\Psp\AbstractPsp
             ];
             $result = $this->psp->request('POST', $reversal_href, $params);
         } catch (\Exception $e) {
-            throw new LocalizedException(__( 'Error: %1', $e->getMessage()));
+            throw new LocalizedException(__('Error: %1', $e->getMessage()));
         }
 
         // Save transaction
@@ -392,6 +392,4 @@ class Cc extends \PayEx\Payments\Model\Psp\AbstractPsp
                 throw new LocalizedException($message);
         }
     }
-
-
 }

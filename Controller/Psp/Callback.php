@@ -106,7 +106,6 @@ class Callback extends Action
 
         $this->psp              = $psp;
         $this->payexTransaction = $payexTransaction;
-
     }
 
     /**

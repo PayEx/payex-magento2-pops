@@ -364,7 +364,7 @@ class InstallSchema implements InstallSchemaInterface
                 'Payee Reference'
             )
             ->addIndex(
-                $installer->getIdxName('payex_transactions',  ['order_id', 'id']),
+                $installer->getIdxName('payex_transactions', ['order_id', 'id']),
                 ['order_id', 'id']
             )
             ->addIndex(
