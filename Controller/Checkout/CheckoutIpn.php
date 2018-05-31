@@ -162,7 +162,7 @@ class CheckoutIpn extends Action
                 throw new \Exception(sprintf('Error: Failed to load quote #%s', $reference));
             }
 
-            /** @var \PayEx\Payments\Model\Method\Checkout $method */
+            /** @var \PayEx\Payments\Model\Method\Checkout $methodInstance */
             $methodInstance = $quote->getPayment()->getMethodInstance();
 
             // Init Api helper
@@ -288,7 +288,7 @@ class CheckoutIpn extends Action
                     $order->getPayment()->setLastTransId($transaction['number'])->save();
 
                     // Change order status
-                    $new_status = $method->getConfigData('order_status_authorize');
+                    $new_status = $methodInstance->getConfigData('order_status_authorize');
 
                     /** @var \Magento\Sales\Model\Order\Status $status */
                     $status = $this->payexHelper->getAssignedState($new_status);
@@ -320,7 +320,7 @@ class CheckoutIpn extends Action
                     $order->getPayment()->setLastTransId($transaction['number'])->save();
 
                     // Change order status
-                    $new_status = $method->getConfigData('order_status_capture');
+                    $new_status = $methodInstance->getConfigData('order_status_capture');
 
                     /** @var \Magento\Sales\Model\Order\Status $status */
                     $status = $this->payexHelper->getAssignedState($new_status);
