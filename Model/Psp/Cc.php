@@ -97,12 +97,12 @@ class Cc extends \PayEx\Payments\Model\Psp\AbstractPsp
                     'prices' => [
                         [
                             'type' => 'Visa',
-                            'amount' => round($amount * 100),
+                            'amount' => bcmul(100, $amount),
                             'vatAmount' => '0'
                         ],
                         [
                             'type' => 'MasterCard',
-                            'amount' => round($amount * 100),
+                            'amount' => bcmul(100, $amount),
                             'vatAmount' => '0'
                         ]
                     ],
@@ -196,7 +196,7 @@ class Cc extends \PayEx\Payments\Model\Psp\AbstractPsp
 
             $params = [
                 'transaction' => [
-                    'amount' => (int) round($amount * 100),
+                    'amount' => bcmul(100, $amount),
                     'vatAmount' => 0,
                     'description' => sprintf('Capture for Order #%s', $order->getIncrementId()),
                     'payeeReference' => $this->payexHelper->uuid(uniqid($order->getIncrementId()))
@@ -354,7 +354,7 @@ class Cc extends \PayEx\Payments\Model\Psp\AbstractPsp
 
             $params = [
                 'transaction' => [
-                    'amount' => (int) round($amount * 100),
+                    'amount' => bcmul(100, $amount),
                     'vatAmount' => 0,
                     'description' => sprintf('Refund for Order #%s', $order->getIncrementId()),
                     'payeeReference' => $this->payexHelper->uuid(uniqid($order->getIncrementId()))

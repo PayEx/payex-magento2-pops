@@ -101,7 +101,7 @@ class Vipps extends \PayEx\Payments\Model\Psp\Cc
                     'prices' => [
                         [
                             'type' => 'Vipps',
-                            'amount' => round($amount * 100),
+                            'amount' => bcmul(100, $amount),
                             'vatAmount' => '0'
                         ]
                     ],

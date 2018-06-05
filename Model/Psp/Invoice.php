@@ -325,7 +325,7 @@ class Invoice extends \PayEx\Payments\Model\Psp\AbstractPsp
             $params = [
                 'transaction' => [
                     'activity' => 'FinancingConsumer',
-                    'amount' => (int) round($amount * 100),
+                    'amount' => bcmul(100, $amount),
                     'vatAmount' => 0,
                     'description' => sprintf('Capture for Order #%s', $order->getIncrementId()),
                     'payeeReference' => str_replace('-', '', $this->payexHelper->uuid(uniqid($order->getIncrementId())))
@@ -486,7 +486,7 @@ class Invoice extends \PayEx\Payments\Model\Psp\AbstractPsp
             $params = [
                 'transaction' => [
                     'activity' => 'FinancingConsumer',
-                    'amount' => (int) round($amount * 100),
+                    'amount' => bcmul(100, $amount),
                     'vatAmount' => 0,
                     'description' => sprintf('Refund for Order #%s', $order->getIncrementId()),
                     'payeeReference' => str_replace('-', '', $this->payexHelper->uuid(uniqid($order->getIncrementId())))
