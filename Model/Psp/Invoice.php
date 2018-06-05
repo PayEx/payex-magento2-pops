@@ -302,18 +302,18 @@ class Invoice extends \PayEx\Payments\Model\Psp\AbstractPsp
 
         // Get Items
         $descriptions = [];
-        $items = $this->payexHelper->getOrderItems($order, $order->getOrderCurrencyCode());
+        $items = $this->payexHelper->getOrderItems($order, $order->getOrderCurrencyCode(), true);
         foreach ($items as $item) {
             $unit_price     = sprintf("%.2f", $item['price_without_tax'] / $item['qty']);
             $descriptions[] = [
                 'product' => $item['name'],
                 'quantity' => $item['qty'],
-                'unitPrice' => (int) round($unit_price * 100),
-                'amount' => (int) round($item['price_with_tax'] * 100),
-                'vatAmount' => (int) round($item['tax_price'] * 100),
+                'unitPrice' => bcmul(100, $unit_price),
+                'amount' => bcmul(100, $item['price_with_tax']),
+                'vatAmount' => bcmul(100, $item['tax_price']),
                 'vatPercent' => sprintf("%.2f", $item['tax_percent']),
             ];
-        }
+        };
 
         try {
             $result = $this->psp->request('GET', $payment_id);

@@ -373,23 +373,52 @@ class Data extends AbstractHelper
     }
 
     /**
+     * Get Rounded allowed VAT rate
+     * Workaround "The VatPercent field must contain a supported percent value" problem
+     * @param $rate
+     * @return mixed
+     */
+    public static function getStrictVAT($rate) {
+        $rate = (float) $rate;
+        $allowed = [0, 6, 8, 10, 12, 14, 15, 22, 24, 25];
+        if (in_array($rate, $allowed)) {
+            return $rate;
+        }
+
+        $values = [];
+        $values[] = ceil($rate);
+        $values[] = intval($rate);
+        $values[] = floor($rate);
+
+        foreach ($values as $value) {
+            if (in_array($value, $allowed)) {
+                return $value;
+            }
+        }
+
+        // @todo Check it?
+        return $rate;
+    }
+
+    /**
      * Get Order Items
      * @param \Magento\Sales\Model\Order $order
      * @param string $currency Order Currency
+     * @param bool $strict_vat_rate Strict VAT
      * @return array
      */
-    public function getOrderItems(\Magento\Sales\Model\Order $order, $currency = '')
+    public function getOrderItems(\Magento\Sales\Model\Order $order, $currency = '', $strict_vat_rate = false)
     {
-        if (empty($currency)) {
-            $currency = $order->getBaseCurrencyCode();
-        }
+        //if (empty($currency)) {
+            //$currency = $order->getBaseCurrencyCode();
+        //}
 
         // Currency rate
         $currencyRate = 1;
-        if ($order->getBaseCurrencyCode() != $currency) {
+        //if ($order->getBaseCurrencyCode() != $currency) {
             // @todo Currency rate calc
-            $currencyRate = $order->getBaseToOrderRate();
-        }
+            //$currencyRate = $order->getBaseToOrderRate();
+        //}
 
         $lines = [];
         $items = $order->getAllVisibleItems();
@@ -406,6 +435,9 @@ class Data extends AbstractHelper
             $priceWithTax = $item->getRowTotalInclTax() * $currencyRate;
             $priceWithoutTax = $item->getRowTotal() * $currencyRate;
             $taxPercent = $priceWithoutTax > 0 ? (($priceWithTax / $priceWithoutTax) - 1) * 100 : 0;
+            if ($strict_vat_rate) {
+                $taxPercent = self::getStrictVAT($taxPercent);
+            }
             $taxPrice = $priceWithTax - $priceWithoutTax;
 
             $lines[] = [
@@ -432,6 +464,10 @@ class Data extends AbstractHelper
                 $shippingTaxRate = 0;
             }
 
+            if ($strict_vat_rate) {
+                $shippingTaxRate = self::getStrictVAT($shippingTaxRate);
+            }
+
             $lines[] = [
                 'type' => 'shipping',
                 'name' => $order->getShippingDescription(),
@@ -450,6 +486,9 @@ class Data extends AbstractHelper
             $discountExclTax = $discountData->getDiscountExclTax() * $currencyRate;
             $discountVatAmount = $discountInclTax - $discountExclTax;
             $discountVatPercent = $discountExclTax > 0 ? (($discountInclTax / $discountExclTax) - 1) * 100 : 0;
+            if ($strict_vat_rate) {
+                $discountVatPercent = self::getStrictVAT($discountVatPercent);
+            }
 
             $lines[] = [
                 'type' => 'discount',
@@ -473,6 +512,9 @@ class Data extends AbstractHelper
             $feeTax = $order->getPayexPaymentFeeTax() * $currencyRate;
             $feeIncTax = $feeExclTax + $feeTax;
             $feeTaxRate = $feeExclTax > 0 ? (($feeIncTax / $feeExclTax) - 1) * 100 : 0;
+            if ($strict_vat_rate) {
+                $feeTaxRate = self::getStrictVAT($feeTaxRate);
+            }
 
             $lines[] = [
                 'type' => 'fee',
