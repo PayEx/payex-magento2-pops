@@ -111,3 +111,15 @@ find [The Official PayEx Payment Gateway Extension][marketplace].
 [mobilepay]: https://mobilepay.dk/da-dk/Erhverv/Pages/mobilepay-online.aspx
 [swish]: https://www.getswish.se/
 [vipps]: https://www.vipps.no/
+
+## Prerequisites
+
+For financing invoice tax settings Magento 2 must be configured as below in Configuration->Tax:
+
+Catalog Prices - Excluding Tax
+(This sets whether catalog prices entered from Magento Admin include tax.)
+
+Shipping Prices - Excluding Tax
+(This sets whether shipping amounts entered from Magento Admin or obtained from gateways include tax.)
+
+
