@@ -251,7 +251,7 @@ class Invoice extends \PayEx\Payments\Model\Psp\AbstractPsp
                 ],
                 'legalAddress' => [
                     'addressee' => $legal_address['addressee'],
-                    'coAddress' => $legal_address['coAddress'],
+                    'coAddress' => isset($legal_address['coAddress']) ? $legal_address['coAddress'] : '',
                     'streetAddress' => $legal_address['streetAddress'],
                     'zipCode' => $legal_address['zipCode'],
                     'city' => $legal_address['city'],
