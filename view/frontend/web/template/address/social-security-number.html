@@ -8,7 +8,11 @@
                type="text"
                name="customer-ssn"
                id="customer-ssn"
-               data-bind="hasFocus: showFields(), value: getAppliedSSN()" />
+               data-bind="attr: {
+               autocomplete: off,
+               placeholder: 'XXXXXX-XXXX'},
+               hasFocus: showFields(),
+               value: getAppliedSSN()" />
         <!-- ko template: 'ui/form/element/helper/tooltip' --><!-- /ko -->
     </div>
 </div>
