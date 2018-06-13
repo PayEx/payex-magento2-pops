@@ -20,7 +20,8 @@ class Fee extends AbstractTotal
      */
     private static $allowed_methods = [
         'payex_financing',
-        'payex_partpayment'
+        'payex_partpayment',
+        'payex_psp_invoice'
     ];
 
     /**

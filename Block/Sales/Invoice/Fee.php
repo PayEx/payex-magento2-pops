@@ -50,7 +50,8 @@ class Fee extends Template
         // Check is fee allowed for payment method
         if (!in_array($invoice->getOrder()->getPayment()->getMethod(), [
             Financing::METHOD_CODE,
-            PartPayment::METHOD_CODE
+            PartPayment::METHOD_CODE,
+            \PayEx\Payments\Model\Psp\Invoice::METHOD_CODE
         ])) {
             return $this;
         }

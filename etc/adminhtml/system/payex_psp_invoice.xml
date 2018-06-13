@@ -54,6 +54,18 @@
             <config_path>payment/payex_psp_invoice/order_status_capture</config_path>
         </field>
 
+        <field id="paymentfee" translate="label" type="text" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Payment fee</label>
+            <frontend_class>validate-number</frontend_class>
+            <config_path>payment/payex_psp_invoice/paymentfee</config_path>
+        </field>
+
+        <field id="paymentfee_tax_class" translate="label" type="select" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Tax Class for Payment fee</label>
+            <source_model>PayEx\Payments\Model\Config\Source\TaxClass</source_model>
+            <config_path>payment/payex_psp_invoice/paymentfee_tax_class</config_path>
+        </field>
+
         <group id="payex_psp_invoice_country_specific" translate="label" showInDefault="1" showInWebsite="1" sortOrder="20">
             <label>Country Specific Settings</label>
             <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>

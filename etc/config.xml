@@ -258,6 +258,8 @@
                 <order_status_authorize>processing</order_status_authorize>
                 <order_status_capture>processing</order_status_capture>
                 <billing_address_required>1</billing_address_required>
+                <paymentfee>0</paymentfee>
+                <paymentfee_tax_class>0</paymentfee_tax_class>
                 <allowspecific>0</allowspecific>
                 <group>payex</group>
             </payex_psp_invoice>
