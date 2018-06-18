@@ -170,53 +170,57 @@ class Fee extends AbstractTotal
         }
 
         $fee = new \Magento\Framework\DataObject;
-        $fee->setPaymentFeeExclTax($price)
-            ->setPaymentFeeInclTax($price + $taxAmount)
-            ->setPaymentFeeTax($taxAmount)
+        $fee->setBasePaymentFeeExclTax($price)
+            ->setBasePaymentFeeInclTax($price + $taxAmount)
+            ->setBasePaymentFeeTax($taxAmount)
             ->setRateRequest($request);
 
-        if (abs($fee->getPaymentFeeExclTax()) === 0) {
+        $fee->setPaymentFeeExclTax($this->priceCurrency->convert($fee->getBasePaymentFeeExclTax(), $store))
+            ->setPaymentFeeInclTax($this->priceCurrency->convert($fee->getBasePaymentFeeInclTax(), $store))
+            ->setPaymentFeeTax($this->priceCurrency->convert($fee->getBasePaymentFeeTax(), $store));
+
+        if (abs($fee->getBasePaymentFeeExclTax()) === 0) {
             return $this;
         }
 
         // Payment Fee
-        $total->setBaseTotalAmount($this->getCode(), $fee->getPaymentFeeExclTax());
-        $total->setTotalAmount($this->getCode(), $this->priceCurrency->convert($fee->getPaymentFeeExclTax(), $store));
+        $total->setBaseTotalAmount($this->getCode(), $fee->getBasePaymentFeeExclTax());
+        $total->setTotalAmount($this->getCode(), $fee->getPaymentFeeExclTax());
 
-        $total->setBasePayexPaymentFee($fee->getPaymentFeeExclTax());
-        $total->setPayexPaymentFee($this->priceCurrency->convert($fee->getPaymentFeeExclTax(), $store));
+        $total->setBasePayexPaymentFee($fee->getBasePaymentFeeExclTax());
+        $total->setPayexPaymentFee($fee->getPaymentFeeExclTax());
 
-        $quote->setBasePayexPaymentFee($fee->getPaymentFeeExclTax());
-        $quote->setPayexPaymentFee($this->priceCurrency->convert($fee->getPaymentFeeExclTax(), $store));
+        $quote->setBasePayexPaymentFee($fee->getBasePaymentFeeExclTax());
+        $quote->setPayexPaymentFee($fee->getPaymentFeeExclTax());
 
         // Update totals
-        $total->setBaseGrandTotal($total->getGrandTotal() + $fee->getPaymentFeeExclTax());
-        $total->setGrandTotal($total->getGrandTotal() + $this->priceCurrency->convert($fee->getPaymentFeeExclTax(), $store));
+        $total->setBaseGrandTotal($total->getBaseGrandTotal() + $fee->getBasePaymentFeeExclTax());
+        $total->setGrandTotal($total->getGrandTotal() + $fee->getPaymentFeeExclTax());
 
         // Payment Fee Taxes
-        $total->setBasePayexPaymentFeeTax($fee->getPaymentFeeTax());
-        $total->setPayexPaymentFeeTax($this->priceCurrency->convert($fee->getPaymentFeeTax(), $store));
+        $total->setBasePayexPaymentFeeTax($fee->getBasePaymentFeeTax());
+        $total->setPayexPaymentFeeTax($fee->getPaymentFeeTax());
 
-        $quote->setBasePayexPaymentFeeTax($fee->getPaymentFeeTax());
-        $quote->setPayexPaymentFeeTax($this->priceCurrency->convert($fee->getPaymentFeeTax(), $store));
+        $quote->setBasePayexPaymentFeeTax($fee->getBasePaymentFeeTax());
+        $quote->setPayexPaymentFeeTax($fee->getPaymentFeeTax());
 
         // Update totals
-        $address->setBaseTaxAmount($address->getBaseTaxAmount() + $fee->getPaymentFeeTax());
-        $address->setTaxAmount($address->getTaxAmount() + $this->priceCurrency->convert($fee->getPaymentFeeTax(), $store));
+        $address->setBaseTaxAmount($address->getBaseTaxAmount() + $fee->getBasePaymentFeeTax());
+        $address->setTaxAmount($address->getTaxAmount() + $fee->getPaymentFeeTax());
 
-        $total->addBaseTotalAmount('tax', $fee->getPaymentFeeTax());
-        $total->addTotalAmount('tax', $this->priceCurrency->convert($fee->getPaymentFeeTax(), $store));
+        $total->addBaseTotalAmount('tax', $fee->getBasePaymentFeeTax());
+        $total->addTotalAmount('tax', $fee->getPaymentFeeTax());
 
-        $total->setBaseGrandTotal($total->getGrandTotal() + $fee->getPaymentFeeTax());
-        $total->setGrandTotal($total->getGrandTotal() + $this->priceCurrency->convert($fee->getPaymentFeeTax(), $store));
+        $total->setBaseGrandTotal($total->getBaseGrandTotal() + $fee->getBasePaymentFeeTax());
+        $total->setGrandTotal($total->getGrandTotal() + $fee->getPaymentFeeTax());
 
         // Save Applied Taxes
         if ($address->getBaseTaxAmount() > 0) {
             $this->_saveAppliedTaxes(
                 $total,
                 $this->calculationTool->getAppliedRates($fee->getRateRequest()),
-                $this->priceCurrency->convert($fee->getPaymentFeeTax(), $store),
                 $fee->getPaymentFeeTax(),
+                $fee->getBasePaymentFeeTax(),
                 $this->calculationTool->getRate($fee->getRateRequest())
             );
         }

@@ -64,6 +64,7 @@ class Fee extends Template
                         'code' => 'payex_payment_fee_with_tax',
                         'strong' => false,
                         'value' => $order->getPayexPaymentFee() + $order->getPayexPaymentFeeTax(),
+                        'base_value' => $order->getBasePayexPaymentFee() + $order->getBasePayexPaymentFeeTax(),
                         'label' => __('Payment Fee') . ' ' . __('(Incl.Tax)'),
                     ]),
                     'grand_total'
@@ -74,6 +75,7 @@ class Fee extends Template
                         'code' => 'payex_payment_fee',
                         'strong' => false,
                         'value' => $order->getPayexPaymentFee(),
+                        'base_value' => $order->getBasePayexPaymentFee(),
                         'label' => __('Payment Fee') . ' ' . __('(Excl.Tax)'),
                     ]),
                     'payex_payment_fee_with_tax'
@@ -84,6 +86,7 @@ class Fee extends Template
                         'code' => 'payex_payment_fee_with_tax',
                         'strong' => false,
                         'value' => $order->getPayexPaymentFee() + $order->getPayexPaymentFeeTax(),
+                        'base_value' => $order->getBasePayexPaymentFee() + $order->getBasePayexPaymentFeeTax(),
                         'label' => __('Payment Fee') . ' ' . __('(Incl.Tax)'),
                     ]),
                     'grand_total'
@@ -94,6 +97,7 @@ class Fee extends Template
                         'code' => 'payex_payment_fee',
                         'strong' => false,
                         'value' => $order->getPayexPaymentFee(),
+                        'base_value' => $order->getBasePayexPaymentFee(),
                         'label' => __('Payment Fee') . ' ' . __('(Excl.Tax)'),
                     ]),
                     'grand_total'
