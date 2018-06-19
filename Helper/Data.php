@@ -505,7 +505,8 @@ class Data extends AbstractHelper
         if ($order->getPayexPaymentFee() > 0 &&
             in_array($order->getPayment()->getMethod(), [
                 \PayEx\Payments\Model\Method\Financing::METHOD_CODE,
-                \PayEx\Payments\Model\Method\PartPayment::METHOD_CODE
+                \PayEx\Payments\Model\Method\PartPayment::METHOD_CODE,
+                \PayEx\Payments\Model\Psp\Invoice::METHOD_CODE
             ])
         ) {
             $feeExclTax = $order->getPayexPaymentFee() * $currencyRate;
@@ -518,7 +519,7 @@ class Data extends AbstractHelper
 
             $lines[] = [
                 'type' => 'fee',
-                'name' => __('Payment Fee'),
+                'name' => (string) __('Payment Fee'),
                 'qty' => 1,
                 'price_with_tax' => sprintf("%.2f", $feeIncTax),
                 'price_without_tax' => sprintf("%.2f", $feeExclTax),
