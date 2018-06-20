@@ -66,6 +66,7 @@ class Cc extends \PayEx\Payments\Model\Psp\AbstractPsp
 
         /** @var \Magento\Sales\Model\Order $order */
         $order = $info->getOrder();
+        $order->setCanSendNewEmailFlag(false);
 
         // Set state object
         /** @var \Magento\Sales\Model\Order\Status $status */
