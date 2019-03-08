@@ -11,7 +11,7 @@
     "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0",
     "ext-bcmath": "*",
     "ext-soap": "*",
-    "payex/php-api": "~2.0.1",
+    "payex/php-api": "~1.0.2",
     "aait/php-name-parser": "~1.0.1",
     "guzzlehttp/guzzle": "^6.2",
     "ramsey/uuid": "^3.7"
