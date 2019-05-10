@@ -1,3 +1,15 @@
+Version 1.1.3
+* Composer: Use payex/payex-ecom-php
+
+Version 1.1.2
+* Psp: Use bcmath to avoid a problem with round
+* Fixed capture problems
+* Placeholder for SSN fields
+* Fee for psp invoice method
+* Invoice Fee: Fixed bugs on Multiple websites configuration
+* Fixed: ordermail is sent even if payment not finished
+* Fixed "NoRecordFound" in admin area for multi-websites
+
 Version 1.1.1
 * PayEx Checkout: Fixed production frontend url
 * Financing Invoice: msisdn fix
