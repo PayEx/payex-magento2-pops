@@ -3,6 +3,7 @@
 namespace PayEx\Payments\Model\Method;
 
 use Magento\Framework\DataObject;
+use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Quote\Api\Data\PaymentInterface;
 use Magento\Sales\Model\Order;
@@ -102,7 +103,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
         }
 
         if (!$info->getTos()) {
-            throw new LocalizedException(__('Please accept the Terms of service.'));
+            throw new CouldNotSaveException(__('Please accept the Terms of service.'));
         }
 
         // Check SSN is saved in session
@@ -119,26 +120,26 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
 
         // Validate fields
         if (empty($ssn)) {
-            throw new LocalizedException(__('Please enter Social Security Number.'));
+            throw new CouldNotSaveException(__('Please enter Social Security Number.'));
         }
 
         if (!is_numeric($ssn)) {
-            throw new LocalizedException(__('Social Security number have wrong format.'));
+            throw new CouldNotSaveException(__('Social Security number have wrong format.'));
         }
 
         if (empty($country_code)) {
-            throw new LocalizedException(__('Please select country.'));
+            throw new CouldNotSaveException(__('Please select country.'));
         }
 
         if (empty($postcode)) {
-            throw new LocalizedException(__('Please enter postcode.'));
+            throw new CouldNotSaveException(__('Please enter postcode.'));
         }
 
         // Validate country phone code
         if (in_array($country_code, ['SE', 'NO'])) {
             $phone_code = mb_substr(ltrim($phone, '+'), 0, 2, 'UTF-8');
             if (!in_array($phone_code, ['46', '47'])) {
-                throw new LocalizedException(__('Invalid phone number. Phone code must include country phone code.'));
+                throw new CouldNotSaveException(__('Invalid phone number. Phone code must include country phone code.'));
             }
         }
 
@@ -149,7 +150,7 @@ class Financing extends \PayEx\Payments\Model\Method\AbstractMethod
             foreach ($items as $item) {
                 $product_name = $item->getName();
                 if (!preg_match('/^[a-zA-Z0-9_:!#=?\\@{}´ %-À-ÖØ-öø-ú]*$/u', $product_name)) {
-                    throw new LocalizedException(__('Product name "%1" contains invalid characters.', $product_name));
+                    throw new CouldNotSaveException(__('Product name "%1" contains invalid characters.', $product_name));
                 }
             }
         }

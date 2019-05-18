@@ -3,6 +3,7 @@
 namespace PayEx\Payments\Model\Method;
 
 use Magento\Framework\DataObject;
+use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Quote\Api\Data\PaymentInterface;
 use Magento\Sales\Model\Order;
@@ -99,7 +100,7 @@ class Bankdebit extends \PayEx\Payments\Model\Method\AbstractMethod
         }
 
         if (!$info->getBankId()) {
-            throw new LocalizedException(__('Please select bank.'));
+            throw new CouldNotSaveException(__('Please select bank.'));
         }
 
         // Save Bank Id

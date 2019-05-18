@@ -39,6 +39,11 @@ define(
                         return;
                     }
 
+                    // Magento 2.3
+                    if (getMessage(error).indexOf('Current customer does not have an active cart') != -1) {
+                        return;
+                    }
+
                     messageContainer.addErrorMessage(error);
                 }
             };

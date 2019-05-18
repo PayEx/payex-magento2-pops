@@ -17,16 +17,32 @@ class PaymentInformationManagement
     private $cartManagement;
 
     /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var \PayEx\Payments\Helper\Data
+     */
+    private $payexHelper;
+
+    /**
      * @param \Magento\Checkout\Helper\Data $checkoutHelper
      * @param \Magento\Quote\Api\CartManagementInterface $cartManagement
+     * @param \Psr\Log\LoggerInterface $logger
+     * @param \PayEx\Payments\Helper\Data $payexHelper
      */
     public function __construct(
         \Magento\Checkout\Helper\Data $checkoutHelper,
-        \Magento\Quote\Api\CartManagementInterface $cartManagement
+        \Magento\Quote\Api\CartManagementInterface $cartManagement,
+        \Psr\Log\LoggerInterface $logger,
+        \PayEx\Payments\Helper\Data $payexHelper
     ) {
 
         $this->checkoutHelper = $checkoutHelper;
         $this->cartManagement = $cartManagement;
+        $this->logger = $logger;
+        $this->payexHelper = $payexHelper;
     }
 
     /**
@@ -74,15 +90,29 @@ class PaymentInformationManagement
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress
     ) {
-    
+
+        /** @see \Magento\Checkout\Model\PaymentInformationManagement::savePaymentInformationAndPlaceOrder() */
         $subject->savePaymentInformation($cartId, $paymentMethod, $billingAddress);
         try {
             $orderId = $this->cartManagement->placeOrder($cartId);
-        } catch (\Exception $e) {
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
             throw new CouldNotSaveException(
                 __($e->getMessage()),
                 $e
             );
+        } catch (\Exception $e) {
+            if (version_compare($this->payexHelper->getMageVersion(), '2.3', '<')) {
+                throw new CouldNotSaveException(
+                    __($e->getMessage()),
+                    $e
+                );
+            } else {
+                $this->logger->critical($e);
+                throw new CouldNotSaveException(
+                    __('A server error stopped your order from being placed. Please try to place your order again.'),
+                    $e
+                );
+            }
         }
 
         return $orderId;

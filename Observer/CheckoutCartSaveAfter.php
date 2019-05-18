@@ -29,23 +29,31 @@ class CheckoutCartSaveAfter implements ObserverInterface
     protected $urlBuilder;
 
     /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param \Magento\Checkout\Helper\Data $checkoutHelper
-     * @param \PayEx\Payments\Helper\Checkout $pxCheckoutHelper
+     * @param \PayEx\Payments\Helper\Psp $psp
      * @param PaymentHelper $paymentHelper
      * @param \Magento\Framework\UrlInterface $urlBuilder
+     * @param \Psr\Log\LoggerInterface $logger
      */
     public function __construct(
         \Magento\Checkout\Helper\Data $checkoutHelper,
         \PayEx\Payments\Helper\Psp $psp,
         PaymentHelper $paymentHelper,
-        \Magento\Framework\UrlInterface $urlBuilder
+        \Magento\Framework\UrlInterface $urlBuilder,
+        \Psr\Log\LoggerInterface $logger
     ) {
         $this->checkoutHelper = $checkoutHelper;
         $this->psp = $psp;
         $this->paymentHelper = $paymentHelper;
         $this->urlBuilder = $urlBuilder;
+        $this->logger = $logger;
     }
 
     public function execute(\Magento\Framework\Event\Observer $observer)
@@ -57,7 +65,7 @@ class CheckoutCartSaveAfter implements ObserverInterface
         $quote = $cart->getQuote();
 
         try {
-            /** @var \PayEx\Payments\Model\Method\Checkout $method */
+            /** @var \PayEx\Payments\Model\Psp\Checkout $method */
             $methodInstance = $this->paymentHelper->getMethodInstance(PxCheckout::METHOD_CODE);
             if ($methodInstance->isAvailable()) {
                 // @todo Define Store Id
@@ -98,7 +106,7 @@ class CheckoutCartSaveAfter implements ObserverInterface
                 }
             }
         } catch (\Exception $e) {
-            // @todo Log Exception
+            $this->logger->critical($e);
         }
 
         return $this;

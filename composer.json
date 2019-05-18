@@ -8,9 +8,10 @@
     "AFL-3.0"
   ],
   "require": {
-    "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0",
+    "php": "~7.0.0|~7.1.0|~7.2.0",
     "ext-bcmath": "*",
     "ext-soap": "*",
+    "ext-json": "*",
     "payex/payex-ecom-php": "~1.0.2",
     "aait/php-name-parser": "~1.0.1",
     "guzzlehttp/guzzle": "^6.2",
