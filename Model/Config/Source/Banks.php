@@ -26,6 +26,7 @@ class Banks implements ArrayInterface
             ['value' => 'SAMPO', 'label' => __('Danske Bank')],
             ['value' => 'AKTIA', 'label' => __('Aktia')],
             ['value' => 'OP', 'label' => __('OP')],
+            ['value' => 'OMASP', 'label' => __('Oma Säästöpankki')],
             ['value' => 'NB:FI', 'label' => __('Nordea Finland')],
             ['value' => 'SHB:FI', 'label' => __('Handelsbanken Finland')],
             ['value' => 'SPANKKI', 'label' => __('S-Pankki')],
