@@ -12,7 +12,6 @@ class Type implements ArrayInterface
     public function toOptionArray()
     {
         return [
-            ['value' => 'PX', 'label' => __('Payment Menu')],
             ['value' => 'CREDITCARD', 'label' => __('Credit Card')],
             ['value' => 'INVOICE', 'label' => __('Invoice (Ledger Service)')],
             ['value' => 'DIRECTDEBIT', 'label' => __('Direct Debit')],
