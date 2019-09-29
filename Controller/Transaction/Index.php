@@ -4,6 +4,7 @@ namespace PayEx\Payments\Controller\Transaction;
 use Zend\Log\Logger;
 use Zend\Log\Writer\Stream;
 use Magento\Framework\App\Action\Action;
+use Magento\Sales\Model\Order\Payment\Transaction;
 
 /**
  * Class Index
@@ -155,6 +156,34 @@ class Index extends Action
         // Init PayEx Environment
         $this->payexHelper->getPx()->setEnvironment($accountNumber, $encryptionKey, $debug);
 
+        // Get current transaction info
+        $lastTransactionId = $order->getPayment()->getLastTransId();
+        $lastTransactionStatus = null;
+
+        if ($lastTransactionId) {
+            /** @var \Magento\Sales\Model\Order\Payment\Transaction $transaction */
+            $lastTransaction = $transactionRepository->getByTransactionId(
+                $lastTransactionId,
+                $order->getPayment()->getId(),
+                $order->getId()
+            );
+
+            if ($lastTransaction) {
+                // Get Transaction Details
+                $lastTransactionDetails = $transaction->getAdditionalInformation(Transaction::RAW_DETAILS);
+                if (!is_array($lastTransactionDetails) || count($lastTransactionDetails) === 0) {
+                    $lastTransactionDetails = $payment_method->fetchTransactionInfo($order->getPayment(), $lastTransactionId);
+                    $lastTransaction->setAdditionalInformation(Transaction::RAW_DETAILS, $lastTransactionDetails);
+                    $lastTransaction->save();
+                }
+
+                $lastTransactionStatus = (int) $lastTransactionDetails['transactionStatus'];
+
+                $logger->info('Last Transaction Id', [$lastTransactionId]);
+                $logger->info('Last Transaction Status', [$lastTransactionStatus]);
+            }
+        }
+
         // Call PxOrder.GetTransactionDetails2
         $params = [
             'accountNumber' => '',
@@ -304,6 +333,13 @@ class Index extends Action
             case 5:
                 // Change Order Status to Canceled
                 $logger->info('Action: Cancel order', [$order_id]);
+
+                // Check current status
+                if (in_array($lastTransactionStatus, ['0', '3', '6'])) {
+                    $logger->info('Order won\'t be cancelled because already paid', [$order_id, $lastTransactionStatus]);
+                    break;
+                }
+
                 if (!$order->isCanceled() && !$order->hasInvoices()) {
                     $order->cancel();
                     $order->addStatusHistoryComment(__('Order canceled by Transaction Callback'));
